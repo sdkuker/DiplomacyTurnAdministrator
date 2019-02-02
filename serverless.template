@@ -1,0 +1,23 @@
+{
+  "Description" : "Diplomacy Turn Administrator.",
+  "Parameters" : { },
+  "Resources" : {
+    "DiplomacyTurnAdministratorFunction" : {
+      "Type" : "AWS::Serverless::Function",
+      "Properties" : {
+        "Handler" : "com.sdk.diplomacy.turnadmin.AdministerTurn",
+        "Runtime" : "java8",
+        "CodeUri" : "./target/turnadmin-1.0.0.jar",
+        "Events" : {
+          "DiplomacyTurnAdministratorApi" : {
+            "Type" : "Api",
+            "Properties" : {
+              "Path" : "/",
+              "Method" : "any"
+            }
+          }
+        }
+      }
+    }
+  }
+}
