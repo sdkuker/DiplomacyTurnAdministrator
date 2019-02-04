@@ -8,6 +8,7 @@
         "Handler" : "com.sdk.diplomacy.turnadmin.AdministerTurn",
         "Runtime" : "java8",
         "CodeUri" : "./target/turnadmin-1.0.0.jar",
+        "Timeout" : 300,
         "Events" : {
           "DiplomacyTurnAdministratorApi" : {
             "Type" : "Api",

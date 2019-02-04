@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "steviewarediplomacy",
+  "private_key_id": "3820ded55c850aec67b0b957742a35170f7077e4",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDu4upO7UxucRaK\nQQBX39i90eTTDWjhRKdAHaIq6xD/KnbZbgZe+ologBQOEhoimldnz64L9YXFbHtL\np7mKKzRaCraV7wJIZ5WJ3JAYDNDZzgMnpXWkaEUubSdEx7Qjbzj5OkzyxATTaXoZ\nItfJmg+T6a0aD9pn9kBSwsCtHgJTUKnF50b5n9rLqbJiF4jiro6TtAkl3LfMAluc\nCVPneH3s1BGwMO1UaMb6RQdGJJFWeG0SBYU7yJZmmtIUNwBT6fDc6MSTiufYGXSR\n/VsURogsM/m62G29TQJeKEeriye0AW/hWo4OiU6pP+Lrrlr7PSvesyaYUAcEaPqa\na1lO6Ew1AgMBAAECggEAS9+vuwzc01FA7v2RTdfPwA6cBrrCHpaPJqqi2M3bkqga\nopmzFVSu8w2HEScHvQjXjSXl6m97owZ/LLrjj/KECLtRXdLRn0yjLuvqqnDbnuoz\nj1KayHLD0mih6dMiMIUBjAtL6GmA/OMKAFTUQ/iWTQ0RyW7SmGWa7Y5k4zdeVrZx\nYXlFppP5f//+tEo/BgEV61NGPeShKoB3jMAHMlGMxu09mAUQjf+1tmeaeH1btj66\nVF4O5P5ZscboLlEX9eV6V/Hff7JZVkidjpbw04BI9nTPQvkQURHqzA38FrGKuJB7\nrzsSD5S4CpHYUEfHnr2zy6fGAxNQi4bslZIfS23vmwKBgQD/azN1Z65dyl6unNxi\nF86IehJbydZB/TC3HA6e3yrPz9iyYbIVnNCMEt19pz/FoodzAumxWHVMoY2vwVRJ\nCuYH5RzO2LIoCfEBiip/zrosWRRSPSLSv/EGm3GnKGiLTEh8EcFcywopCou5/IAb\n3lS5ckewQx+MpE3QE0UOgXgpxwKBgQDvbhVAj1vsyWPfqiNU4mBRHbfrEkjrszBK\nmeXDb5bvZOKScmSXLHhvkJdmGfR0lcLvs9Yo0iwKj1SAwVj8y+8RNa4kjj945xTg\n0SaMjj/pV0SaPffg7gUp4vZ6rHNTxmAl1rXAjt7zc2Cfo11/qupF2WiR7SbwZN9G\n7nLSSeC6IwKBgQD2NpmROFPuV3Dz84PCD17pUns1/hfK3s3CBYrWfRwg3SPvuJtZ\nmCO0k07tnHauBiF5rbomWbYhG66gWMXt71KVE7e0cVEzpXmsWUrkjxwKOgiLyiEy\ndRJboyZo01wLw4owB1GVKKhvrZnJvGyl8KlNZqtSbzIPeicESD8OX6G86wKBgQCg\nPlbu7IOjiG3VhfM7nn7EC1XKeGRhi33oj/Ocx5SHCEgzp2f3XYYFdQo/BWP8mzbq\nYrwUegWL073EpqK+HmcUZ47zXFjSvCXXCWP5ckMIEqYRbSP3YJYIIKTCGaTeDsjO\nylK+W2CQI0opzZaIGYXN1eIMuGH1Ri3BNVmXsGY9bQKBgHTa3xCnUOsS5TZXcRT3\nUTki4UpDXri/XM1hAfnXcqa+ZhRR+pOtYksWz7bHPm36UZeOX4BXwU2O/YaD9C0n\nKCaBLthcmXP20ZB57oOUvoxVTSW3jfEq8ebQXI/th1csOxNwMyMb8NPfuRuH1lQ4\nASfGLwSEr4WovJZowRuduABv\n-----END PRIVATE KEY-----\n",
+  "client_email": "turnmgmtsvcacctlambda@steviewarediplomacy.iam.gserviceaccount.com",
+  "client_id": "113649487064841316663",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/turnmgmtsvcacctlambda%40steviewarediplomacy.iam.gserviceaccount.com"
+}

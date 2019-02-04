@@ -9,6 +9,7 @@
         "Role" : null,
         "MemorySize" : 512,
         "Runtime" : "java8",
+        "Timeout" : 180,
         "Description" : null,
         "Policies" : [ ],
         "CodeUri" : "./target/turnadmin-1.0.0.jar",
