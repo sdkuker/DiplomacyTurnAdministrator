@@ -1,17 +1,14 @@
 package com.sdk.diplomacy.turnadmin.dao;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.google.api.core.ApiFuture;
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.sdk.diplomacy.turnadmin.domain.Game;
@@ -22,54 +19,20 @@ public class GameDAO {
 	private LambdaLogger logger;
 	
 
-	public GameDAO(LambdaLogger logger) {
+	public GameDAO(Firestore db, LambdaLogger logger) {
 		super();
 		this.logger = logger;
+		this.db = db;
 	}
 
-	public void initializeFirebase() throws IOException, ClassNotFoundException {
 
-		GoogleCredentials myCredentials = null;
-		
-		try {
-			logger.log("Started initializing Firebase for AWS deployment");
-			InputStream serviceAccount = getClass().getClassLoader().getResourceAsStream("resources/steviewarediplomacy-3820ded55c85.json");
-			logger.log("got the input stream for AWS deployment");
-			myCredentials = GoogleCredentials.fromStream(serviceAccount);
-			logger.log("got credentials for AWS deployment");
-		} catch (Exception e) {
-			try {
-				logger.log("Started initializing Firebase for local deployment");
-				InputStream serviceAccount = getClass().getClassLoader()
-						.getResourceAsStream("steviewarediplomacy-3820ded55c85.json");
-				logger.log("got the input stream for local deployment");
-				myCredentials = GoogleCredentials.fromStream(serviceAccount);
-				logger.log("got credentials for local deployment");
-			} catch(Exception e2) {
-				logger.log("unable to get credentials: " + printStackTrace(e2));
-				throw e2;
-			}
-		}
-		
-		if (myCredentials !=  null) {
-			
-			FirestoreOptions myOptions = FirestoreOptions.newBuilder().setCredentials(myCredentials).setTimestampsInSnapshotsEnabled(true).build();
-			db = myOptions.getService();
-			logger.log("finished initializing Firebase");
-		}
-	}
-
-	public List<Game> getAllGames() throws IOException, ClassNotFoundException {
+	public List<Game> getAllGames() throws InterruptedException, ExecutionException {
 
 		logger.log("Started getting all games");
-		
+	
 		List<Game> theReturn = new ArrayList<Game>();
 
-		if (db == null) {
-			initializeFirebase();
-		}
-
-		logger.log("About to get the data from Firebase");
+		logger.log("About to get games from Firebase");
 		
 		// asynchronously retrieve all users
 		ApiFuture<QuerySnapshot> query = db.collection("TEST").document("games").collection("allGames").get();
@@ -87,8 +50,8 @@ public class GameDAO {
 			}
 
 		} catch (Exception e) {
-			logger.log("error getting games" + e);
-			System.out.println("error getting games: " + e);
+			logger.log("error getting games" + printStackTrace(e));
+			throw e;
 		}
 
 		return theReturn;

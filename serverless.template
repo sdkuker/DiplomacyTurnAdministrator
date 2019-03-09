@@ -13,7 +13,7 @@
           "DiplomacyTurnAdministratorApi" : {
             "Type" : "Api",
             "Properties" : {
-              "Path" : "/",
+              "Path" : "/administer",
               "Method" : "any"
             }
           }
