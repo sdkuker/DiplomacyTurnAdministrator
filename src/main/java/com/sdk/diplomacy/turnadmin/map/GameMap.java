@@ -19,6 +19,11 @@ public class GameMap {
 		regions = tempRegions;
 		provinces = defineProvinces();
 	}
+	
+	public Region getRegion(String regionName) {
+		
+		return regions.get(regionName);
+	}
 
 	protected boolean populateBorderingRegions(Map<String, Region> myRegions) {
 
