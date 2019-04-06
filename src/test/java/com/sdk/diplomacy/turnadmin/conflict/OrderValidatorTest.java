@@ -567,68 +567,7 @@ public class OrderValidatorTest {
 		assertEquals("invalid piece type description is correct", "Invalid order - piece type in the order is not the same as the piece already occupying the current location",
 				badOrderInvalidPieceTypeResult.getExecutionDescription());
 	}
-	
-	@Test
-	public void validateSecondaryPieceAndTypeInitialLocation() {
 		
-		Order order = new Order(null, PieceType.ARMY, "Brest", Action.SUPPORTS,
-				null, PieceType.ARMY, "Paris", Action.MOVESTO, "Belguim", "France", "turnId", "gameId");
-		
-		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
-		existingPieces.put("Brest", new Piece(null, "France", "Brest", "turnId", "gameId", PieceType.ARMY));
-		existingPieces.put("Paris", new Piece(null, "France", "Paris", "turnId", "gameId", PieceType.ARMY));
-		
-		OrderExecutionResult result = new OrderExecutionResult(null, "turnId", null);
-		
-		myOrderValidator.validateSecondaryPieceAndTypeInInitialLocation(order, result, existingPieces);
-		
-		assertTrue("good order is valid", result.isValidOrder());
-		assertTrue("good order executed successfully", result.wasOrderExecutedSuccessfully());
-		assertNull("good order description is correct", result.getExecutionDescription());
-	}
-	
-	@Test
-	public void validateSecondaryPieceAndTypeInInitialLocationNoPieceInSecondaryCurrentLocation() {
-		
-		Order order = new Order(null, PieceType.ARMY, "Brest", Action.SUPPORTS,
-				null, PieceType.ARMY, null, Action.MOVESTO, "Belguim", "France", "turnId", "gameId");
-		
-		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
-		existingPieces.put("Brest", new Piece(null, "France", "Brest", "turnId", "gameId", PieceType.ARMY));
-		
-		OrderExecutionResult result = new OrderExecutionResult(null, "turnId", null);
-		
-		myOrderValidator.validateSecondaryPieceAndTypeInInitialLocation(order, result, existingPieces);
-		
-		assertFalse("no piece in secondary current location is not valid", result.isValidOrder());
-		assertFalse("no piece in secondary current location not executed successfully",
-				result.wasOrderExecutedSuccessfully());
-		assertEquals("no piece in secondary current location description is correct", "Invalid order - no piece occupies the secondary current location",
-				result.getExecutionDescription());
-	}
-	
-	@Test
-	public void validateSecondaryPieceAndTypeInitialLocationInvalidPieceType() {
-		
-		Order order = new Order(null, PieceType.ARMY, "Brest", Action.SUPPORTS,
-				null, PieceType.ARMY, "Belguim", Action.MOVESTO, "Paris", "France", "turnId", "gameId");
-		
-		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
-		existingPieces.put("Brest", new Piece(null, "France", "Brest", "turnId", "gameId", PieceType.ARMY));
-		existingPieces.put("Belguim", new Piece(null, "France", "Belguim", "turnId", "gameId", PieceType.FLEET));
-		
-		OrderExecutionResult result = new OrderExecutionResult(null, "turnId", null);
-		
-		myOrderValidator.validateSecondaryPieceAndTypeInInitialLocation(order, result, existingPieces);
-		
-		assertFalse("invalid piece type is not valid", result.isValidOrder());
-		assertFalse("invalid piece type not executed successfully",
-				result.wasOrderExecutedSuccessfully());
-		assertEquals("Invalid order - secondary piece type in the order is not the same as the piece type already occupying the secondary current location",
-				result.getExecutionDescription());
-	}
-
-	
 	@Test
 	public void testValidSecondaryPieceTypeValidation() {
 
@@ -749,5 +688,58 @@ public class OrderValidatorTest {
 				+ moveOrder.getPieceType(), result.getExecutionDescription());
 	}
 
+	@Test
+	public void testSupportActionMismatchedActionTypes() {
+
+		Order moveOrder = new Order("1", PieceType.ARMY, "Brest", Action.HOLDS,
+				"Paris", null, null, null, null, "France", "turnId", "gameId");
+		Order supportOrder = new Order("2", PieceType.ARMY, "Picardy", Action.SUPPORTS,
+				null, PieceType.ARMY, "Brest", Action.MOVESTO, "Paris", "France", "turnId", "gameId");
+		
+		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
+		existingPieces.put("Brest", new Piece(null, "France", "Brest", "turnId", "gameId", PieceType.FLEET));
+		existingPieces.put("Picardy", new Piece(null, "France", "Picardy", "turnId", "gameId", PieceType.ARMY));
+
+		Map<String, Order> allOrders = new HashMap<String, Order>();
+		allOrders.put("Brest", moveOrder);
+		allOrders.put("Picardy", supportOrder);
+
+		OrderExecutionResult result = new OrderExecutionResult("2", "turnId", "gameId");
+
+		myOrderValidator.validateSupportAction(supportOrder, result, myGameMap, existingPieces, allOrders);
+
+		assertFalse("support order is not valid", result.isValidOrder());
+		assertFalse("support order was not executed successfully", result.wasOrderExecutedSuccessfully());
+		assertEquals("description is correct", "Invalid order - support order action "
+				+ supportOrder.getSecondaryAction() + " does not match supported order action "
+				+ moveOrder.getAction(), result.getExecutionDescription());
+	}
+
+	@Test
+	public void testSupportActionMismatchedEndingLocations() {
+
+		Order moveOrder = new Order("1", PieceType.ARMY, "Brest", Action.MOVESTO,
+				"Gascony", null, null, null, null, "France", "turnId", "gameId");
+		Order supportOrder = new Order("2", PieceType.ARMY, "Picardy", Action.SUPPORTS,
+				null, PieceType.ARMY, "Brest", Action.MOVESTO, "Paris", "France", "turnId", "gameId");
+		
+		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
+		existingPieces.put("Brest", new Piece(null, "France", "Brest", "turnId", "gameId", PieceType.FLEET));
+		existingPieces.put("Picardy", new Piece(null, "France", "Picardy", "turnId", "gameId", PieceType.ARMY));
+
+		Map<String, Order> allOrders = new HashMap<String, Order>();
+		allOrders.put("Brest", moveOrder);
+		allOrders.put("Picardy", supportOrder);
+
+		OrderExecutionResult result = new OrderExecutionResult("2", "turnId", "gameId");
+
+		myOrderValidator.validateSupportAction(supportOrder, result, myGameMap, existingPieces, allOrders);
+
+		assertFalse("support order is not valid", result.isValidOrder());
+		assertFalse("support order was not executed successfully", result.wasOrderExecutedSuccessfully());
+		assertEquals("description is correct", "Invalid order - support order ending location "
+				+ supportOrder.getSecondaryEndingLocationName() + " does not match supported order ending location "
+				+ moveOrder.getEndingLocationName(), result.getExecutionDescription());
+	}
 
 }

@@ -69,23 +69,6 @@ public class OrderValidator {
 		}
 	}
 
-	public void validateSecondaryPieceAndTypeInInitialLocation(Order anOrder, OrderExecutionResult anOrderResult,
-			Map<String, Piece> existingPieces) {
-
-		Piece existingPiece = existingPieces.get(anOrder.getSecondaryCurrentLocationName());
-		if (existingPiece != null) {
-			if (anOrder.getSecondaryPieceType() != existingPiece.getType()) {
-				anOrderResult.setIsValidOrder(false);
-				anOrderResult.setExecutionDescription(
-						"Invalid order - secondary piece type in the order is not the same as the piece type already occupying the secondary current location");
-			}
-
-		} else {
-			anOrderResult.setIsValidOrder(false);
-			anOrderResult.setExecutionDescription("Invalid order - no piece occupies the secondary current location");
-		}
-	}
-
 	public void validateId(Order anOrder, OrderExecutionResult anOrderResult) {
 		if (anOrder.getId() == null) {
 			anOrderResult.setIsValidOrder(false);
@@ -294,7 +277,6 @@ public class OrderValidator {
 
 		validateSecondaryPieceType(anOrder, anOrderResult);
 		validateSecondaryCurrentLocationName(anOrder, anOrderResult, aGameMap, existingPieces);
-		validateSecondaryPieceAndTypeInInitialLocation(anOrder, anOrderResult, existingPieces);
 		validateSecondaryPieceAction(anOrder, anOrderResult);
 		validateSecondaryEndingLocationName(anOrder, anOrderResult, aGameMap);
 	}
