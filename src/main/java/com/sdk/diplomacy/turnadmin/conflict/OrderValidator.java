@@ -30,7 +30,7 @@ public class OrderValidator {
 		if (anOrder.getAction() != null) {
 			switch (anOrder.getAction()) {
 			case CONVOYS:
-				// TODO validateConvoyAction(anOrder, anOrderResult, aGameMap);
+				validateConvoyAction(anOrder, anOrderResult, aGameMap, existingPieces, allOrders);
 				break;
 			case HOLDS:
 				validateHoldAction(anOrder, anOrderResult, aGameMap);
@@ -49,6 +49,59 @@ public class OrderValidator {
 		} else {
 			anOrderResult.setIsValidOrder(false);
 			anOrderResult.setExecutionDescription("Invalid order - missing action");
+		}
+	}
+
+	public void validateConvoyAction(Order anOrder, OrderExecutionResult anOrderResult, GameMap aGameMap,
+			Map<String, Piece> existingPieces, Map<String, Order> allOrders) {
+
+		// TODO only fleets can convoy. the must be in a water province. they can only
+		// convoy armies. The army must be moving from coastal to coastal
+		if (PieceType.FLEET != anOrder.getPieceType()) {
+			anOrderResult.setIsValidOrder(false);
+			anOrderResult.setExecutionDescription("Invalid order - only fleets can convoy");
+		} else {
+			if (RegionType.WATER != aGameMap.getRegion(anOrder.getCurrentLocationName()).getType()) {
+				anOrderResult.setIsValidOrder(false);
+				anOrderResult.setExecutionDescription("Invalid order - fleets must be in water regions to convoy");
+			} else {
+				if (PieceType.ARMY != anOrder.getSecondaryPieceType()) {
+					anOrderResult.setIsValidOrder(false);
+					anOrderResult.setExecutionDescription("Invalid order - fleets can only convoy armies");
+				} else {
+					if (RegionType.COASTAL != aGameMap.getRegion(anOrder.getSecondaryCurrentLocationName()).getType()) {
+						anOrderResult.setIsValidOrder(false);
+						anOrderResult.setExecutionDescription(
+								"Invalid order - fleets can only convoy armies starting in coastal regions");
+					} else {
+						if (RegionType.COASTAL != aGameMap.getRegion(anOrder.getSecondaryEndingLocationName())
+								.getType()) {
+							anOrderResult.setIsValidOrder(false);
+							anOrderResult.setExecutionDescription(
+									"Invalid order - fleets can only convoy armies moving to coastal regions");
+						} else {
+							Order moveOrder = allOrders.get(anOrder.getSecondaryCurrentLocationName());
+							if (PieceType.ARMY != moveOrder.getPieceType()) {
+								anOrderResult.setIsValidOrder(false);
+								anOrderResult.setExecutionDescription(
+										"Invalid order - the piece being convoyed must be an army but it isn't");
+							} else {
+								if (Action.MOVESTO != moveOrder.getAction()) {
+									anOrderResult.setIsValidOrder(false);
+									anOrderResult.setExecutionDescription(
+											"Invalid order - the piece being convoyed is not moving");
+								} else {
+									if (anOrder.getSecondaryEndingLocationName() != moveOrder.getEndingLocationName()) {
+										anOrderResult.setIsValidOrder(false);
+										anOrderResult.setExecutionDescription(
+												"Invalid order - the piece being convoyed is not moving to the same ending location");
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -244,15 +297,16 @@ public class OrderValidator {
 					} else {
 						if (anOrder.getSecondaryAction() != supportedOrder.getAction()) {
 							anOrderResult.setIsValidOrder(false);
-							anOrderResult.setExecutionDescription("Invalid order - support order action "
-									+ anOrder.getSecondaryAction() + " does not match supported order action "
-									+ supportedOrder.getAction());
+							anOrderResult.setExecutionDescription(
+									"Invalid order - support order action " + anOrder.getSecondaryAction()
+											+ " does not match supported order action " + supportedOrder.getAction());
 
 						} else {
 							if (anOrder.getSecondaryEndingLocationName() != supportedOrder.getEndingLocationName()) {
 								anOrderResult.setIsValidOrder(false);
 								anOrderResult.setExecutionDescription("Invalid order - support order ending location "
-										+ anOrder.getSecondaryEndingLocationName() + " does not match supported order ending location "
+										+ anOrder.getSecondaryEndingLocationName()
+										+ " does not match supported order ending location "
 										+ supportedOrder.getEndingLocationName());
 							}
 						}
