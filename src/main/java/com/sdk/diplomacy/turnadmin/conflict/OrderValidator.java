@@ -3,7 +3,6 @@ package com.sdk.diplomacy.turnadmin.conflict;
 import java.util.Map;
 
 import com.sdk.diplomacy.turnadmin.domain.Order;
-import com.sdk.diplomacy.turnadmin.domain.OrderExecutionResult;
 import com.sdk.diplomacy.turnadmin.domain.Piece;
 import com.sdk.diplomacy.turnadmin.domain.Order.Action;
 import com.sdk.diplomacy.turnadmin.domain.Piece.PieceType;
@@ -17,7 +16,7 @@ public class OrderValidator {
 	 * The keys to the existing pieces map and the all order map are the pieces
 	 * current/starting location name of the piece or primary piece in the order
 	 */
-	public void validateOrder(Order anOrder, OrderExecutionResult anOrderResult, GameMap aGameMap,
+	public void validateOrder(Order anOrder, OrderResolutionResults anOrderResult, GameMap aGameMap,
 			Map<String, Piece> existingPieces, Map<String, Order> allOrders) {
 
 		validateId(anOrder, anOrderResult);
@@ -52,7 +51,7 @@ public class OrderValidator {
 		}
 	}
 
-	public void validateConvoyAction(Order anOrder, OrderExecutionResult anOrderResult, GameMap aGameMap,
+	protected void validateConvoyAction(Order anOrder, OrderResolutionResults anOrderResult, GameMap aGameMap,
 			Map<String, Piece> existingPieces, Map<String, Order> allOrders) {
 
 		// TODO only fleets can convoy. the must be in a water province. they can only
@@ -105,7 +104,7 @@ public class OrderValidator {
 		}
 	}
 
-	public void validatePieceAndTypeInInitialLocation(Order anOrder, OrderExecutionResult anOrderResult,
+	protected void validatePieceAndTypeInInitialLocation(Order anOrder, OrderResolutionResults anOrderResult,
 			Map<String, Piece> existingPieces) {
 
 		Piece existingPiece = existingPieces.get(anOrder.getCurrentLocationName());
@@ -122,42 +121,42 @@ public class OrderValidator {
 		}
 	}
 
-	public void validateId(Order anOrder, OrderExecutionResult anOrderResult) {
+	protected void validateId(Order anOrder, OrderResolutionResults anOrderResult) {
 		if (anOrder.getId() == null) {
 			anOrderResult.setIsValidOrder(false);
 			anOrderResult.setExecutionDescription("Invalid order - id");
 		}
 	}
 
-	public void validateTurnId(Order anOrder, OrderExecutionResult anOrderResult) {
+	protected void validateTurnId(Order anOrder, OrderResolutionResults anOrderResult) {
 		if (anOrder.getTurnId() == null) {
 			anOrderResult.setIsValidOrder(false);
 			anOrderResult.setExecutionDescription("Invalid order - turn id");
 		}
 	}
 
-	public void validateGameId(Order anOrder, OrderExecutionResult anOrderResult) {
+	protected void validateGameId(Order anOrder, OrderResolutionResults anOrderResult) {
 		if (anOrder.getGameId() == null) {
 			anOrderResult.setIsValidOrder(false);
 			anOrderResult.setExecutionDescription("Invalid order - game id");
 		}
 	}
 
-	public void validatePieceType(Order anOrder, OrderExecutionResult anOrderResult) {
+	protected void validatePieceType(Order anOrder, OrderResolutionResults anOrderResult) {
 		if (anOrder.getPieceType() == null) {
 			anOrderResult.setIsValidOrder(false);
 			anOrderResult.setExecutionDescription("Invalid order - missing piece type");
 		}
 	}
 
-	public void validateSecondaryPieceType(Order anOrder, OrderExecutionResult anOrderResult) {
+	protected void validateSecondaryPieceType(Order anOrder, OrderResolutionResults anOrderResult) {
 		if (anOrder.getSecondaryPieceType() == null) {
 			anOrderResult.setIsValidOrder(false);
 			anOrderResult.setExecutionDescription("Invalid order - missing secondary piece type");
 		}
 	}
 
-	public void validateCurrentLocationName(Order anOrder, OrderExecutionResult anOrderResult, GameMap aGameMap,
+	protected void validateCurrentLocationName(Order anOrder, OrderResolutionResults anOrderResult, GameMap aGameMap,
 			Map<String, Piece> existingPieces) {
 		if (anOrder.getCurrentLocationName() == null) {
 			anOrderResult.setIsValidOrder(false);
@@ -171,7 +170,7 @@ public class OrderValidator {
 		}
 	}
 
-	public void validateEndingLocationName(Order anOrder, OrderExecutionResult anOrderResult, GameMap aGameMap) {
+	protected void validateEndingLocationName(Order anOrder, OrderResolutionResults anOrderResult, GameMap aGameMap) {
 		if (anOrder.getEndingLocationName() == null) {
 			anOrderResult.setIsValidOrder(false);
 			anOrderResult.setExecutionDescription("Invalid order - missing ending location");
@@ -184,7 +183,7 @@ public class OrderValidator {
 		}
 	}
 
-	public void validateSecondaryEndingLocationName(Order anOrder, OrderExecutionResult anOrderResult,
+	protected void validateSecondaryEndingLocationName(Order anOrder, OrderResolutionResults anOrderResult,
 			GameMap aGameMap) {
 		if (anOrder.getSecondaryEndingLocationName() == null) {
 			anOrderResult.setIsValidOrder(false);
@@ -198,7 +197,7 @@ public class OrderValidator {
 		}
 	}
 
-	public void validateHoldAction(Order anOrder, OrderExecutionResult anOrderResult, GameMap aGameMap) {
+	protected void validateHoldAction(Order anOrder, OrderResolutionResults anOrderResult, GameMap aGameMap) {
 
 		// ending location name is optional. If provided it must be the same as the
 		// current location
@@ -216,7 +215,7 @@ public class OrderValidator {
 		}
 	}
 
-	public void validateMovesToAction(Order anOrder, OrderExecutionResult anOrderResult, GameMap aGameMap) {
+	protected void validateMovesToAction(Order anOrder, OrderResolutionResults anOrderResult, GameMap aGameMap) {
 
 		validateEndingLocationName(anOrder, anOrderResult, aGameMap);
 
@@ -271,7 +270,7 @@ public class OrderValidator {
 		}
 	}
 
-	public void validateSupportAction(Order anOrder, OrderExecutionResult anOrderResult, GameMap aGameMap,
+	protected void validateSupportAction(Order anOrder, OrderResolutionResults anOrderResult, GameMap aGameMap,
 			Map<String, Piece> existingPieces, Map<String, Order> allOrders) {
 
 		validateSecondaryOrderFields(anOrder, anOrderResult, aGameMap, existingPieces);
@@ -281,7 +280,7 @@ public class OrderValidator {
 			Order currentPieceMoveToSupportedLocationOrder = new Order("tempId", anOrder.getPieceType(),
 					anOrder.getCurrentLocationName(), Action.MOVESTO, anOrder.getSecondaryEndingLocationName(), null,
 					null, null, null, anOrder.getOwningCountryName(), anOrder.getTurnId(), anOrder.getGameId());
-			OrderExecutionResult aResult = new OrderExecutionResult("tempId",
+			OrderResolutionResults aResult = new OrderResolutionResults("tempId",
 					currentPieceMoveToSupportedLocationOrder.getTurnId(),
 					currentPieceMoveToSupportedLocationOrder.getGameId());
 			validateMovesToAction(currentPieceMoveToSupportedLocationOrder, aResult, aGameMap);
@@ -326,7 +325,7 @@ public class OrderValidator {
 		}
 	}
 
-	public void validateSecondaryOrderFields(Order anOrder, OrderExecutionResult anOrderResult, GameMap aGameMap,
+	protected void validateSecondaryOrderFields(Order anOrder, OrderResolutionResults anOrderResult, GameMap aGameMap,
 			Map<String, Piece> existingPieces) {
 
 		validateSecondaryPieceType(anOrder, anOrderResult);
@@ -335,7 +334,7 @@ public class OrderValidator {
 		validateSecondaryEndingLocationName(anOrder, anOrderResult, aGameMap);
 	}
 
-	public void validateSecondaryPieceAction(Order anOrder, OrderExecutionResult anOrderResult) {
+	protected void validateSecondaryPieceAction(Order anOrder, OrderResolutionResults anOrderResult) {
 
 		if (anOrder.getSecondaryAction() == null) {
 			anOrderResult.setIsValidOrder(false);
@@ -343,7 +342,7 @@ public class OrderValidator {
 		}
 	}
 
-	public void validateSecondaryCurrentLocationName(Order anOrder, OrderExecutionResult anOrderResult,
+	protected void validateSecondaryCurrentLocationName(Order anOrder, OrderResolutionResults anOrderResult,
 			GameMap aGameMap, Map<String, Piece> existingPieces) {
 		if (anOrder.getSecondaryCurrentLocationName() == null) {
 			anOrderResult.setIsValidOrder(false);

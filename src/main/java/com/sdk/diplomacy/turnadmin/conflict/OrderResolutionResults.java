@@ -1,18 +1,22 @@
-package com.sdk.diplomacy.turnadmin.domain;
+package com.sdk.diplomacy.turnadmin.conflict;
 
 /*
  * I contain the results of an order being executed
  */
-public class OrderExecutionResult {
+public class OrderResolutionResults {
 
 	private String orderId;
 	private String turnId;
 	private String gameId;
+	// tells if the order was successful
 	private boolean orderExecutedSuccessfully = true;
 	private String executionDescription;
+	// tells if the order was written properly and supporting orders exist so it can be executed
 	private boolean isValidOrder = true;
+	// tells if order resolution/determination has be finished
+	private boolean orderResolutionCompleted = false;
 	
-	public OrderExecutionResult(String orderId, String turnId, String gameId) {
+	public OrderResolutionResults(String orderId, String turnId, String gameId) {
 		super();
 		this.orderId = orderId;
 		this.turnId = turnId;
@@ -25,6 +29,7 @@ public class OrderExecutionResult {
 	
 	public void setOrderExecutedSuccessfully(boolean orderExecutedSuccessfully) {
 		this.orderExecutedSuccessfully = orderExecutedSuccessfully;
+		setOrderResolutionCompleted(true);
 	}
 	
 	public String getExecutionDescription() {
@@ -58,6 +63,14 @@ public class OrderExecutionResult {
 		if (! isValidOrder ) {
 			setOrderExecutedSuccessfully(false);
 		}
+	}
+
+	public boolean isOrderResolutionCompleted() {
+		return orderResolutionCompleted;
+	}
+
+	public void setOrderResolutionCompleted(boolean orderResolutionCompleted) {
+		this.orderResolutionCompleted = orderResolutionCompleted;
 	}
 	
 	

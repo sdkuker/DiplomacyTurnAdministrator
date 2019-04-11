@@ -135,4 +135,22 @@ public class Order {
 		return gameId;
 	}
 	
+	public boolean requiresSecondaryOrder() {
+		
+		if (getAction() != null) {
+			return Action.CONVOYS == getAction() || Action.SUPPORTS == getAction();
+		} else {
+			return false;
+		}
+	}
+	
+	public String getEffectiveEndingLocationName() {
+		
+		if (requiresSecondaryOrder()) {
+			return getSecondaryEndingLocationName();
+		} else {
+			return getEndingLocationName();
+		}
+	}
+	
 }

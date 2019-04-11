@@ -1,6 +1,8 @@
 package com.sdk.diplomacy.turnadmin.domain;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -34,4 +36,57 @@ public class OrderTest {
 		assertEquals("convoy", "FLEET in Paris unknown action", myUnknownOrder.getDescription());
 
 	}
+	
+	@Test
+	public void testRequiresSecondaryOrderUnknown() {
+		
+		Order anOrder = new Order("anOrderId", PieceType.ARMY, "Paris", null, null, null, null, null, null, "France", "aTurnId", "aGameId");
+		assertFalse("no order type should not require secondary piece", anOrder.requiresSecondaryOrder());
+	}
+	
+	@Test
+	public void testRequiresSecondaryOrderTrue() {
+		
+		Order anOrder = new Order("anOrderId", PieceType.ARMY, "Paris", Action.SUPPORTS, null, PieceType.ARMY, "Burgundy", Action.MOVESTO, "Picardy", "France", "aTurnId", "aGameId");
+		assertTrue("Support orders require a secondary order", anOrder.requiresSecondaryOrder());
+		
+		Order anotherOrder = new Order("anOrderId", PieceType.FLEET, "Brest", Action.CONVOYS, null, PieceType.ARMY, "London", Action.MOVESTO, "Picardy", "France", "aTurnId", "aGameId");
+		assertTrue("Convoy orders require a secondary order", anotherOrder.requiresSecondaryOrder());
+
+	}
+	
+	@Test
+	public void testRequiresSecondaryOrderFalse() {
+		
+		Order anOrder = new Order("anOrderId", PieceType.ARMY, "Paris", Action.HOLDS, null, null, null, null, null, "France", "aTurnId", "aGameId");
+		assertFalse("Hold orders don't require a secondary order", anOrder.requiresSecondaryOrder());
+		
+		Order anotherOrder = new Order("anOrderId", PieceType.FLEET, "Brest", Action.MOVESTO, "English_Channel", null, null, null, null, "France", "aTurnId", "aGameId");
+		assertFalse("Convoy orders require a secondary order", anotherOrder.requiresSecondaryOrder());
+
+	}
+	
+	@Test
+	public void testGetEffectiveEndingLocationWithSecondaryOrder() {
+		
+		Order anOrder = new Order("anOrderId", PieceType.ARMY, "Paris", Action.SUPPORTS, null, PieceType.ARMY, "Burgundy", Action.MOVESTO, "Picardy", "France", "aTurnId", "aGameId");
+		assertEquals("Support order", "Picardy", anOrder.getEffectiveEndingLocationName());
+		
+		Order anotherOrder = new Order("anOrderId", PieceType.FLEET, "Brest", Action.CONVOYS, null, PieceType.ARMY, "London", Action.MOVESTO, "Picardy", "France", "aTurnId", "aGameId");
+		assertEquals("Convoy orders ", "Picardy", anotherOrder.getEffectiveEndingLocationName());
+
+	}
+
+	@Test
+	public void testGetEffectiveEndingLocationWithOutSecondaryOrder() {
+		
+		Order anOrder = new Order("anOrderId", PieceType.ARMY, "Paris", Action.HOLDS, "Paris", null, null, null, null, "France", "aTurnId", "aGameId");
+		assertEquals("Hold order", "Paris", anOrder.getEffectiveEndingLocationName());
+		
+		Order anotherOrder = new Order("anOrderId", PieceType.FLEET, "Brest", Action.MOVESTO, "English_Channel", null, null, null, null, "France", "aTurnId", "aGameId");
+		assertEquals("Convoy order", "English_Channel", anotherOrder.getEffectiveEndingLocationName());
+
+	}
+
+
 }

@@ -8,33 +8,75 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.sdk.diplomacy.turnadmin.domain.Order;
 import com.sdk.diplomacy.turnadmin.domain.Order.Action;
-import com.sdk.diplomacy.turnadmin.domain.OrderExecutionResult;
 import com.sdk.diplomacy.turnadmin.domain.Piece;
 import com.sdk.diplomacy.turnadmin.domain.Piece.PieceType;
 import com.sdk.diplomacy.turnadmin.map.GameMap;
 
 public class OrderValidatorTest {
 
+	protected static GameMap myGameMap = new GameMap();
 	protected OrderValidator myOrderValidator = new OrderValidator();
-	protected GameMap myGameMap = new GameMap();
 
-	@Before
-	public void beforeTest() {
+	@BeforeClass
+	public static void beforeTest() {
 		myGameMap.initialize();
 	}
 
+	@Test
+	public void testValidateOrderSuccess() {
+
+		Order holdOrder = new Order("1", PieceType.ARMY, "Brest", Action.HOLDS,
+				"Brest", null, null, null, null, "France", "turnId", "gameId");
+		
+		Map<String, Order> allOrders = new HashMap<String, Order>();
+		allOrders.put("Brest", holdOrder);
+		
+		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
+		existingPieces.put("Brest", new Piece(null, "France", "Brest", "turnId", "gameId", PieceType.ARMY));
+
+		OrderResolutionResults result = new OrderResolutionResults("1", "turnId", "gameId");
+
+		myOrderValidator.validateOrder(holdOrder, result, myGameMap, existingPieces, allOrders);
+
+		assertTrue("order is valid", result.isValidOrder());
+		assertTrue("order executed successfully", result.wasOrderExecutedSuccessfully());
+		assertNull("order has no execution description", result.getExecutionDescription());
+	}
+	
+	@Test
+	public void testValidateOrderFailureUnknownCurrentRegion() {
+
+		Order holdOrder = new Order("1", PieceType.ARMY, "Georgia", Action.HOLDS,
+				"Georgia", null, null, null, null, "France", "turnId", "gameId");
+		
+		Map<String, Order> allOrders = new HashMap<String, Order>();
+		allOrders.put("Georgia", holdOrder);
+		
+		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
+		existingPieces.put("Georgia", new Piece(null, "France", "Georgia", "turnId", "gameId", PieceType.ARMY));
+
+		OrderResolutionResults result = new OrderResolutionResults("1", "turnId", "gameId");
+
+		myOrderValidator.validateOrder(holdOrder, result, myGameMap, existingPieces, allOrders);
+
+		assertFalse("order is not valid", result.isValidOrder());
+		assertFalse("order did not execute successfully", result.wasOrderExecutedSuccessfully());
+		assertEquals("description is correct", "Invalid order - unknown current location: Georgia", result.getExecutionDescription());
+	}
+
+	
 	@Test
 	public void testValidIdValidation() {
 
 		Order validPieceOrder = new Order("1", PieceType.ARMY, "currentLocationName", Action.HOLDS,
 				"endingLocationName", null, null, null, null, "France", "turnId", "gameId");
 
-		OrderExecutionResult result1 = new OrderExecutionResult("1", "turnId", "gameId");
+		OrderResolutionResults result1 = new OrderResolutionResults("1", "turnId", "gameId");
 
 		myOrderValidator.validateId(validPieceOrder, result1);
 
@@ -49,7 +91,7 @@ public class OrderValidatorTest {
 		Order validPieceOrder = new Order(null, PieceType.ARMY, "currentLocationName", Action.HOLDS,
 				"endingLocationName", null, null, null, null, "France", "turnId", "gameId");
 
-		OrderExecutionResult result1 = new OrderExecutionResult(null, "turnId", "gameId");
+		OrderResolutionResults result1 = new OrderResolutionResults(null, "turnId", "gameId");
 
 		myOrderValidator.validateId(validPieceOrder, result1);
 
@@ -64,7 +106,7 @@ public class OrderValidatorTest {
 		Order validPieceOrder = new Order("1", PieceType.ARMY, "currentLocationName", Action.HOLDS,
 				"endingLocationName", null, null, null, null, "France", "turnId", "gameId");
 
-		OrderExecutionResult result1 = new OrderExecutionResult("1", "turnId", "gameId");
+		OrderResolutionResults result1 = new OrderResolutionResults("1", "turnId", "gameId");
 
 		myOrderValidator.validateTurnId(validPieceOrder, result1);
 
@@ -79,7 +121,7 @@ public class OrderValidatorTest {
 		Order validPieceOrder = new Order(null, PieceType.ARMY, "currentLocationName", Action.HOLDS,
 				"endingLocationName", null, null, null, null, "France", null, "gameId");
 
-		OrderExecutionResult result1 = new OrderExecutionResult(null, null, "gameId");
+		OrderResolutionResults result1 = new OrderResolutionResults(null, null, "gameId");
 
 		myOrderValidator.validateTurnId(validPieceOrder, result1);
 
@@ -94,7 +136,7 @@ public class OrderValidatorTest {
 		Order validPieceOrder = new Order("1", PieceType.ARMY, "currentLocationName", Action.HOLDS,
 				"endingLocationName", null, null, null, null, "France", "turnId", "gameId");
 
-		OrderExecutionResult result1 = new OrderExecutionResult("1", "turnId", "gameId");
+		OrderResolutionResults result1 = new OrderResolutionResults("1", "turnId", "gameId");
 
 		myOrderValidator.validateGameId(validPieceOrder, result1);
 
@@ -109,7 +151,7 @@ public class OrderValidatorTest {
 		Order validPieceOrder = new Order(null, PieceType.ARMY, "currentLocationName", Action.HOLDS,
 				"endingLocationName", null, null, null, null, "France", "turnId", null);
 
-		OrderExecutionResult result1 = new OrderExecutionResult(null, "turnId", null);
+		OrderResolutionResults result1 = new OrderResolutionResults(null, "turnId", null);
 
 		myOrderValidator.validateGameId(validPieceOrder, result1);
 
@@ -124,7 +166,7 @@ public class OrderValidatorTest {
 		Order validPieceOrder = new Order("1", PieceType.ARMY, "currentLocationName", Action.HOLDS,
 				"endingLocationName", null, null, null, null, "France", "turnId", "gameId");
 
-		OrderExecutionResult result1 = new OrderExecutionResult("1", "turnId", "gameId");
+		OrderResolutionResults result1 = new OrderResolutionResults("1", "turnId", "gameId");
 
 		myOrderValidator.validatePieceType(validPieceOrder, result1);
 
@@ -139,7 +181,7 @@ public class OrderValidatorTest {
 		Order validPieceOrder = new Order("1", null, "currentLocationName", Action.HOLDS, "endingLocationName", null,
 				null, null, null, "France", "turnId", "gameId");
 
-		OrderExecutionResult result1 = new OrderExecutionResult("1", "turnId", "gameId");
+		OrderResolutionResults result1 = new OrderResolutionResults("1", "turnId", "gameId");
 
 		myOrderValidator.validatePieceType(validPieceOrder, result1);
 
@@ -154,7 +196,7 @@ public class OrderValidatorTest {
 		Order validPieceOrder = new Order("1", PieceType.ARMY, "Paris", Action.HOLDS, "endingLocationName", null, null,
 				null, null, "France", "turnId", "gameId");
 
-		OrderExecutionResult result1 = new OrderExecutionResult("1", "turnId", "gameId");
+		OrderResolutionResults result1 = new OrderResolutionResults("1", "turnId", "gameId");
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		existingPieces.put("Paris", new Piece(null, "France", "Paris", "turnId", "gameId", PieceType.ARMY));
@@ -172,7 +214,7 @@ public class OrderValidatorTest {
 		Order validPieceOrder = new Order("1", PieceType.ARMY, null, Action.HOLDS, "endingLocationName", null, null,
 				null, null, "France", "turnId", "gameId");
 
-		OrderExecutionResult result1 = new OrderExecutionResult("1", "turnId", "gameId");
+		OrderResolutionResults result1 = new OrderResolutionResults("1", "turnId", "gameId");
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 
@@ -189,7 +231,7 @@ public class OrderValidatorTest {
 		Order validPieceOrder = new Order("1", PieceType.ARMY, "Georgia", Action.HOLDS, "endingLocationName", null,
 				null, null, null, "France", "turnId", "gameId");
 
-		OrderExecutionResult result1 = new OrderExecutionResult("1", "turnId", "gameId");
+		OrderResolutionResults result1 = new OrderResolutionResults("1", "turnId", "gameId");
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		existingPieces.put("Georgia", new Piece(null, "France", "Georgia", "turnId", "gameId", PieceType.ARMY));
@@ -208,7 +250,7 @@ public class OrderValidatorTest {
 		Order validPieceOrder = new Order("1", PieceType.ARMY, "Paris", Action.HOLDS, "Burgundy", null, null, null,
 				null, "France", "turnId", "gameId");
 
-		OrderExecutionResult result1 = new OrderExecutionResult("1", "turnId", "gameId");
+		OrderResolutionResults result1 = new OrderResolutionResults("1", "turnId", "gameId");
 
 		myOrderValidator.validateEndingLocationName(validPieceOrder, result1, myGameMap);
 
@@ -223,7 +265,7 @@ public class OrderValidatorTest {
 		Order validPieceOrder = new Order("1", PieceType.ARMY, "Paris", Action.HOLDS, null, null, null, null, null,
 				"France", "turnId", "gameId");
 
-		OrderExecutionResult result1 = new OrderExecutionResult("1", "turnId", "gameId");
+		OrderResolutionResults result1 = new OrderResolutionResults("1", "turnId", "gameId");
 
 		myOrderValidator.validateEndingLocationName(validPieceOrder, result1, myGameMap);
 
@@ -238,7 +280,7 @@ public class OrderValidatorTest {
 		Order validPieceOrder = new Order("1", PieceType.ARMY, "Georgia", Action.HOLDS, "Georgia", null, null, null,
 				null, "France", "turnId", "gameId");
 
-		OrderExecutionResult result1 = new OrderExecutionResult("1", "turnId", "gameId");
+		OrderResolutionResults result1 = new OrderResolutionResults("1", "turnId", "gameId");
 
 		myOrderValidator.validateEndingLocationName(validPieceOrder, result1, myGameMap);
 
@@ -254,7 +296,7 @@ public class OrderValidatorTest {
 		Order validPieceOrder = new Order("1", PieceType.ARMY, "Paris", Action.SUPPORTS, null, PieceType.ARMY,
 				"Burgundy", Action.MOVESTO, "Belguim", "France", "turnId", "gameId");
 
-		OrderExecutionResult result = new OrderExecutionResult("1", "turnId", "gameId");
+		OrderResolutionResults result = new OrderResolutionResults("1", "turnId", "gameId");
 
 		myOrderValidator.validateSecondaryEndingLocationName(validPieceOrder, result, myGameMap);
 
@@ -269,7 +311,7 @@ public class OrderValidatorTest {
 		Order order = new Order("1", PieceType.ARMY, "Paris", Action.SUPPORTS, null, PieceType.ARMY, "Burgundy",
 				Action.MOVESTO, null, "France", "turnId", "gameId");
 
-		OrderExecutionResult result = new OrderExecutionResult("1", "turnId", "gameId");
+		OrderResolutionResults result = new OrderResolutionResults("1", "turnId", "gameId");
 
 		myOrderValidator.validateSecondaryEndingLocationName(order, result, myGameMap);
 
@@ -285,7 +327,7 @@ public class OrderValidatorTest {
 		Order order = new Order("1", PieceType.ARMY, "Paris", Action.SUPPORTS, null, PieceType.ARMY, "Burgundy",
 				Action.MOVESTO, "Georgia", "France", "turnId", "gameId");
 
-		OrderExecutionResult result = new OrderExecutionResult("1", "turnId", "gameId");
+		OrderResolutionResults result = new OrderResolutionResults("1", "turnId", "gameId");
 
 		myOrderValidator.validateSecondaryEndingLocationName(order, result, myGameMap);
 
@@ -301,7 +343,7 @@ public class OrderValidatorTest {
 		Order anOrder = new Order("1", PieceType.ARMY, "Paris", Action.SUPPORTS, null, PieceType.ARMY, "Burgundy",
 				Action.MOVESTO, "Marseilles", "France", "turnId", "gameId");
 
-		OrderExecutionResult result1 = new OrderExecutionResult("1", "turnId", "gameId");
+		OrderResolutionResults result1 = new OrderResolutionResults("1", "turnId", "gameId");
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		existingPieces.put("Paris", new Piece(null, "France", "Paris", "turnId", "gameId", PieceType.ARMY));
@@ -320,7 +362,7 @@ public class OrderValidatorTest {
 		Order anOrder = new Order("1", PieceType.ARMY, "Paris", Action.SUPPORTS, null, PieceType.ARMY, null,
 				Action.MOVESTO, "Marseilles", "France", "turnId", "gameId");
 
-		OrderExecutionResult result1 = new OrderExecutionResult("1", "turnId", "gameId");
+		OrderResolutionResults result1 = new OrderResolutionResults("1", "turnId", "gameId");
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 
@@ -338,7 +380,7 @@ public class OrderValidatorTest {
 		Order anOrder = new Order("1", PieceType.ARMY, "Paris", Action.SUPPORTS, null, PieceType.ARMY, "Georgia",
 				Action.MOVESTO, "Marseilles", "France", "turnId", "gameId");
 
-		OrderExecutionResult result1 = new OrderExecutionResult("1", "turnId", "gameId");
+		OrderResolutionResults result1 = new OrderResolutionResults("1", "turnId", "gameId");
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		existingPieces.put("Paris", new Piece(null, "France", "Paris", "turnId", "gameId", PieceType.ARMY));
@@ -365,7 +407,7 @@ public class OrderValidatorTest {
 		Map<String, Order> allOrders = new HashMap<String, Order>();
 		allOrders.put("currentLocationName", validPieceOrder);
 
-		OrderExecutionResult result1 = new OrderExecutionResult(null, "turnId", null);
+		OrderResolutionResults result1 = new OrderResolutionResults(null, "turnId", null);
 
 		myOrderValidator.validateOrder(validPieceOrder, result1, myGameMap, existingPieces, allOrders);
 
@@ -380,7 +422,7 @@ public class OrderValidatorTest {
 		Order goodOrder = new Order(null, PieceType.ARMY, "currentLocationName", Action.HOLDS, "currentLocationName",
 				null, null, null, null, "France", "turnId", "gameId");
 
-		OrderExecutionResult result1 = new OrderExecutionResult(null, "turnId", null);
+		OrderResolutionResults result1 = new OrderResolutionResults(null, "turnId", null);
 
 		myOrderValidator.validateHoldAction(goodOrder, result1, myGameMap);
 
@@ -391,7 +433,7 @@ public class OrderValidatorTest {
 		Order badOrderEndingLocation = new Order(null, PieceType.ARMY, "currentLocationName", Action.HOLDS,
 				"endingLocationName", null, null, null, null, "France", "turnId", "gameId");
 
-		OrderExecutionResult badOrderEndingLocationResult = new OrderExecutionResult(null, "turnId", null);
+		OrderResolutionResults badOrderEndingLocationResult = new OrderResolutionResults(null, "turnId", null);
 
 		myOrderValidator.validateHoldAction(badOrderEndingLocation, badOrderEndingLocationResult, myGameMap);
 
@@ -404,7 +446,7 @@ public class OrderValidatorTest {
 		Order badOrderSecondaryFields = new Order(null, PieceType.ARMY, "currentLocationName", Action.HOLDS, null, null,
 				"secondaryCurrentLocationName", null, "secondaryEndingLocationName", "France", "turnId", "gameId");
 
-		OrderExecutionResult badOrderSecondaryFieldsResult = new OrderExecutionResult(null, "turnId", null);
+		OrderResolutionResults badOrderSecondaryFieldsResult = new OrderResolutionResults(null, "turnId", null);
 
 		myOrderValidator.validateHoldAction(badOrderSecondaryFields, badOrderSecondaryFieldsResult, myGameMap);
 
@@ -422,7 +464,7 @@ public class OrderValidatorTest {
 		Order goodOrder = new Order(null, PieceType.ARMY, "Paris", Action.MOVESTO, "Burgundy", null, null, null, null,
 				"France", "turnId", "gameId");
 
-		OrderExecutionResult result1 = new OrderExecutionResult(null, "turnId", null);
+		OrderResolutionResults result1 = new OrderResolutionResults(null, "turnId", null);
 
 		myOrderValidator.validateMovesToAction(goodOrder, result1, myGameMap);
 
@@ -433,7 +475,7 @@ public class OrderValidatorTest {
 		Order goodConvoyableOrder = new Order(null, PieceType.ARMY, "Brest", Action.MOVESTO, "London", null, null, null,
 				null, "France", "turnId", "gameId");
 
-		OrderExecutionResult goodConvoyableOrderResult = new OrderExecutionResult(null, "turnId", null);
+		OrderResolutionResults goodConvoyableOrderResult = new OrderResolutionResults(null, "turnId", null);
 
 		myOrderValidator.validateMovesToAction(goodConvoyableOrder, goodConvoyableOrderResult, myGameMap);
 
@@ -448,7 +490,7 @@ public class OrderValidatorTest {
 		Order badOrderNonAdjacentEndingLocation = new Order(null, PieceType.ARMY, "Paris", Action.MOVESTO, "Berlin",
 				null, null, null, null, "France", "turnId", "gameId");
 
-		OrderExecutionResult badOrderNonAdjacentEndingLocationResult = new OrderExecutionResult(null, "turnId", null);
+		OrderResolutionResults badOrderNonAdjacentEndingLocationResult = new OrderResolutionResults(null, "turnId", null);
 
 		myOrderValidator.validateMovesToAction(badOrderNonAdjacentEndingLocation,
 				badOrderNonAdjacentEndingLocationResult, myGameMap);
@@ -467,7 +509,7 @@ public class OrderValidatorTest {
 		Order badOrderSecondaryFields = new Order(null, PieceType.ARMY, "currentLocationName", Action.HOLDS, null, null,
 				"secondaryCurrentLocationName", null, "secondaryEndingLocationName", "France", "turnId", "gameId");
 
-		OrderExecutionResult badOrderSecondaryFieldsResult = new OrderExecutionResult(null, "turnId", null);
+		OrderResolutionResults badOrderSecondaryFieldsResult = new OrderResolutionResults(null, "turnId", null);
 
 		myOrderValidator.validateMovesToAction(badOrderSecondaryFields, badOrderSecondaryFieldsResult, myGameMap);
 
@@ -486,7 +528,7 @@ public class OrderValidatorTest {
 		Order armyToWaterOrder = new Order(null, PieceType.ARMY, "Brest", Action.MOVESTO, "English_Channel", null, null,
 				null, null, "France", "turnId", "gameId");
 
-		OrderExecutionResult armyToWaterOrderResult = new OrderExecutionResult(null, "turnId", null);
+		OrderResolutionResults armyToWaterOrderResult = new OrderResolutionResults(null, "turnId", null);
 
 		myOrderValidator.validateMovesToAction(armyToWaterOrder, armyToWaterOrderResult, myGameMap);
 
@@ -501,7 +543,7 @@ public class OrderValidatorTest {
 		Order fleetToInlandOrder = new Order(null, PieceType.FLEET, "Brest", Action.MOVESTO, "Paris", null, null, null,
 				null, "France", "turnId", "gameId");
 
-		OrderExecutionResult fleetToInlandOrderResult = new OrderExecutionResult(null, "turnId", null);
+		OrderResolutionResults fleetToInlandOrderResult = new OrderResolutionResults(null, "turnId", null);
 
 		myOrderValidator.validateMovesToAction(fleetToInlandOrder, fleetToInlandOrderResult, myGameMap);
 
@@ -521,7 +563,7 @@ public class OrderValidatorTest {
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		existingPieces.put("Brest", new Piece(null, "France", "Brest", "turnId", "gameId", PieceType.FLEET));
 
-		OrderExecutionResult goodOrderResult = new OrderExecutionResult(null, "turnId", null);
+		OrderResolutionResults goodOrderResult = new OrderResolutionResults(null, "turnId", null);
 
 		myOrderValidator.validatePieceAndTypeInInitialLocation(goodOrder, goodOrderResult, existingPieces);
 
@@ -539,7 +581,7 @@ public class OrderValidatorTest {
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		existingPieces.put("George", new Piece(null, "France", "George", "turnId", "gameId", PieceType.FLEET));
 
-		OrderExecutionResult badOrderNoPieceInCurrentLocationResult = new OrderExecutionResult(null, "turnId", null);
+		OrderResolutionResults badOrderNoPieceInCurrentLocationResult = new OrderResolutionResults(null, "turnId", null);
 
 		myOrderValidator.validatePieceAndTypeInInitialLocation(badOrderNoPieceInCurrentLocation,
 				badOrderNoPieceInCurrentLocationResult, existingPieces);
@@ -561,7 +603,7 @@ public class OrderValidatorTest {
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		existingPieces.put("Brest", new Piece(null, "France", "Brest", "turnId", "gameId", PieceType.ARMY));
 
-		OrderExecutionResult badOrderInvalidPieceTypeResult = new OrderExecutionResult(null, "turnId", null);
+		OrderResolutionResults badOrderInvalidPieceTypeResult = new OrderResolutionResults(null, "turnId", null);
 
 		myOrderValidator.validatePieceAndTypeInInitialLocation(badOrderInvalidPieceType, badOrderInvalidPieceTypeResult,
 				existingPieces);
@@ -580,7 +622,7 @@ public class OrderValidatorTest {
 		Order validSecondaryPieceOrder = new Order("1", PieceType.ARMY, "currentLocationName", Action.SUPPORTS, null,
 				PieceType.ARMY, "Paris", Action.MOVESTO, "Burgundy", "France", "turnId", "gameId");
 
-		OrderExecutionResult result1 = new OrderExecutionResult("1", "turnId", "gameId");
+		OrderResolutionResults result1 = new OrderResolutionResults("1", "turnId", "gameId");
 
 		myOrderValidator.validateSecondaryPieceType(validSecondaryPieceOrder, result1);
 
@@ -595,7 +637,7 @@ public class OrderValidatorTest {
 		Order anOrder = new Order("1", PieceType.ARMY, "currentLocationName", Action.SUPPORTS, null, null, "Georgia",
 				Action.MOVESTO, "Burgundy", "France", "turnId", "gameId");
 
-		OrderExecutionResult result1 = new OrderExecutionResult("1", "turnId", "gameId");
+		OrderResolutionResults result1 = new OrderResolutionResults("1", "turnId", "gameId");
 
 		myOrderValidator.validateSecondaryPieceType(anOrder, result1);
 
@@ -612,7 +654,7 @@ public class OrderValidatorTest {
 		Order anOrder = new Order("1", PieceType.ARMY, "currentLocationName", Action.SUPPORTS, null, PieceType.ARMY,
 				"Georgia", null, "Burgundy", "France", "turnId", "gameId");
 
-		OrderExecutionResult result1 = new OrderExecutionResult("1", "turnId", "gameId");
+		OrderResolutionResults result1 = new OrderResolutionResults("1", "turnId", "gameId");
 
 		myOrderValidator.validateSecondaryPieceAction(anOrder, result1);
 
@@ -639,7 +681,7 @@ public class OrderValidatorTest {
 		allOrders.put("Brest", moveOrder);
 		allOrders.put("Picardy", supportOrder);
 
-		OrderExecutionResult result = new OrderExecutionResult("2", "turnId", "gameId");
+		OrderResolutionResults result = new OrderResolutionResults("2", "turnId", "gameId");
 
 		myOrderValidator.validateSupportAction(supportOrder, result, myGameMap, existingPieces, allOrders);
 
@@ -661,7 +703,7 @@ public class OrderValidatorTest {
 		Map<String, Order> allOrders = new HashMap<String, Order>();
 		allOrders.put("Picardy", supportOrder);
 
-		OrderExecutionResult result = new OrderExecutionResult("2", "turnId", "gameId");
+		OrderResolutionResults result = new OrderResolutionResults("2", "turnId", "gameId");
 
 		myOrderValidator.validateSupportAction(supportOrder, result, myGameMap, existingPieces, allOrders);
 
@@ -689,7 +731,7 @@ public class OrderValidatorTest {
 		allOrders.put("Brest", moveOrder);
 		allOrders.put("Picardy", supportOrder);
 
-		OrderExecutionResult result = new OrderExecutionResult("2", "turnId", "gameId");
+		OrderResolutionResults result = new OrderResolutionResults("2", "turnId", "gameId");
 
 		myOrderValidator.validateSupportAction(supportOrder, result, myGameMap, existingPieces, allOrders);
 
@@ -717,7 +759,7 @@ public class OrderValidatorTest {
 		allOrders.put("Brest", moveOrder);
 		allOrders.put("Picardy", supportOrder);
 
-		OrderExecutionResult result = new OrderExecutionResult("2", "turnId", "gameId");
+		OrderResolutionResults result = new OrderResolutionResults("2", "turnId", "gameId");
 
 		myOrderValidator.validateSupportAction(supportOrder, result, myGameMap, existingPieces, allOrders);
 
@@ -745,7 +787,7 @@ public class OrderValidatorTest {
 		allOrders.put("Brest", moveOrder);
 		allOrders.put("Picardy", supportOrder);
 
-		OrderExecutionResult result = new OrderExecutionResult("2", "turnId", "gameId");
+		OrderResolutionResults result = new OrderResolutionResults("2", "turnId", "gameId");
 
 		myOrderValidator.validateSupportAction(supportOrder, result, myGameMap, existingPieces, allOrders);
 
@@ -774,7 +816,7 @@ public class OrderValidatorTest {
 		allOrders.put("Brest", moveOrder);
 		allOrders.put("English_Channel", convoyOrder);
 
-		OrderExecutionResult result = new OrderExecutionResult("2", "turnId", "gameId");
+		OrderResolutionResults result = new OrderResolutionResults("2", "turnId", "gameId");
 
 		myOrderValidator.validateConvoyAction(convoyOrder, result, myGameMap, existingPieces, allOrders);
 
@@ -800,7 +842,7 @@ public class OrderValidatorTest {
 		allOrders.put("Brest", moveOrder);
 		allOrders.put("English_Channel", convoyOrder);
 
-		OrderExecutionResult result = new OrderExecutionResult("2", "turnId", "gameId");
+		OrderResolutionResults result = new OrderResolutionResults("2", "turnId", "gameId");
 
 		myOrderValidator.validateConvoyAction(convoyOrder, result, myGameMap, existingPieces, allOrders);
 
@@ -826,7 +868,7 @@ public class OrderValidatorTest {
 		allOrders.put("Brest", moveOrder);
 		allOrders.put("Picardy", convoyOrder);
 
-		OrderExecutionResult result = new OrderExecutionResult("2", "turnId", "gameId");
+		OrderResolutionResults result = new OrderResolutionResults("2", "turnId", "gameId");
 
 		myOrderValidator.validateConvoyAction(convoyOrder, result, myGameMap, existingPieces, allOrders);
 
@@ -853,7 +895,7 @@ public class OrderValidatorTest {
 		allOrders.put("Brest", moveOrder);
 		allOrders.put("English_Channel", convoyOrder);
 
-		OrderExecutionResult result = new OrderExecutionResult("2", "turnId", "gameId");
+		OrderResolutionResults result = new OrderResolutionResults("2", "turnId", "gameId");
 
 		myOrderValidator.validateConvoyAction(convoyOrder, result, myGameMap, existingPieces, allOrders);
 
@@ -880,7 +922,7 @@ public class OrderValidatorTest {
 		allOrders.put("Brest", moveOrder);
 		allOrders.put("English_Channel", convoyOrder);
 
-		OrderExecutionResult result = new OrderExecutionResult("2", "turnId", "gameId");
+		OrderResolutionResults result = new OrderResolutionResults("2", "turnId", "gameId");
 
 		myOrderValidator.validateConvoyAction(convoyOrder, result, myGameMap, existingPieces, allOrders);
 
@@ -908,7 +950,7 @@ public class OrderValidatorTest {
 		allOrders.put("Brest", moveOrder);
 		allOrders.put("English_Channel", convoyOrder);
 
-		OrderExecutionResult result = new OrderExecutionResult("2", "turnId", "gameId");
+		OrderResolutionResults result = new OrderResolutionResults("2", "turnId", "gameId");
 
 		myOrderValidator.validateConvoyAction(convoyOrder, result, myGameMap, existingPieces, allOrders);
 
@@ -936,7 +978,7 @@ public class OrderValidatorTest {
 		allOrders.put("Brest", moveOrder);
 		allOrders.put("English_Channel", convoyOrder);
 
-		OrderExecutionResult result = new OrderExecutionResult("2", "turnId", "gameId");
+		OrderResolutionResults result = new OrderResolutionResults("2", "turnId", "gameId");
 
 		myOrderValidator.validateConvoyAction(convoyOrder, result, myGameMap, existingPieces, allOrders);
 
@@ -963,7 +1005,7 @@ public class OrderValidatorTest {
 		allOrders.put("Brest", moveOrder);
 		allOrders.put("English_Channel", convoyOrder);
 
-		OrderExecutionResult result = new OrderExecutionResult("2", "turnId", "gameId");
+		OrderResolutionResults result = new OrderResolutionResults("2", "turnId", "gameId");
 
 		myOrderValidator.validateConvoyAction(convoyOrder, result, myGameMap, existingPieces, allOrders);
 
@@ -990,7 +1032,7 @@ public class OrderValidatorTest {
 		allOrders.put("Brest", moveOrder);
 		allOrders.put("English_Channel", convoyOrder);
 
-		OrderExecutionResult result = new OrderExecutionResult("2", "turnId", "gameId");
+		OrderResolutionResults result = new OrderResolutionResults("2", "turnId", "gameId");
 
 		myOrderValidator.validateConvoyAction(convoyOrder, result, myGameMap, existingPieces, allOrders);
 
