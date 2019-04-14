@@ -1,6 +1,8 @@
 package com.sdk.diplomacy.turnadmin.conflict;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.sdk.diplomacy.turnadmin.domain.Order;
@@ -75,7 +77,7 @@ public class TurnOrderResolver {
 		case CONVOYS:
 			break;
 		case HOLDS:
-			resolveHoldAction(orderToResolve, orderToResolveResults);
+			resolveHoldAction(orderToResolve, orderToResolveResults, validOrders, orderResults);
 			break;
 		case MOVESTO:
 			break;
@@ -91,9 +93,70 @@ public class TurnOrderResolver {
 
 	}
 
-	protected void resolveHoldAction(Order holdOrderToResolve, OrderResolutionResults orderToResolveResults) {
+	protected void resolveHoldAction(Order holdOrderToResolve, OrderResolutionResults orderToResolveResults,
+			Map<String, Order> ordersToExamine, Map<String, OrderResolutionResults> ordersToExamineResults) {
 
-		// TODO do this...
+		List<String> startingLocationNames = new ArrayList<String>();
+		List<Integer> strengths = new ArrayList<Integer>();
+		
+		Map<String, Order> allOrdersAssociatedWithMyEndingLocation = getOrdersForEndingLocation(
+				holdOrderToResolve.getEffectiveEndingLocationName(), ordersToExamine);
+
+		allOrdersAssociatedWithMyEndingLocation.forEach((startingLocation, anOrder) -> {
+			if (Action.MOVESTO == anOrder.getAction() || Action.HOLDS == anOrder.getAction()) {
+				int strength = determineStrengthForHoldOrMoveAction(anOrder,
+						ordersToExamineResults.get(anOrder.getId()), ordersToExamine, ordersToExamineResults);
+				startingLocationNames.add(startingLocation);
+				strengths.add(strength);
+			}
+		});
+		
+		int maxStrength = 0;
+		String strongestStartingLocation = null;
+		StringBuilder description = new StringBuilder();
+		
+		for (int index = 0; index < strengths.size(); index++) {
+			description.append(startingLocationNames.get(index) + " : " + strengths.get(index) + ", ");
+			if (strengths.get(index) > maxStrength) {
+				maxStrength = strengths.get(index);
+				strongestStartingLocation = startingLocationNames.get(index);
+			} else {
+				if (strengths.get(index) == maxStrength && startingLocationNames.get(index) == holdOrderToResolve.getCurrentLocationName()) {
+					strongestStartingLocation = holdOrderToResolve.getCurrentLocationName();
+				}
+			}
+		}
+		if (holdOrderToResolve.getCurrentLocationName().contentEquals(strongestStartingLocation)) {
+			orderToResolveResults.setOrderExecutedSuccessfully(true);
+			orderToResolveResults.setExecutionDescription("Hold Successful. All competitors are: " + description);
+		} else {
+			orderToResolveResults.setOrderExecutedSuccessfully(false);
+			orderToResolveResults.setExecutionDescription("Hold Failed. All competitors are: " + description);
+		}
+
+	}
+
+	protected int determineStrengthForHoldOrMoveAction(Order orderToDetermineStrengthFor,
+			OrderResolutionResults orderToResolveResults, Map<String, Order> ordersToExamine,
+			Map<String, OrderResolutionResults> ordersToExamineResults) {
+
+		int[] strengthOfAction = { 1 };
+
+		Map<String, Order> allOrdersAssociatedWithMyEndingLocation = getOrdersForEndingLocation(
+				orderToDetermineStrengthFor.getEffectiveEndingLocationName(), ordersToExamine);
+
+		allOrdersAssociatedWithMyEndingLocation.forEach((startingLocation, anOrder) -> {
+			if (Action.SUPPORTS == anOrder.getAction() && orderToDetermineStrengthFor.getCurrentLocationName()
+					.contentEquals(anOrder.getSecondaryCurrentLocationName())) {
+				resolveSuportAction(anOrder, ordersToExamineResults.get(anOrder.getId()), ordersToExamine);
+				if (ordersToExamineResults.get(anOrder.getId()).wasOrderExecutedSuccessfully()) {
+					strengthOfAction[0]++;
+				}
+			}
+		});
+
+		return strengthOfAction[0];
+
 	}
 
 	protected void resolveSuportAction(Order supportOrderToResolve, OrderResolutionResults orderToResolveResults,

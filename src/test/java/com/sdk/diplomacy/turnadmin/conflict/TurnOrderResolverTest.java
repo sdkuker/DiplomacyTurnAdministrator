@@ -187,5 +187,294 @@ public class TurnOrderResolverTest {
 		assertEquals("description", "Execution Failed - Support was cut by a move from: Burgundy", result.getExecutionDescription());
 
 	}
+	
+	/*
+	 * Need to test determineStrengthForHoldOrMoveAction method.  Need to include situations where
+	 * there is support to a different move/hold/order going to the same ending location and also do a different ending location
+	 */
+	
+	@Test
+	public void testDetermineStrengthForHoldOrMoveActionWithNoSupport() {
+		
+		Order holdOrder = new Order("1", PieceType.ARMY, "Burgundy", Action.HOLDS,
+				"Burgundy", null, null, null, null, "France", "turnId", "gameId");
+				
+		Map<String, Order> ordersToExamine = new HashMap<String, Order>();
+		ordersToExamine.put("Burgundy", holdOrder);
+		
+		OrderResolutionResults holdResult = new OrderResolutionResults("1", "turnId", "gameId");
+		
+		Map<String, OrderResolutionResults> ordersToExamineResults = new HashMap<String, OrderResolutionResults>();
+		ordersToExamineResults.put("1", holdResult);
+		
+		int supportStrength = myResolver.determineStrengthForHoldOrMoveAction(holdOrder, holdResult, ordersToExamine, ordersToExamineResults);
+		
+		assertEquals("support strength", 1, supportStrength);
+
+	}
+		
+	@Test
+	public void testDetermineStrengthForHoldOrMoveActionWith2ValidSupports() {
+		
+		Order holdOrder = new Order("1", PieceType.ARMY, "Burgundy", Action.HOLDS,
+				"Burgundy", null, null, null, null, "France", "turnId", "gameId");
+				
+		Order supportOrder1 = new Order("2", PieceType.ARMY, "Picardy", Action.SUPPORTS,
+				null, PieceType.ARMY, "Burgundy", Action.HOLDS, "Burgundy", "France", "turnId", "gameId");
+			
+		Order supportOrder2 = new Order("3", PieceType.ARMY, "Marseilles", Action.SUPPORTS,
+				null, PieceType.ARMY, "Burgundy", Action.HOLDS, "Burgundy", "France", "turnId", "gameId");
+
+		Map<String, Order> ordersToExamine = new HashMap<String, Order>();
+		ordersToExamine.put("Burgundy", holdOrder);
+		ordersToExamine.put("Picardy", supportOrder1);
+		ordersToExamine.put("Marseilles", supportOrder2);
+		
+		OrderResolutionResults holdResult = new OrderResolutionResults("1", "turnId", "gameId");
+		OrderResolutionResults support1Result = new OrderResolutionResults("2", "turnId", "gameId");
+		OrderResolutionResults support2Result = new OrderResolutionResults("3", "turnId", "gameId");
+		
+		Map<String, OrderResolutionResults> ordersToExamineResults = new HashMap<String, OrderResolutionResults>();
+		ordersToExamineResults.put("1", holdResult);
+		ordersToExamineResults.put("2", support1Result);
+		ordersToExamineResults.put("3", support2Result);
+
+		
+		int supportStrength = myResolver.determineStrengthForHoldOrMoveAction(holdOrder, holdResult, ordersToExamine, ordersToExamineResults);
+		
+		assertEquals("support strength", 3, supportStrength);
+
+	}
+	
+	@Test
+	public void testDetermineStrengthForHoldOrMoveActionWithSupportForMoveToDifferentLocation() {
+		
+		Order holdOrder = new Order("1", PieceType.ARMY, "Burgundy", Action.HOLDS,
+				"Burgundy", null, null, null, null, "France", "turnId", "gameId");
+				
+		Order supportOrder1 = new Order("2", PieceType.ARMY, "Picardy", Action.SUPPORTS,
+				null, PieceType.ARMY, "Burgundy", Action.HOLDS, "Burgundy", "France", "turnId", "gameId");
+			
+		Order supportOrder2 = new Order("3", PieceType.ARMY, "Marseilles", Action.SUPPORTS,
+				null, PieceType.ARMY, "Spain", Action.HOLDS, "Spain", "France", "turnId", "gameId");
+
+		Map<String, Order> ordersToExamine = new HashMap<String, Order>();
+		ordersToExamine.put("Burgundy", holdOrder);
+		ordersToExamine.put("Picardy", supportOrder1);
+		ordersToExamine.put("Marseilles", supportOrder2);
+		
+		OrderResolutionResults holdResult = new OrderResolutionResults("1", "turnId", "gameId");
+		OrderResolutionResults support1Result = new OrderResolutionResults("2", "turnId", "gameId");
+		OrderResolutionResults support2Result = new OrderResolutionResults("3", "turnId", "gameId");
+		
+		Map<String, OrderResolutionResults> ordersToExamineResults = new HashMap<String, OrderResolutionResults>();
+		ordersToExamineResults.put("1", holdResult);
+		ordersToExamineResults.put("2", support1Result);
+		ordersToExamineResults.put("3", support2Result);
+
+		
+		int supportStrength = myResolver.determineStrengthForHoldOrMoveAction(holdOrder, holdResult, ordersToExamine, ordersToExamineResults);
+		
+		assertEquals("support strength", 2, supportStrength);
+
+	}
+
+	@Test
+	public void testDetermineStrengthForHoldOrMoveActionWithSupportForDifferentPieceToSameLocation() {
+		
+		Order holdOrder = new Order("1", PieceType.ARMY, "Burgundy", Action.HOLDS,
+				"Burgundy", null, null, null, null, "France", "turnId", "gameId");
+				
+		Order supportOrder1 = new Order("2", PieceType.ARMY, "Picardy", Action.SUPPORTS,
+				null, PieceType.ARMY, "Burgundy", Action.HOLDS, "Burgundy", "France", "turnId", "gameId");
+			
+		Order supportOrder2 = new Order("3", PieceType.ARMY, "Marseilles", Action.SUPPORTS,
+				null, PieceType.ARMY, "Gascony", Action.MOVESTO, "Burgundy", "France", "turnId", "gameId");
+
+		Map<String, Order> ordersToExamine = new HashMap<String, Order>();
+		ordersToExamine.put("Burgundy", holdOrder);
+		ordersToExamine.put("Picardy", supportOrder1);
+		ordersToExamine.put("Marseilles", supportOrder2);
+		
+		OrderResolutionResults holdResult = new OrderResolutionResults("1", "turnId", "gameId");
+		OrderResolutionResults support1Result = new OrderResolutionResults("2", "turnId", "gameId");
+		OrderResolutionResults support2Result = new OrderResolutionResults("3", "turnId", "gameId");
+		
+		Map<String, OrderResolutionResults> ordersToExamineResults = new HashMap<String, OrderResolutionResults>();
+		ordersToExamineResults.put("1", holdResult);
+		ordersToExamineResults.put("2", support1Result);
+		ordersToExamineResults.put("3", support2Result);
+
+		
+		int supportStrength = myResolver.determineStrengthForHoldOrMoveAction(holdOrder, holdResult, ordersToExamine, ordersToExamineResults);
+		
+		assertEquals("support strength", 2, supportStrength);
+
+	}
+	
+	@Test
+	public void testResolveHoldActionNoSupportOrCompetition() {
+		
+		Order holdOrder = new Order("1", PieceType.ARMY, "Burgundy", Action.HOLDS,
+				"Burgundy", null, null, null, null, "France", "turnId", "gameId");
+				
+		Map<String, Order> ordersToExamine = new HashMap<String, Order>();
+		ordersToExamine.put("Burgundy", holdOrder);
+		
+		OrderResolutionResults holdResult = new OrderResolutionResults("1", "turnId", "gameId");
+		
+		Map<String, OrderResolutionResults> ordersToExamineResults = new HashMap<String, OrderResolutionResults>();
+		ordersToExamineResults.put("1", holdResult);
+		
+		myResolver.resolveHoldAction(holdOrder, holdResult, ordersToExamine, ordersToExamineResults);
+		
+		assertTrue("order successful", holdResult.wasOrderExecutedSuccessfully());
+		assertTrue("order completed", holdResult.isOrderResolutionCompleted());
+		assertEquals("description", "Hold Successful. All competitors are: Burgundy : 1, ", holdResult.getExecutionDescription());
+
+	}
+
+	@Test
+	public void testResolveHoldActionWithSupportButNoCompetition() {
+		
+		Order holdOrder = new Order("1", PieceType.ARMY, "Burgundy", Action.HOLDS,
+				"Burgundy", null, null, null, null, "France", "turnId", "gameId");
+		
+		Order supportOrder1 = new Order("2", PieceType.ARMY, "Picardy", Action.SUPPORTS,
+				null, PieceType.ARMY, "Burgundy", Action.HOLDS, "Burgundy", "France", "turnId", "gameId");
+
+				
+		Map<String, Order> ordersToExamine = new HashMap<String, Order>();
+		ordersToExamine.put("Burgundy", holdOrder);
+		ordersToExamine.put("Picardy", supportOrder1);
+		
+		OrderResolutionResults holdResult = new OrderResolutionResults("1", "turnId", "gameId");
+		OrderResolutionResults support1Result = new OrderResolutionResults("2", "turnId", "gameId");
+		
+		Map<String, OrderResolutionResults> ordersToExamineResults = new HashMap<String, OrderResolutionResults>();
+		ordersToExamineResults.put("1", holdResult);
+		ordersToExamineResults.put("2", support1Result);
+		
+		myResolver.resolveHoldAction(holdOrder, holdResult, ordersToExamine, ordersToExamineResults);
+		
+		assertTrue("order successful", holdResult.wasOrderExecutedSuccessfully());
+		assertTrue("order completed", holdResult.isOrderResolutionCompleted());
+		assertEquals("description", "Hold Successful. All competitors are: Burgundy : 2, ", holdResult.getExecutionDescription());
+
+	}
+	
+	@Test
+	public void testResolveHoldActionWithNoSupportButEqualCompetion() {
+		
+		Order holdOrder = new Order("1", PieceType.ARMY, "Burgundy", Action.HOLDS,
+				"Burgundy", null, null, null, null, "France", "turnId", "gameId");
+		
+		Order moveOrder = new Order("11", PieceType.ARMY, "Ruhr", Action.MOVESTO,
+				"Burgundy", null, null, null, null, "France", "turnId", "gameId");
+
+				
+		Map<String, Order> ordersToExamine = new HashMap<String, Order>();
+		ordersToExamine.put("Burgundy", holdOrder);
+		ordersToExamine.put("Ruhr", moveOrder);
+		
+		OrderResolutionResults holdResult = new OrderResolutionResults("1", "turnId", "gameId");
+		OrderResolutionResults moveResult = new OrderResolutionResults("11", "turnId", "gameId");
+		
+		Map<String, OrderResolutionResults> ordersToExamineResults = new HashMap<String, OrderResolutionResults>();
+		ordersToExamineResults.put("1", holdResult);
+		ordersToExamineResults.put("11", moveResult);
+		
+		myResolver.resolveHoldAction(holdOrder, holdResult, ordersToExamine, ordersToExamineResults);
+		
+		assertTrue("order successful", holdResult.wasOrderExecutedSuccessfully());
+		assertTrue("order completed", holdResult.isOrderResolutionCompleted());
+		assertEquals("description", "Hold Successful. All competitors are: Burgundy : 1, Ruhr : 1, ", holdResult.getExecutionDescription());
+
+	}
+	
+	@Test
+	public void testResolveHoldActionWithNoSupportButStrongerCompetion() {
+		
+		Order holdOrder = new Order("1", PieceType.ARMY, "Burgundy", Action.HOLDS,
+				"Burgundy", null, null, null, null, "France", "turnId", "gameId");
+		
+		Order moveOrder = new Order("11", PieceType.ARMY, "Ruhr", Action.MOVESTO,
+				"Burgundy", null, null, null, null, "France", "turnId", "gameId");
+		
+		Order ruhrSupportOrder = new Order("12", PieceType.ARMY, "Munich", Action.SUPPORTS,
+				null, PieceType.ARMY, "Ruhr", Action.MOVESTO, "Burgundy", "France", "turnId", "gameId");
+
+
+				
+		Map<String, Order> ordersToExamine = new HashMap<String, Order>();
+		ordersToExamine.put("Burgundy", holdOrder);
+		ordersToExamine.put("Ruhr", moveOrder);
+		ordersToExamine.put("Munich", ruhrSupportOrder);
+		
+		OrderResolutionResults holdResult = new OrderResolutionResults("1", "turnId", "gameId");
+		OrderResolutionResults moveResult = new OrderResolutionResults("11", "turnId", "gameId");
+		OrderResolutionResults ruhrSupportResult = new OrderResolutionResults("12", "turnId", "gameId");
+		
+		Map<String, OrderResolutionResults> ordersToExamineResults = new HashMap<String, OrderResolutionResults>();
+		ordersToExamineResults.put("1", holdResult);
+		ordersToExamineResults.put("11", moveResult);
+		ordersToExamineResults.put("12", ruhrSupportResult);
+		
+		myResolver.resolveHoldAction(holdOrder, holdResult, ordersToExamine, ordersToExamineResults);
+		
+		assertFalse("order not successful", holdResult.wasOrderExecutedSuccessfully());
+		assertTrue("order completed", holdResult.isOrderResolutionCompleted());
+		assertEquals("description", "Hold Failed. All competitors are: Burgundy : 1, Ruhr : 2, ", holdResult.getExecutionDescription());
+
+	}
+
+	@Test
+	public void testResolveHoldActionWithMoreSupportThanCompetition() {
+		
+		Order holdOrder = new Order("1", PieceType.ARMY, "Burgundy", Action.HOLDS,
+				"Burgundy", null, null, null, null, "France", "turnId", "gameId");
+		
+		Order burgundySupportOrder1 = new Order("2", PieceType.ARMY, "Marseilles", Action.SUPPORTS,
+				null, PieceType.ARMY, "Burgundy", Action.HOLDS, "Burgundy", "France", "turnId", "gameId");
+
+		Order burgundySupportOrder2 = new Order("3", PieceType.ARMY, "Gascony", Action.SUPPORTS,
+				null, PieceType.ARMY, "Burgundy", Action.HOLDS, "Burgundy", "France", "turnId", "gameId");
+
+		Order moveOrder = new Order("11", PieceType.ARMY, "Ruhr", Action.MOVESTO,
+				"Burgundy", null, null, null, null, "France", "turnId", "gameId");
+		
+		Order ruhrSupportOrder = new Order("12", PieceType.ARMY, "Munich", Action.SUPPORTS,
+				null, PieceType.ARMY, "Ruhr", Action.MOVESTO, "Burgundy", "France", "turnId", "gameId");
+
+
+				
+		Map<String, Order> ordersToExamine = new HashMap<String, Order>();
+		ordersToExamine.put("Burgundy", holdOrder);
+		ordersToExamine.put("Marseilles", burgundySupportOrder1);
+		ordersToExamine.put("Gascony", burgundySupportOrder2);
+		ordersToExamine.put("Ruhr", moveOrder);
+		ordersToExamine.put("Munich", ruhrSupportOrder);
+		
+		OrderResolutionResults holdResult = new OrderResolutionResults("1", "turnId", "gameId");
+		OrderResolutionResults burgundySupportResult1 = new OrderResolutionResults("2", "turnId", "gameId");
+		OrderResolutionResults burgundySupportResult2 = new OrderResolutionResults("3", "turnId", "gameId");
+		OrderResolutionResults moveResult = new OrderResolutionResults("11", "turnId", "gameId");
+		OrderResolutionResults ruhrSupportResult = new OrderResolutionResults("12", "turnId", "gameId");
+		
+		Map<String, OrderResolutionResults> ordersToExamineResults = new HashMap<String, OrderResolutionResults>();
+		ordersToExamineResults.put("1", holdResult);
+		ordersToExamineResults.put("2", burgundySupportResult1);
+		ordersToExamineResults.put("3", burgundySupportResult2);
+		ordersToExamineResults.put("11", moveResult);
+		ordersToExamineResults.put("12", ruhrSupportResult);
+		
+		myResolver.resolveHoldAction(holdOrder, holdResult, ordersToExamine, ordersToExamineResults);
+		
+		assertTrue("order successful", holdResult.wasOrderExecutedSuccessfully());
+		assertTrue("order completed", holdResult.isOrderResolutionCompleted());
+		assertEquals("description", "Hold Successful. All competitors are: Burgundy : 3, Ruhr : 2, ", holdResult.getExecutionDescription());
+
+	}
+
 
 }
