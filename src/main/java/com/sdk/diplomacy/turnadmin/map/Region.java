@@ -30,6 +30,23 @@ public class Region {
 	public Map<String, Region> getBoarderingRegions() {
 		return boarderingRegions;
 	}
+	
+	/*
+	 * Return an empty map if no desiredRegionType was specified
+	 */
+	public Map<String, Region> getBoarderingRegionsOfType(RegionType desiredRegionType) {
+		
+		Map<String, Region> selectedRegions = new HashMap<String, Region>();
+		
+		getBoarderingRegions().forEach((regionName, aRegion) -> {
+			if (aRegion.getType() == desiredRegionType) {
+				selectedRegions.put(regionName, aRegion);
+			}
+		});
+
+		return selectedRegions;
+	}
+
 
 	protected void setBoarderingRegions(Map<String, Region> boarderingRegions) {
 		this.boarderingRegions = boarderingRegions;
