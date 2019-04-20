@@ -294,14 +294,17 @@ public class OrderValidator {
 								+ anOrder.getSecondaryPieceType() + " does not match supported order piece type "
 								+ supportedOrder.getPieceType());
 					} else {
-						if (anOrder.getSecondaryAction() != supportedOrder.getAction()) {
+						if (anOrder.getSecondaryAction() != supportedOrder.getAction()
+								&& !(anOrder.getSecondaryAction() == Action.HOLDS
+										&& supportedOrder.getAction() == Action.CONVOYS)) {
 							anOrderResult.setIsValidOrder(false);
 							anOrderResult.setExecutionDescription(
 									"Invalid order - support order action " + anOrder.getSecondaryAction()
 											+ " does not match supported order action " + supportedOrder.getAction());
 
 						} else {
-							if (anOrder.getSecondaryEndingLocationName() != supportedOrder.getEndingLocationName()) {
+							if (anOrder.getSecondaryEndingLocationName() != supportedOrder.getEndingLocationName()
+									&& supportedOrder.getAction() != Action.CONVOYS) {
 								anOrderResult.setIsValidOrder(false);
 								anOrderResult.setExecutionDescription("Invalid order - support order ending location "
 										+ anOrder.getSecondaryEndingLocationName()

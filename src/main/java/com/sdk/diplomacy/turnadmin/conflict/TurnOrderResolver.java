@@ -137,7 +137,7 @@ public class TurnOrderResolver {
 					 * good convoys if necessary.
 					 */
 					Map<String, Order> convoyOrdersForTheMoveOrder = getConvoyOrdersForMoveOrder(
-							holdOrMovesToOrderToResolve, ordersToExamine);
+							holdOrMovesToOrderToResolve, ordersToExamine, ordersToExamineResults);
 					Map<String, Region> waterRegionsBorderingCurrentLocation = aGameMap
 							.getRegion(holdOrMovesToOrderToResolve.getCurrentLocationName())
 							.getBoarderingRegionsOfType(RegionType.WATER);
@@ -214,7 +214,7 @@ public class TurnOrderResolver {
 					holdOrMovesToOrderToResolve.getEffectiveEndingLocationName(), ordersToExamine, null);
 
 			allOrdersAssociatedWithMyEndingLocation.forEach((startingLocation, anOrder) -> {
-				if (Action.MOVESTO == anOrder.getAction() || Action.HOLDS == anOrder.getAction()) {
+				if (Action.MOVESTO == anOrder.getAction() || Action.HOLDS == anOrder.getAction() || Action.CONVOYS == anOrder.getAction()) {
 					int strength = determineStrengthForHoldOrMoveAction(anOrder,
 							ordersToExamineResults.get(anOrder.getId()), ordersToExamine, ordersToExamineResults);
 					startingLocationNames.add(startingLocation);
@@ -260,8 +260,15 @@ public class TurnOrderResolver {
 
 		int[] strengthOfAction = { 1 };
 
-		Map<String, Order> allOrdersAssociatedWithMyEndingLocation = getOrdersForEndingLocation(
-				orderToDetermineStrengthFor.getEffectiveEndingLocationName(), ordersToExamine, null);
+		Map<String, Order> allOrdersAssociatedWithMyEndingLocation = new HashMap<String, Order>();
+		
+		if (Action.CONVOYS == orderToDetermineStrengthFor.getAction()) {
+			allOrdersAssociatedWithMyEndingLocation.putAll(getOrdersForEndingLocation(
+					orderToDetermineStrengthFor.getCurrentLocationName(), ordersToExamine, null));
+		} else {
+			allOrdersAssociatedWithMyEndingLocation.putAll(getOrdersForEndingLocation(
+					orderToDetermineStrengthFor.getEffectiveEndingLocationName(), ordersToExamine, null));	
+		}
 
 		allOrdersAssociatedWithMyEndingLocation.forEach((startingLocation, anOrder) -> {
 			if (Action.SUPPORTS == anOrder.getAction() && orderToDetermineStrengthFor.getCurrentLocationName()
@@ -316,8 +323,11 @@ public class TurnOrderResolver {
 
 	/*
 	 * Return a map containing the orders that end at anEndingLocationName filtered
-	 * by action if desired. The key to the map being returned is the current
-	 * location of the piece involved in the order.
+	 * by action if desired. Note that convoys will be included in the secondary
+	 * piece ending location as well as their current location. This is because they
+	 * both convoy(secondary ending location) and hold (current location) at the
+	 * same time. The key to the map being returned is the current location of the
+	 * piece involved in the order.
 	 */
 	protected Map<String, Order> getOrdersForEndingLocation(String anEndingLocationName,
 			Map<String, Order> ordersToExamine, Action anAction) {
@@ -329,6 +339,14 @@ public class TurnOrderResolver {
 				if (anAction == null || anOrder.getAction() == anAction) {
 					selectedOrders.put(startingLocation, anOrder);
 				}
+			} else {
+				//TODO write test for this if you decide to keep it.
+				if (Action.CONVOYS == anOrder.getAction()
+						&& anOrder.getCurrentLocationName().equals(anEndingLocationName)) {
+					if (anAction == null || anOrder.getAction() == anAction) {
+						selectedOrders.put(startingLocation, anOrder);
+					}
+				}
 			}
 		});
 
@@ -338,7 +356,8 @@ public class TurnOrderResolver {
 	/*
 	 * Return a map containing the convoy orders for a desired move order.
 	 */
-	protected Map<String, Order> getConvoyOrdersForMoveOrder(Order aMoveOrder, Map<String, Order> ordersToExamine) {
+	protected Map<String, Order> getConvoyOrdersForMoveOrder(Order aMoveOrder, Map<String, Order> ordersToExamine,
+			Map<String, OrderResolutionResults> ordersToExamineResults) {
 
 		Map<String, Order> selectedConvoyOrders = new HashMap<String, Order>();
 
@@ -346,7 +365,8 @@ public class TurnOrderResolver {
 			if (Action.CONVOYS == anOrder.getAction()
 					&& anOrder.getSecondaryCurrentLocationName().equals(aMoveOrder.getCurrentLocationName())
 					&& anOrder.getSecondaryPieceType().equals(aMoveOrder.getPieceType())
-					&& anOrder.getSecondaryEndingLocationName().equals(aMoveOrder.getEndingLocationName())) {
+					&& anOrder.getSecondaryEndingLocationName().equals(aMoveOrder.getEndingLocationName())
+					&& ordersToExamineResults.get(anOrder.getId()).wasOrderExecutedSuccessfully()) {
 				selectedConvoyOrders.put(startingLocation, anOrder);
 			}
 		});

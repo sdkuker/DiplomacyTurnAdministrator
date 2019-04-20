@@ -689,6 +689,36 @@ public class OrderValidatorTest {
 		assertTrue("support order executed successfully", result.wasOrderExecutedSuccessfully());
 		assertNull("description is correct", result.getExecutionDescription());
 	}
+	
+	@Test
+	public void testSupportActionForConvoy() {
+
+		Order moveOrder = new Order("1", PieceType.ARMY, "Brest", Action.MOVESTO, "London", null, null, null, null,
+				"France", "turnId", "gameId");
+		Order convoyOrder = new Order("2", PieceType.FLEET, "English_Channel", Action.CONVOYS, null, PieceType.ARMY, "Brest",
+				Action.MOVESTO, "English_Channel", "France", "turnId", "gameId");
+		Order supportOrder = new Order("3", PieceType.FLEET, "North_Sea", Action.SUPPORTS, null, PieceType.FLEET, "English_Channel",
+				Action.HOLDS, "English_Channel", "France", "turnId", "gameId");
+
+		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
+		existingPieces.put("Brest", new Piece(null, "France", "Brest", "turnId", "gameId", PieceType.ARMY));
+		existingPieces.put("English_Channel", new Piece(null, "France", "English_Channel", "turnId", "gameId", PieceType.FLEET));
+		existingPieces.put("North_Sea", new Piece(null, "France", "North_Sea", "turnId", "gameId", PieceType.FLEET));
+
+		Map<String, Order> allOrders = new HashMap<String, Order>();
+		allOrders.put("Brest", moveOrder);
+		allOrders.put("English_Channel", convoyOrder);
+		allOrders.put("North_Sea", supportOrder);
+
+		OrderResolutionResults result = new OrderResolutionResults("3", "turnId", "gameId");
+
+		myOrderValidator.validateSupportAction(supportOrder, result, myGameMap, existingPieces, allOrders);
+
+		assertTrue("support order is valid", result.isValidOrder());
+		assertTrue("support order executed successfully", result.wasOrderExecutedSuccessfully());
+		assertNull("description is correct", result.getExecutionDescription());
+	}
+
 
 	@Test
 	public void testSupportActionNoCorrespondingMoveOrder() {
