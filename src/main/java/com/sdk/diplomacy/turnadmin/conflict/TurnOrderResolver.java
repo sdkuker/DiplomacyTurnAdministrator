@@ -81,13 +81,13 @@ public class TurnOrderResolver {
 
 		switch (orderToResolve.getAction()) {
 		case CONVOYS:
-			resolveConvoyAction(orderToResolve, orderToResolveResults, validOrders, orderResults);
+			resolveConvoyHoldMovesToActions(orderToResolve, orderToResolveResults, validOrders, orderResults, myGameMap);
 			break;
 		case HOLDS:
-			resolveHoldOrMovesToAction(orderToResolve, orderToResolveResults, validOrders, orderResults, myGameMap);
+			resolveConvoyHoldMovesToActions(orderToResolve, orderToResolveResults, validOrders, orderResults, myGameMap);
 			break;
 		case MOVESTO:
-			resolveHoldOrMovesToAction(orderToResolve, orderToResolveResults, validOrders, orderResults, myGameMap);
+			resolveConvoyHoldMovesToActions(orderToResolve, orderToResolveResults, validOrders, orderResults, myGameMap);
 			break;
 		case SUPPORTS:
 			resolveSuportAction(orderToResolve, orderToResolveResults, validOrders);
@@ -99,12 +99,6 @@ public class TurnOrderResolver {
 			break;
 		}
 
-	}
-
-	protected void resolveConvoyAction(Order holdOrMovesToOrderToResolve, OrderResolutionResults orderToResolveResults,
-			Map<String, Order> ordersToExamine, Map<String, OrderResolutionResults> ordersToExamineResults) {
-		// TODO Just make sure the convoy didn't get displaced I think. Check the
-		// rules...
 	}
 
 	protected boolean validateConvoyMovePath(Order holdOrMovesToOrderToResolve,
@@ -128,7 +122,6 @@ public class TurnOrderResolver {
 						.getRegion(holdOrMovesToOrderToResolve.getCurrentLocationName()).getBoarderingRegions()
 						.get(holdOrMovesToOrderToResolve.getEndingLocationName());
 				if (endingLocationBordersCurrentLocation == null) {
-					// TODO must be convoying - validate the path
 					/*
 					 * look at all the bordering regions and see if there is a valid convoy order in
 					 * it. See if it's convoying this move. See if it ends at this moves ending
@@ -138,9 +131,6 @@ public class TurnOrderResolver {
 					 */
 					Map<String, Order> convoyOrdersForTheMoveOrder = getConvoyOrdersForMoveOrder(
 							holdOrMovesToOrderToResolve, ordersToExamine, ordersToExamineResults);
-					Map<String, Region> waterRegionsBorderingCurrentLocation = aGameMap
-							.getRegion(holdOrMovesToOrderToResolve.getCurrentLocationName())
-							.getBoarderingRegionsOfType(RegionType.WATER);
 					convoyPathIsComplete[0] = validateConvoyPath(currentRegion, holdOrMovesToOrderToResolve,
 							orderToResolveResults, convoyOrdersForTheMoveOrder, ordersToExamineResults, aGameMap);
 					if (!convoyPathIsComplete[0]) {
@@ -194,24 +184,30 @@ public class TurnOrderResolver {
 		return convoyPathIsValid[0];
 
 	}
-
-	protected void resolveHoldOrMovesToAction(Order holdOrMovesToOrderToResolve,
+	
+	protected void resolveConvoyHoldMovesToActions(Order orderToResolve,
 			OrderResolutionResults orderToResolveResults, Map<String, Order> ordersToExamine,
 			Map<String, OrderResolutionResults> ordersToExamineResults, GameMap aGameMap) {
 
 		List<String> startingLocationNames = new ArrayList<String>();
 		List<Integer> strengths = new ArrayList<Integer>();
+		String endingLocationName = orderToResolve.getEffectiveEndingLocationName();
 
 		String orderDescription = "Hold ";
-		if (Action.MOVESTO == holdOrMovesToOrderToResolve.getAction()) {
+		if (Action.MOVESTO == orderToResolve.getAction()) {
 			orderDescription = "Move ";
-			validateConvoyMovePath(holdOrMovesToOrderToResolve, orderToResolveResults, ordersToExamine,
+			validateConvoyMovePath(orderToResolve, orderToResolveResults, ordersToExamine,
 					ordersToExamineResults, aGameMap);
+		} else {
+			if (Action.CONVOYS == orderToResolve.getAction()) {
+				orderDescription = "Convoy ";
+				endingLocationName = orderToResolve.getCurrentLocationName();
+			}
 		}
 
 		if (orderToResolveResults.wasOrderExecutedSuccessfully()) {
 			Map<String, Order> allOrdersAssociatedWithMyEndingLocation = getOrdersForEndingLocation(
-					holdOrMovesToOrderToResolve.getEffectiveEndingLocationName(), ordersToExamine, null);
+					endingLocationName, ordersToExamine, null);
 
 			allOrdersAssociatedWithMyEndingLocation.forEach((startingLocation, anOrder) -> {
 				if (Action.MOVESTO == anOrder.getAction() || Action.HOLDS == anOrder.getAction() || Action.CONVOYS == anOrder.getAction()) {
@@ -233,14 +229,14 @@ public class TurnOrderResolver {
 					strongestStartingLocation = startingLocationNames.get(index);
 				} else {
 					if (strengths.get(index) == maxStrength
-							&& startingLocationNames.get(index) == holdOrMovesToOrderToResolve.getCurrentLocationName()
-							&& Action.HOLDS == holdOrMovesToOrderToResolve.getAction()) {
-						strongestStartingLocation = holdOrMovesToOrderToResolve.getCurrentLocationName();
+							&& startingLocationNames.get(index) == orderToResolve.getCurrentLocationName()
+							&& (Action.HOLDS == orderToResolve.getAction() || Action.CONVOYS == orderToResolve.getAction())) {
+						strongestStartingLocation = orderToResolve.getCurrentLocationName();
 					}
 				}
 			}
 
-			if (holdOrMovesToOrderToResolve.getCurrentLocationName().contentEquals(strongestStartingLocation)) {
+			if (orderToResolve.getCurrentLocationName().contentEquals(strongestStartingLocation)) {
 				orderToResolveResults.setOrderExecutedSuccessfully(true);
 				orderToResolveResults
 						.setExecutionDescription(orderDescription + "Successful. All competitors are: " + description);
@@ -253,6 +249,7 @@ public class TurnOrderResolver {
 		}
 
 	}
+
 
 	protected int determineStrengthForHoldOrMoveAction(Order orderToDetermineStrengthFor,
 			OrderResolutionResults orderToResolveResults, Map<String, Order> ordersToExamine,
@@ -340,7 +337,6 @@ public class TurnOrderResolver {
 					selectedOrders.put(startingLocation, anOrder);
 				}
 			} else {
-				//TODO write test for this if you decide to keep it.
 				if (Action.CONVOYS == anOrder.getAction()
 						&& anOrder.getCurrentLocationName().equals(anEndingLocationName)) {
 					if (anAction == null || anOrder.getAction() == anAction) {
