@@ -1,0 +1,30 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+  "Transform" : [ "AWS::Serverless-2016-10-31" ],
+  "Description" : "Diplomacy Turn Administrator.",
+  "Resources" : {
+    "DiplomacyTurnAdministratorFunction" : {
+      "Type" : "AWS::Serverless::Function",
+      "Properties" : {
+        "Role" : null,
+        "MemorySize" : 512,
+        "Runtime" : "java8",
+        "Description" : null,
+        "Policies" : [ ],
+        "CodeUri" : "./target/turnadmin-1.0.0.jar",
+        "Events" : {
+          "DiplomacyTurnAdministratorApi" : {
+            "Type" : "Api",
+            "Properties" : {
+              "Path" : "/administer",
+              "Method" : "any"
+            }
+          }
+        },
+        "Timeout" : 300,
+        "Handler" : "com.sdk.diplomacy.turnadmin.AdministerTurn"
+      }
+    }
+  },
+  "Parameters" : { }
+}

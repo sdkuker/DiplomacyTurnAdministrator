@@ -232,18 +232,16 @@ public class TurnOrderResolver {
 				if (strength > maxStrength[0]) {
 					maxStrength[0] = strength;
 					strongestStartingLocations.clear();
-					if (startingLocationName == orderToResolve.getCurrentLocationName()
-							&& (Action.HOLDS == orderToResolve.getAction()
-									|| Action.CONVOYS == orderToResolve.getAction())) {
+					if (Action.HOLDS == startingLocationNames.get(startingLocationName).getAction()
+							|| Action.CONVOYS == startingLocationNames.get(startingLocationName).getAction()) {
 						strongestStartingLocations.put(startingLocationName, true);
 					} else {
 						strongestStartingLocations.put(startingLocationName, false);
 					}
 				} else {
 					if (strength == maxStrength[0]) {
-						if (startingLocationName == orderToResolve.getCurrentLocationName()
-								&& (Action.HOLDS == orderToResolve.getAction()
-										|| Action.CONVOYS == orderToResolve.getAction())) {
+						if (Action.HOLDS == startingLocationNames.get(startingLocationName).getAction()
+								|| Action.CONVOYS == startingLocationNames.get(startingLocationName).getAction()) {
 							strongestStartingLocations.clear();
 							strongestStartingLocations.put(startingLocationName, true);
 						} else {
