@@ -54,7 +54,7 @@ public class OrderValidator {
 	protected void validateConvoyAction(Order anOrder, OrderResolutionResults anOrderResult, GameMap aGameMap,
 			Map<String, Piece> existingPieces, Map<String, Order> allOrders) {
 
-		// TODO only fleets can convoy. the must be in a water province. they can only
+		// only fleets can convoy. the must be in a water province. they can only
 		// convoy armies. The army must be moving from coastal to coastal
 		if (PieceType.FLEET != anOrder.getPieceType()) {
 			anOrderResult.setIsValidOrder(false);

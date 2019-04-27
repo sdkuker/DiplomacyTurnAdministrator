@@ -496,7 +496,6 @@ public class TurnOrderResolverTest {
 
 	}
 
-
 	
 	@Test
 	public void testResolveHoldActionNoSupportOrCompetition() {
@@ -834,6 +833,52 @@ public class TurnOrderResolverTest {
 		assertTrue("order successful", convoyResult.wasOrderExecutedSuccessfully());
 		assertTrue("order completed", convoyResult.isOrderResolutionCompleted());
 		assertEquals("description", "Convoy Successful. All competitors are: English_Channel : 2, Mid_Atlantic_Ocean : 1, ", convoyResult.getExecutionDescription());
+
+	}
+	
+	@Test
+	public void testResolveMoveActionWithStandoffWithNoSupport() {
+		
+		Order moveOrder1 = new Order("1", PieceType.ARMY, "Burgundy", Action.MOVESTO,
+				"Paris", null, null, null, null, "France", "turnId", "gameId");
+		
+		Order moveOrder2 = new Order("2", PieceType.ARMY, "Brest", Action.MOVESTO,
+				"Paris", null, null, null, null, "France", "turnId", "gameId");
+
+				
+		Map<String, Order> ordersToExamine = new HashMap<String, Order>();
+		ordersToExamine.put("Burgundy", moveOrder1);
+		ordersToExamine.put("Brest", moveOrder2);
+		
+		OrderResolutionResults moveOrder1Result = new OrderResolutionResults("1", "turnId", "gameId");
+		OrderResolutionResults moveOrder2Result = new OrderResolutionResults("2", "turnId", "gameId");
+		
+		Map<String, OrderResolutionResults> ordersToExamineResults = new HashMap<String, OrderResolutionResults>();
+		ordersToExamineResults.put("1", moveOrder1Result);
+		ordersToExamineResults.put("2", moveOrder2Result);
+		
+		myResolver.resolveConvoyHoldMovesToActions(moveOrder1, moveOrder1Result, ordersToExamine, ordersToExamineResults, myGameMap);
+		
+		assertFalse("order 1 not successful", moveOrder1Result.wasOrderExecutedSuccessfully());
+		assertTrue("order 1 completed", moveOrder1Result.isOrderResolutionCompleted());
+		assertTrue("order 1 standoff", moveOrder1Result.isExecutionFailedDueToStandoff());
+		assertEquals("description move order 1", "Move Failed - Standoff. All competitors are: Brest : 1, Burgundy : 1, ", moveOrder1Result.getExecutionDescription());
+
+		moveOrder1Result.setExecutionDescription(null);
+		moveOrder1Result.setIsValidOrder(true);
+		moveOrder1Result.setOrderExecutedSuccessfully(true);
+		moveOrder1Result.setOrderResolutionCompleted(false);
+		moveOrder2Result.setExecutionDescription(null);
+		moveOrder2Result.setIsValidOrder(true);
+		moveOrder2Result.setOrderExecutedSuccessfully(true);
+		moveOrder2Result.setOrderResolutionCompleted(false);
+
+		myResolver.resolveConvoyHoldMovesToActions(moveOrder2, moveOrder2Result, ordersToExamine, ordersToExamineResults, myGameMap);
+		
+		assertFalse("order 2 not successful", moveOrder2Result.wasOrderExecutedSuccessfully());
+		assertTrue("order 2 completed", moveOrder2Result.isOrderResolutionCompleted());
+		assertTrue("order 2 standoff", moveOrder2Result.isExecutionFailedDueToStandoff());
+		assertEquals("description move order 2", "Move Failed - Standoff. All competitors are: Brest : 1, Burgundy : 1, ", moveOrder2Result.getExecutionDescription());
 
 	}
 

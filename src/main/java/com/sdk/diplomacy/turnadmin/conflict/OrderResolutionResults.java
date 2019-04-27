@@ -15,6 +15,7 @@ public class OrderResolutionResults {
 	private boolean isValidOrder = true;
 	// tells if order resolution/determination has be finished
 	private boolean orderResolutionCompleted = false;
+	private boolean executionFailedDueToStandoff = false;
 	
 	public OrderResolutionResults(String orderId, String turnId, String gameId) {
 		super();
@@ -71,6 +72,14 @@ public class OrderResolutionResults {
 
 	public void setOrderResolutionCompleted(boolean orderResolutionCompleted) {
 		this.orderResolutionCompleted = orderResolutionCompleted;
+	}
+
+	public boolean isExecutionFailedDueToStandoff() {
+		return executionFailedDueToStandoff;
+	}
+
+	public void setExecutionFailedDueToStandoff(boolean executionFailedDueToStandoff) {
+		this.executionFailedDueToStandoff = executionFailedDueToStandoff;
 	}
 	
 	
