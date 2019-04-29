@@ -29,7 +29,7 @@ public class AdministerTurn implements RequestHandler<ServerlessInput, Serverles
 			DAOWarehouse myDAOWarehouse = initializeFirebase(context.getLogger());
 			JSONObject gameNames = this.getGameNames(myDAOWarehouse.getGameDAO(), context.getLogger());
 			System.out.println("game names are: " + gameNames.toJSONString());
-			if (serverlessInput.getQueryStringParameters().size() > 0) {
+			if (serverlessInput != null && serverlessInput.getQueryStringParameters() != null && serverlessInput.getQueryStringParameters().size() > 0) {
 				gameNames.put("queryStringParms", serverlessInput.getQueryStringParameters().entrySet().toString());
 			}
 			myOutput.setBody(gameNames.toJSONString());

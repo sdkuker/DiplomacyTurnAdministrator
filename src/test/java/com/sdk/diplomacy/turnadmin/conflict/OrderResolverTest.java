@@ -7,11 +7,13 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
@@ -25,11 +27,11 @@ import com.sdk.diplomacy.turnadmin.domain.Piece;
 import com.sdk.diplomacy.turnadmin.domain.Piece.PieceType;
 import com.sdk.diplomacy.turnadmin.map.GameMap;
 
-public class TurnOrderResolverTest {
+public class OrderResolverTest {
 
 	protected static GameMap myGameMap = new GameMap();
 	
-	protected TurnOrderResolver myResolver = new TurnOrderResolver();
+	protected OrderResolver myResolver = new OrderResolver();
 	
 	@BeforeClass
 	public static void beforeTests() {
@@ -57,10 +59,11 @@ public class TurnOrderResolverTest {
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		existingPieces.put("Brest", new Piece(null, "France", "Brest", "turnId", "gameId", PieceType.ARMY));
 
-		myResolver.resolve(allOrders, existingPieces);
+		Map<String, OrderResolutionResults> myResults = myResolver.resolve(allOrders, existingPieces);
 
 		assertEquals("number of valid orders", 1, myResolver.validOrders.size());
 		assertEquals("number of invalid orders", 0, myResolver.inValidOrders.size());
+		assertEquals("number of results returned", 1, myResults.size());
 	}
 
 	@Test
@@ -85,10 +88,11 @@ public class TurnOrderResolverTest {
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		existingPieces.put("Brest", new Piece(null, "France", "Brest", "turnId", "gameId", PieceType.ARMY));
 
-		myResolver.resolve(allOrders, existingPieces);
+		Map<String, OrderResolutionResults> myResults = myResolver.resolve(allOrders, existingPieces);
 
 		assertEquals("number of valid orders", 0, myResolver.validOrders.size());
 		assertEquals("number of invalid orders", 1, myResolver.inValidOrders.size());
+		assertEquals("number of results returned", 1, myResults.size());
 	}
 	
 	@Test
@@ -1212,6 +1216,42 @@ public class TurnOrderResolverTest {
 		assertFalse("order not completed", moveResult.isOrderResolutionCompleted());
 		assertNull("description", moveResult.getExecutionDescription());
 		
+	}
+	
+	@Test
+	public void testSelectOrdersByAction() {
+		
+		Order holdOrder = new Order("1", PieceType.ARMY, "Brest", Action.HOLDS,
+				"Brest", null, null, null, null, "France", "turnId", "gameId");
+		Order moveOrder1 = new Order("2", PieceType.ARMY, "Picardy", Action.MOVESTO,
+				"Burgundy", null, null, null, null, "France", "turnId", "gameId");
+		Order moveOrder2 = new Order("3", PieceType.ARMY, "Berlin", Action.MOVESTO,
+				"Ruhr", null, null, null, null, "France", "turnId", "gameId");
+		Order supportOrder = new Order("4", PieceType.ARMY, "Prussia", Action.SUPPORTS,
+				null, PieceType.ARMY, "Berlin", Action.MOVESTO, "Ruhr", "France", "turnId", "gameId");
+		
+		Map<String, Order> allOrders = new HashMap<String, Order>();
+		allOrders.put("Brest", holdOrder);
+		allOrders.put("Picardy", moveOrder1);
+		allOrders.put("Berlin", moveOrder2);
+		allOrders.put("Prussia", supportOrder);
+		
+		List<Action> selectedActions = new ArrayList<Action>();
+		selectedActions.add(Action.HOLDS);
+		
+		Map<String, Order> holdOrders = myResolver.selectOrdersByAction(allOrders, selectedActions);
+
+		assertEquals("single selected action number of orders", 1, holdOrders.size());
+		assertNotNull("single selected action order exists", holdOrders.get("Brest"));
+		
+		selectedActions.add(Action.MOVESTO);
+		Map<String, Order> holdAndMovesToOrders = myResolver.selectOrdersByAction(allOrders, selectedActions);
+		
+		assertEquals("multiple selected action number of orders", 3, holdAndMovesToOrders.size());
+		assertNotNull("multiple selected action order hold exists", holdAndMovesToOrders.get("Brest"));
+		assertNotNull("multiple selected action order move1 exists", holdAndMovesToOrders.get("Picardy"));
+		assertNotNull("multiple selected action order move2 exists", holdAndMovesToOrders.get("Berlin"));
+
 	}
 
 }

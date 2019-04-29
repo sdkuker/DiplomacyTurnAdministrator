@@ -34,15 +34,15 @@ public class GameDAO {
 
 		logger.log("About to get games from Firebase");
 		
-		// asynchronously retrieve all users
+		// asynchronously retrieve all games
 		ApiFuture<QuerySnapshot> query = db.collection("TEST").document("games").collection("allGames").get();
 		// ...
 		// query.get() blocks on response
 		try {
-			logger.log("About to get the query");
+			logger.log("About to get the all games query");
 			QuerySnapshot querySnapshot = query.get();
 			List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
-			logger.log("Number of documents in the query snapshot:" + documents.size());
+			logger.log("Number of documents in the all games query snapshot:" + documents.size());
 			for (QueryDocumentSnapshot document : documents) {
 				System.out.println("Game ID: " + document.getId());
 				System.out.println("Game Name: " + document.getString("name"));

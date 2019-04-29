@@ -13,7 +13,7 @@ import com.sdk.diplomacy.turnadmin.map.GameMap;
 import com.sdk.diplomacy.turnadmin.map.Region;
 import com.sdk.diplomacy.turnadmin.map.Region.RegionType;
 
-public class TurnOrderResolver {
+public class OrderResolver {
 
 	/*
 	 * The key to the maps are the current/starting location of the primary piece in
@@ -36,7 +36,7 @@ public class TurnOrderResolver {
 	protected GameMap myGameMap = new GameMap();
 	protected OrderValidator myOrderValidator = new OrderValidator();
 
-	public TurnOrderResolver() {
+	public OrderResolver() {
 		super();
 		myGameMap.initialize();
 	}
@@ -62,16 +62,55 @@ public class TurnOrderResolver {
 	 * Note that you should resolve all convoy orders first, then moves and holds in
 	 * any order.
 	 */
-	public void resolve(Map<String, Order> orders, Map<String, Piece> existingPieces) {
+	public Map<String, OrderResolutionResults> resolve(Map<String, Order> orders, Map<String, Piece> existingPieces) {
 
 		if (orders != null && orders.size() > 0 && existingPieces != null && existingPieces.size() > 0) {
 			allOrders = orders;
 			pieces = existingPieces;
 			validateOrders();
-			validOrders.forEach((startingLocation, anOrder) -> {
+			List<Action> desiredActions = new ArrayList<Action>();
+			
+			desiredActions.add(Action.CONVOYS);
+			Map<String, Order> convoyOrders = selectOrdersByAction(validOrders, desiredActions);
+			convoyOrders.forEach((startingLocation, anOrder) -> {
 				resolveOrder(startingLocation);
 			});
+			
+			desiredActions.clear();
+			desiredActions.add(Action.MOVESTO);
+			Map<String, Order> moveOrders = selectOrdersByAction(validOrders, desiredActions);
+			moveOrders.forEach((startingLocation, anOrder) -> {
+				resolveOrder(startingLocation);
+				
+			});
+			
+			desiredActions.clear();
+			desiredActions.add(Action.HOLDS);
+			desiredActions.add(Action.SUPPORTS);
+			Map<String, Order> holdAndSupportOrders = selectOrdersByAction(validOrders, desiredActions);
+			holdAndSupportOrders.forEach((startingLocation, anOrder) -> {
+				resolveOrder(startingLocation);
+				
+			});
 		}
+		
+		return orderResults;
+	}
+	
+	public Map<String, Order> selectOrdersByAction(Map<String, Order> allOrders, List<Action> desiredActions) {
+		
+		Map<String, Order> selectedOrders = new HashMap<String, Order>();
+		
+		if (allOrders != null && desiredActions != null ) {
+			allOrders.forEach((orderStartingLocation, anOrder) -> {
+				if (desiredActions.contains(anOrder.getAction())) {
+					selectedOrders.put(orderStartingLocation, anOrder);
+				}
+			});
+		};
+		
+		return selectedOrders;
+		
 	}
 
 	protected void resolveOrder(String currentLocationOfOrderToResolve) {
