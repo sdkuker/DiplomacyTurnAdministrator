@@ -192,5 +192,21 @@ public class GameMapTest {
 			}
 		}
 	}
+	
+	@Test
+	public void testGetProviceContainingRegionByName() {
+		
+		GameMap myMap = new GameMap();
+		myMap.initialize();
+		
+		Province provinceWithOneRegion = myMap.getProvinceContainingRegionByName("Paris");
+		assertNotNull("province with one region found", provinceWithOneRegion);
+		assertEquals("correct province with one region was found", "Paris", provinceWithOneRegion.getName());
+
+		Province provinceWithTwoRegions = myMap.getProvinceContainingRegionByName("Spain_(sc)");
+		assertNotNull("province with two regions found", provinceWithTwoRegions);
+		assertEquals("correct province with two regions was found", "Spain", provinceWithTwoRegions.getName());
+
+	}
 
 }

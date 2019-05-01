@@ -2,29 +2,55 @@ package com.sdk.diplomacy.turnadmin.conflict;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.sdk.diplomacy.turnadmin.domain.Order;
 import com.sdk.diplomacy.turnadmin.domain.Order.Action;
 import com.sdk.diplomacy.turnadmin.domain.Piece;
+import com.sdk.diplomacy.turnadmin.map.GameMap;
+import com.sdk.diplomacy.turnadmin.map.Province;
 
 public class TurnResolver {
 
+	protected GameMap myGameMap = new GameMap();
+	
+	public TurnResolver() {
+		super();
+		myGameMap.initialize();
+	}
+	
 	public void resolveTurn(List<Order> ordersForTurn, List<Piece> piecesForTurn) {
 
 		Map<String, Order> ordersByCurrentLocationMap = createMapByCurrentLocationForOrders(ordersForTurn);
 		Map<String, Order> ordersByIdMap = createMapByIdForOrders(ordersForTurn);
 		Map<String, Piece> piecesByCurrentLocationMap = createMapByCurrentLocationForPieces(piecesForTurn);
-		Map<String, Piece> piecesByIdMap = createMapByIdForPieces(piecesForTurn);
 
-		OrderResolver myOrderResolver = new OrderResolver();
+		OrderResolver myOrderResolver = new OrderResolver(myGameMap);
 
 		// the key is the id of the orders that the results are for
 		Map<String, OrderResolutionResults> results = myOrderResolver.resolve(ordersByCurrentLocationMap,
 				piecesByCurrentLocationMap);
 
 		updatePieceEndingLocations(results, ordersByIdMap, piecesByCurrentLocationMap);
+		//TODO identifyStandoffProvinces
+	}
+	
+	protected Set<Province> identifyStandoffProvinces(Map<String, Order> ordersByIdMap, Map<String, OrderResolutionResults> results) {
+		
+		Set<Province> standoffProvinces = new HashSet<Province>();
+		
+		results.forEach((orderId, anOrderResolutionResult) -> {
+			if (anOrderResolutionResult.isExecutionFailedDueToStandoff()) {
+				String standoffRegionName = ordersByIdMap.get(orderId).getEffectiveEndingLocationName();
+				standoffProvinces.add(myGameMap.getProvinceContainingRegionByName(standoffRegionName));
+			}
+		});
+		
+		return standoffProvinces;
+		
 	}
 
 	protected void updatePieceEndingLocations(Map<String, OrderResolutionResults> results,
@@ -94,23 +120,6 @@ public class TurnResolver {
 		if (pieces != null) {
 			for (Piece aPiece : pieces) {
 				mapOfPieces.put(aPiece.getNameOfLocationAtBeginningOfTurn(), aPiece);
-			}
-		}
-
-		return mapOfPieces;
-	}
-
-	/*
-	 * Key to the map is the id of the piece
-	 */
-	//TODO delete me if I'm still not being used...
-	protected Map<String, Piece> createMapByIdForPieces(List<Piece> pieces) {
-
-		Map<String, Piece> mapOfPieces = new HashMap<String, Piece>();
-
-		if (pieces != null) {
-			for (Piece aPiece : pieces) {
-				mapOfPieces.put(aPiece.getId(), aPiece);
 			}
 		}
 

@@ -24,6 +24,28 @@ public class GameMap {
 		
 		return regions.get(regionName);
 	}
+	
+	public Province getProvince(String provinceName) {
+		
+		return provinces.get(provinceName);
+	}
+	
+	public Province getProvinceContainingRegionByName(String regionName) {
+		
+		Province[] selectedProvinces = new Province[1];
+		
+		provinces.forEach((provinceName, aProvince) -> {
+			if (aProvince.getRegions().containsKey(regionName)) {
+				selectedProvinces[0] = aProvince;
+			}
+		});
+		
+		if (selectedProvinces[0] != null) {
+			return selectedProvinces[0];
+		} else {
+			return null;
+		}
+	}
 
 	protected boolean populateBorderingRegions(Map<String, Region> myRegions) {
 

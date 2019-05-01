@@ -26,6 +26,11 @@ public class OrderValidatorTest {
 	public static void beforeTest() {
 		myGameMap.initialize();
 	}
+	
+	@Test
+	public void testOrdersForActionsInAProvinceNotARegion() {
+		assertFalse(true);
+	}
 
 	@Test
 	public void testValidateOrderSuccess() {

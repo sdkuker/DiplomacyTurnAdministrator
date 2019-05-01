@@ -31,11 +31,12 @@ public class OrderResolverTest {
 
 	protected static GameMap myGameMap = new GameMap();
 	
-	protected OrderResolver myResolver = new OrderResolver();
+	protected static OrderResolver myResolver;
 	
 	@BeforeClass
 	public static void beforeTests() {
 		myGameMap.initialize();
+		myResolver = new OrderResolver(myGameMap);
 	}
 	
 	@Before
@@ -1252,6 +1253,31 @@ public class OrderResolverTest {
 		assertNotNull("multiple selected action order move1 exists", holdAndMovesToOrders.get("Picardy"));
 		assertNotNull("multiple selected action order move2 exists", holdAndMovesToOrders.get("Berlin"));
 
+	}
+	
+	@Test
+	public void doSomeTestsWithMultipleRegionProvinces() {
+		/*
+		 * make sure something moving to one coast is accounted for when moving into the other
+		 * coast at the same time.  Also make sure that armies moving into the province (spain for example)
+		 * conflict properly with fleets moving into a coast (spain_sc for example)
+		 */
+		
+		/*
+		 * Test scenarios
+		 * 1)	even forces moving into opposing regions - should standoff
+		 * 2)	one stronger force moving into opposing regions - one should win
+		 * 3)	something moving into a region while an army moves into the province - 
+		 * 		one case with a standoff and another with a win
+		 * 4)	Note that a win means they occupy the region and the province.
+		 */
+		
+		assertFalse(true);
+	}
+	
+	@Test
+	public void testIdentifyStandoffProvincesMultipleRegionProvinces() {
+		assertTrue(false);
 	}
 
 }

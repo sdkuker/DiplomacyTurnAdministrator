@@ -36,9 +36,9 @@ public class OrderResolver {
 	protected GameMap myGameMap = new GameMap();
 	protected OrderValidator myOrderValidator = new OrderValidator();
 
-	public OrderResolver() {
+	public OrderResolver(GameMap aGameMap) {
 		super();
-		myGameMap.initialize();
+		myGameMap = aGameMap;
 	}
 
 	protected void clearState() {
