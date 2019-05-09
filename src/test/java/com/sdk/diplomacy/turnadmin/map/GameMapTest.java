@@ -60,7 +60,7 @@ public class GameMapTest {
 		Map<String, Region> regions = myMap.defineRegions();
 		
 		assertNotNull("a map of regions was created", regions);
-		assertEquals("the map has the right number of entries", 79, regions.size());
+		assertEquals("the map has the right number of entries", 82, regions.size());
 	}
 	
 	@Test
@@ -70,7 +70,7 @@ public class GameMapTest {
 		
 		Map<String, Province> provinceMap = new HashMap<String, Province>();
 		
-		myMap.addProvince("myProvinceName", new Region("region1", Region.RegionType.COASTAL), new Region("region2", Region.RegionType.INLAND), provinceMap);
+		myMap.addProvince("myProvinceName", new Region("region1", Region.RegionType.COASTAL), new Region("region2", Region.RegionType.INLAND), null, provinceMap);
 		
 		assertEquals("province was added", 1, provinceMap.size());
 		assertNotNull("was added with the right key", provinceMap.get("myProvinceName"));
@@ -86,16 +86,16 @@ public class GameMapTest {
 		
 		Map<String, Province> provinceMap = new HashMap<String, Province>();
 		
-		myMap.addProvince(null, new Region("region1", Region.RegionType.COASTAL), new Region("region2", Region.RegionType.INLAND), provinceMap);
+		myMap.addProvince(null, new Region("region1", Region.RegionType.COASTAL), new Region("region2", Region.RegionType.INLAND), null, provinceMap);
 		assertEquals("missing province name was not added", 0, provinceMap.size());
 		
-		myMap.addProvince("provinceName", null, new Region("region2", Region.RegionType.INLAND), provinceMap);
+		myMap.addProvince("provinceName", null, new Region("region2", Region.RegionType.INLAND), null, provinceMap);
 		assertEquals("missing region1 name was not added", 0, provinceMap.size());
 		
-		myMap.addProvince("provinceName", new Region("region1", Region.RegionType.COASTAL), new Region("region2", Region.RegionType.INLAND), null);
+		myMap.addProvince("provinceName", new Region("region1", Region.RegionType.COASTAL), new Region("region2", Region.RegionType.INLAND), null, null);
 		assertEquals("missing map name was not added", 0, provinceMap.size());
 
-		myMap.addProvince("myProvinceName", new Region("region1", Region.RegionType.COASTAL), null, provinceMap);
+		myMap.addProvince("myProvinceName", new Region("region1", Region.RegionType.COASTAL), null, null, provinceMap);
 		assertEquals("missing region2 was added", 1, provinceMap.size());
 
 
@@ -113,7 +113,7 @@ public class GameMapTest {
 		assertEquals("the map of provinces has the right number of entries", 76, myProvinces.size());
 		
 		int numberOfSingleRegionProvinces = 0;
-		int numberOfDualRegionProvinces = 0;
+		int numberOfTripleRegionProvinces = 0;
 		
 		for (Entry<String, Province> anEntry : myProvinces.entrySet()) {
 			if (anEntry.getValue().getRegions().size() == 1) {
@@ -121,16 +121,16 @@ public class GameMapTest {
 					numberOfSingleRegionProvinces++;
 				}
 			} else {
-				if (anEntry.getValue().getRegions().size() == 2) {
+				if (anEntry.getValue().getRegions().size() == 3) {
 					if (anEntry.getKey() == "Bulgaria" || anEntry.getKey() == "Spain" || anEntry.getKey() == "St_Petersburg") {
-						numberOfDualRegionProvinces++;
+						numberOfTripleRegionProvinces++;
 					}
 				}
 			}
 		}
 		
 		assertEquals("the single region provinces were created properly", 73, numberOfSingleRegionProvinces);
-		assertEquals("the dual region provinces were created properly", 3, numberOfDualRegionProvinces);
+		assertEquals("the triple region provinces were created properly", 3, numberOfTripleRegionProvinces);
 	}
 	
 	@Test

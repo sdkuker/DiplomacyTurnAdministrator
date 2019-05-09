@@ -161,6 +161,7 @@ public class GameMap {
 		boarderingRegionNames.add("Brest");
 		boarderingRegionNames.add("Gascony");
 		boarderingRegionNames.add("Spain_(nc)");
+		boarderingRegionNames.add("Spain_(sc)");
 		boarderingRegionNames.add("Portugal");
 		boarderingRegionNames.add("North_Africa");
 		allBoarderingRegionsSetProperly = allBoarderingRegionsSetProperly
@@ -384,10 +385,19 @@ public class GameMap {
 				&& setBoarderingRegions("Bulgaria_(sc)", boarderingRegionNames, myRegions);
 
 		boarderingRegionNames.clear();
+		boarderingRegionNames.add("Greece");
+		boarderingRegionNames.add("Serbia");
+		boarderingRegionNames.add("Rumania");
+		boarderingRegionNames.add("Constantinople");
+		allBoarderingRegionsSetProperly = allBoarderingRegionsSetProperly
+				&& setBoarderingRegions("Bulgaria", boarderingRegionNames, myRegions);
+
+		boarderingRegionNames.clear();
 		boarderingRegionNames.add("Aegean_Sea");
 		boarderingRegionNames.add("Black_Sea");
 		boarderingRegionNames.add("Bulgaria_(sc)");
 		boarderingRegionNames.add("Bulgaria_(ec)");
+		boarderingRegionNames.add("Bulgaria");
 		boarderingRegionNames.add("Ankara");
 		boarderingRegionNames.add("Smyrna");
 		allBoarderingRegionsSetProperly = allBoarderingRegionsSetProperly
@@ -408,6 +418,7 @@ public class GameMap {
 		boarderingRegionNames.add("Norway");
 		boarderingRegionNames.add("Sweden");
 		boarderingRegionNames.add("St_Petersburg_(sc)");
+		boarderingRegionNames.add("St_Petersburg");
 		allBoarderingRegionsSetProperly = allBoarderingRegionsSetProperly
 				&& setBoarderingRegions("Finland", boarderingRegionNames, myRegions);
 
@@ -418,6 +429,7 @@ public class GameMap {
 		boarderingRegionNames.add("Burgundy");
 		boarderingRegionNames.add("Marseilles");
 		boarderingRegionNames.add("Spain_(nc)");
+		boarderingRegionNames.add("Spain");
 		allBoarderingRegionsSetProperly = allBoarderingRegionsSetProperly
 				&& setBoarderingRegions("Gascony", boarderingRegionNames, myRegions);
 
@@ -427,6 +439,7 @@ public class GameMap {
 		boarderingRegionNames.add("Albania");
 		boarderingRegionNames.add("Serbia");
 		boarderingRegionNames.add("Bulgaria_(sc)");
+		boarderingRegionNames.add("Bulgaria");
 		allBoarderingRegionsSetProperly = allBoarderingRegionsSetProperly
 				&& setBoarderingRegions("Greece", boarderingRegionNames, myRegions);
 
@@ -454,6 +467,7 @@ public class GameMap {
 		boarderingRegionNames.add("Baltic_Sea");
 		boarderingRegionNames.add("Gulf_of_Bothnia");
 		boarderingRegionNames.add("St_Petersburg_(sc)");
+		boarderingRegionNames.add("St_Petersburg");
 		boarderingRegionNames.add("Moscow");
 		boarderingRegionNames.add("Warsaw");
 		boarderingRegionNames.add("Prussia");
@@ -463,6 +477,7 @@ public class GameMap {
 		boarderingRegionNames.clear();
 		boarderingRegionNames.add("Gulf_of_Lyon");
 		boarderingRegionNames.add("Spain_(sc)");
+		boarderingRegionNames.add("Spain");
 		boarderingRegionNames.add("Gascony");
 		boarderingRegionNames.add("Burgundy");
 		boarderingRegionNames.add("Piedmont");
@@ -491,6 +506,7 @@ public class GameMap {
 		boarderingRegionNames.add("Norwegian_Sea");
 		boarderingRegionNames.add("Barents_Sea");
 		boarderingRegionNames.add("St_Petersburg_(nc)");
+		boarderingRegionNames.add("St_Petersburg");
 		boarderingRegionNames.add("Finland");
 		boarderingRegionNames.add("Sweden");
 		allBoarderingRegionsSetProperly = allBoarderingRegionsSetProperly
@@ -518,6 +534,7 @@ public class GameMap {
 		boarderingRegionNames.clear();
 		boarderingRegionNames.add("Mid_Atlantic_Ocean");
 		boarderingRegionNames.add("Spain_(nc)");
+		boarderingRegionNames.add("Spain");
 		allBoarderingRegionsSetProperly = allBoarderingRegionsSetProperly
 				&& setBoarderingRegions("Portugal", boarderingRegionNames, myRegions);
 
@@ -544,6 +561,7 @@ public class GameMap {
 		boarderingRegionNames.add("Ukraine");
 		boarderingRegionNames.add("Sevastopol");
 		boarderingRegionNames.add("Bulgaria_(ec)");
+		boarderingRegionNames.add("Bulgaria");
 		boarderingRegionNames.add("Serbia");
 		boarderingRegionNames.add("Budapest");
 		boarderingRegionNames.add("Galicia");
@@ -580,8 +598,16 @@ public class GameMap {
 		boarderingRegionNames.add("Western_Mediterranean");
 		boarderingRegionNames.add("Gulf_of_Lyon");
 		boarderingRegionNames.add("Marseilles");
+		boarderingRegionNames.add("Mid_Atlantic_Ocean");
 		allBoarderingRegionsSetProperly = allBoarderingRegionsSetProperly
 				&& setBoarderingRegions("Spain_(sc)", boarderingRegionNames, myRegions);
+
+		boarderingRegionNames.clear();
+		boarderingRegionNames.add("Gascony");
+		boarderingRegionNames.add("Marseilles");
+		boarderingRegionNames.add("Portugal");
+		allBoarderingRegionsSetProperly = allBoarderingRegionsSetProperly
+				&& setBoarderingRegions("Spain", boarderingRegionNames, myRegions);
 
 		boarderingRegionNames.clear();
 		boarderingRegionNames.add("Barents_Sea");
@@ -596,6 +622,14 @@ public class GameMap {
 		boarderingRegionNames.add("Finland");
 		allBoarderingRegionsSetProperly = allBoarderingRegionsSetProperly
 				&& setBoarderingRegions("St_Petersburg_(sc)", boarderingRegionNames, myRegions);
+
+		boarderingRegionNames.clear();
+		boarderingRegionNames.add("Norway");
+		boarderingRegionNames.add("Finland");
+		boarderingRegionNames.add("Livonia");
+		boarderingRegionNames.add("Moscow");
+		allBoarderingRegionsSetProperly = allBoarderingRegionsSetProperly
+				&& setBoarderingRegions("St_Petersburg", boarderingRegionNames, myRegions);
 
 		boarderingRegionNames.clear();
 		boarderingRegionNames.add("Skagerrak");
@@ -699,6 +733,7 @@ public class GameMap {
 		boarderingRegionNames.clear();
 		boarderingRegionNames.add("Livonia");
 		boarderingRegionNames.add("St_Petersburg_(sc)");
+		boarderingRegionNames.add("St_Petersburg");
 		boarderingRegionNames.add("Sevastopol");
 		boarderingRegionNames.add("Ukraine");
 		boarderingRegionNames.add("Warsaw");
@@ -740,6 +775,7 @@ public class GameMap {
 		boarderingRegionNames.add("Budapest");
 		boarderingRegionNames.add("Rumania");
 		boarderingRegionNames.add("Bulgaria_(sc)");
+		boarderingRegionNames.add("Bulgaria");
 		boarderingRegionNames.add("Greece");
 		allBoarderingRegionsSetProperly = allBoarderingRegionsSetProperly
 				&& setBoarderingRegions("Serbia", boarderingRegionNames, myRegions);
@@ -862,8 +898,6 @@ public class GameMap {
 		addRegion("Belguim", RegionType.COASTAL, myRegions);
 		addRegion("Berlin", RegionType.COASTAL, myRegions);
 		addRegion("Brest", RegionType.COASTAL, myRegions);
-		addRegion("Bulgaria_(ec)", RegionType.COASTAL, myRegions);
-		addRegion("Bulgaria_(sc)", RegionType.COASTAL, myRegions);
 		addRegion("Constantinople", RegionType.COASTAL, myRegions);
 		addRegion("Denmark", RegionType.COASTAL, myRegions);
 		addRegion("Finland", RegionType.COASTAL, myRegions);
@@ -884,16 +918,24 @@ public class GameMap {
 		addRegion("Rumania", RegionType.COASTAL, myRegions);
 		addRegion("Sevastopol", RegionType.COASTAL, myRegions);
 		addRegion("Smyrna", RegionType.COASTAL, myRegions);
-		addRegion("Spain_(nc)", RegionType.COASTAL, myRegions);
-		addRegion("Spain_(sc)", RegionType.COASTAL, myRegions);
-		addRegion("St_Petersburg_(nc)", RegionType.COASTAL, myRegions);
-		addRegion("St_Petersburg_(sc)", RegionType.COASTAL, myRegions);
 		addRegion("Sweden", RegionType.COASTAL, myRegions);
 		addRegion("Syria", RegionType.COASTAL, myRegions);
 		addRegion("Trieste", RegionType.COASTAL, myRegions);
 		addRegion("Tunis", RegionType.COASTAL, myRegions);
 		addRegion("Tuscany", RegionType.COASTAL, myRegions);
 		addRegion("Venice", RegionType.COASTAL, myRegions);
+
+		addRegion("Bulgaria", RegionType.INLAND, myRegions);
+		addRegion("Bulgaria_(ec)", RegionType.WATER, myRegions);
+		addRegion("Bulgaria_(sc)", RegionType.WATER, myRegions);
+		
+		addRegion("St_Petersburg", RegionType.INLAND, myRegions);
+		addRegion("St_Petersburg_(nc)", RegionType.WATER, myRegions);
+		addRegion("St_Petersburg_(sc)", RegionType.WATER, myRegions);
+
+		addRegion("Spain", RegionType.INLAND, myRegions);
+		addRegion("Spain_(nc)", RegionType.WATER, myRegions);
+		addRegion("Spain_(sc)", RegionType.WATER, myRegions);
 
 		addRegion("Switzerland", RegionType.INLAND, myRegions);
 		addRegion("Bohemia", RegionType.INLAND, myRegions);
@@ -925,92 +967,92 @@ public class GameMap {
 
 		Map<String, Province> myProvinces = new HashMap<String, Province>();
 
-		addProvince("North_Atlantic_Ocean", regions.get("North_Atlantic_Ocean"), null, myProvinces);
-		addProvince("Irish_Sea", regions.get("Irish_Sea"), null, myProvinces);
-		addProvince("English_Channel", regions.get("English_Channel"), null, myProvinces);
-		addProvince("Norwegian_Sea", regions.get("Norwegian_Sea"), null, myProvinces);
-		addProvince("Barents_Sea", regions.get("Barents_Sea"), null, myProvinces);
-		addProvince("North_Sea", regions.get("North_Sea"), null, myProvinces);
-		addProvince("Heloland_Bight", regions.get("Heloland_Bight"), null, myProvinces);
-		addProvince("Skagerrak", regions.get("Skagerrak"), null, myProvinces);
-		addProvince("Baltic_Sea", regions.get("Baltic_Sea"), null, myProvinces);
-		addProvince("Gulf_of_Bothnia", regions.get("Gulf_of_Bothnia"), null, myProvinces);
-		addProvince("Mid_Atlantic_Ocean", regions.get("Mid_Atlantic_Ocean"), null, myProvinces);
-		addProvince("Western_Mediterranean", regions.get("Western_Mediterranean"), null, myProvinces);
-		addProvince("Gulf_of_Lyon", regions.get("Gulf_of_Lyon"), null, myProvinces);
-		addProvince("Tyrrhenian_Sea", regions.get("Tyrrhenian_Sea"), null, myProvinces);
-		addProvince("Ionian_Sea", regions.get("Ionian_Sea"), null, myProvinces);
-		addProvince("Adriatic_Sea", regions.get("Adriatic_Sea"), null, myProvinces);
-		addProvince("Aegean_Sea", regions.get("Aegean_Sea"), null, myProvinces);
-		addProvince("Eastern_Mediterranean", regions.get("Eastern_Mediterranean"), null, myProvinces);
-		addProvince("Black_Sea", regions.get("Black_Sea"), null, myProvinces);
+		addProvince("North_Atlantic_Ocean", regions.get("North_Atlantic_Ocean"), null, null, myProvinces);
+		addProvince("Irish_Sea", regions.get("Irish_Sea"), null, null, myProvinces);
+		addProvince("English_Channel", regions.get("English_Channel"), null, null, myProvinces);
+		addProvince("Norwegian_Sea", regions.get("Norwegian_Sea"), null, null, myProvinces);
+		addProvince("Barents_Sea", regions.get("Barents_Sea"), null, null, myProvinces);
+		addProvince("North_Sea", regions.get("North_Sea"), null, null, myProvinces);
+		addProvince("Heloland_Bight", regions.get("Heloland_Bight"), null, null, myProvinces);
+		addProvince("Skagerrak", regions.get("Skagerrak"), null, null, myProvinces);
+		addProvince("Baltic_Sea", regions.get("Baltic_Sea"), null, null, myProvinces);
+		addProvince("Gulf_of_Bothnia", regions.get("Gulf_of_Bothnia"), null, null, myProvinces);
+		addProvince("Mid_Atlantic_Ocean", regions.get("Mid_Atlantic_Ocean"), null, null, myProvinces);
+		addProvince("Western_Mediterranean", regions.get("Western_Mediterranean"), null, null, myProvinces);
+		addProvince("Gulf_of_Lyon", regions.get("Gulf_of_Lyon"), null, null, myProvinces);
+		addProvince("Tyrrhenian_Sea", regions.get("Tyrrhenian_Sea"), null, null, myProvinces);
+		addProvince("Ionian_Sea", regions.get("Ionian_Sea"), null, null, myProvinces);
+		addProvince("Adriatic_Sea", regions.get("Adriatic_Sea"), null, null, myProvinces);
+		addProvince("Aegean_Sea", regions.get("Aegean_Sea"), null, null, myProvinces);
+		addProvince("Eastern_Mediterranean", regions.get("Eastern_Mediterranean"), null, null, myProvinces);
+		addProvince("Black_Sea", regions.get("Black_Sea"), null, null, myProvinces);
 
-		addProvince("Clyde", regions.get("Clyde"), null, myProvinces);
-		addProvince("Liverpool", regions.get("Liverpool"), null, myProvinces);
-		addProvince("Edinburgh", regions.get("Edinburgh"), null, myProvinces);
-		addProvince("Yorkshire", regions.get("Yorkshire"), null, myProvinces);
-		addProvince("Wales", regions.get("Wales"), null, myProvinces);
-		addProvince("London", regions.get("London"), null, myProvinces);
-		addProvince("Albania", regions.get("Albania"), null, myProvinces);
-		addProvince("Ankara", regions.get("Ankara"), null, myProvinces);
-		addProvince("Apulia", regions.get("Apulia"), null, myProvinces);
-		addProvince("Armenia", regions.get("Armenia"), null, myProvinces);
-		addProvince("Belguim", regions.get("Belguim"), null, myProvinces);
-		addProvince("Berlin", regions.get("Berlin"), null, myProvinces);
-		addProvince("Brest", regions.get("Brest"), null, myProvinces);
-		addProvince("Bulgaria", regions.get("Bulgaria_(ec)"), regions.get("Bulgaria_(sc)"), myProvinces);
-		addProvince("Constantinople", regions.get("Constantinople"), null, myProvinces);
-		addProvince("Denmark", regions.get("Denmark"), null, myProvinces);
-		addProvince("Finland", regions.get("Finland"), null, myProvinces);
-		addProvince("Gascony", regions.get("Gascony"), null, myProvinces);
-		addProvince("Greece", regions.get("Greece"), null, myProvinces);
-		addProvince("Holland", regions.get("Holland"), null, myProvinces);
-		addProvince("Kiel", regions.get("Kiel"), null, myProvinces);
-		addProvince("Livonia", regions.get("Livonia"), null, myProvinces);
-		addProvince("Marseilles", regions.get("Marseilles"), null, myProvinces);
-		addProvince("Naples", regions.get("Naples"), null, myProvinces);
-		addProvince("North_Africa", regions.get("North_Africa"), null, myProvinces);
-		addProvince("Norway", regions.get("Norway"), null, myProvinces);
-		addProvince("Picardy", regions.get("Picardy"), null, myProvinces);
-		addProvince("Piedmont", regions.get("Piedmont"), null, myProvinces);
-		addProvince("Portugal", regions.get("Portugal"), null, myProvinces);
-		addProvince("Prussia", regions.get("Prussia"), null, myProvinces);
-		addProvince("Rome", regions.get("Rome"), null, myProvinces);
-		addProvince("Rumania", regions.get("Rumania"), null, myProvinces);
-		addProvince("Sevastopol", regions.get("Sevastopol"), null, myProvinces);
-		addProvince("Smyrna", regions.get("Smyrna"), null, myProvinces);
-		addProvince("Spain", regions.get("Spain_(nc)"), regions.get("Spain_(sc)"), myProvinces);
-		addProvince("St_Petersburg", regions.get("St_Petersburg_(nc)"), regions.get("St_Petersburg_(sc)"), myProvinces);
-		addProvince("Sweden", regions.get("Sweden"), null, myProvinces);
-		addProvince("Syria", regions.get("Syria"), null, myProvinces);
-		addProvince("Trieste", regions.get("Trieste"), null, myProvinces);
-		addProvince("Tunis", regions.get("Tunis"), null, myProvinces);
-		addProvince("Tuscany", regions.get("Tuscany"), null, myProvinces);
-		addProvince("Venice", regions.get("Venice"), null, myProvinces);
-		addProvince("Vienna", regions.get("Vienna"), null, myProvinces);
+		addProvince("Clyde", regions.get("Clyde"), null, null, myProvinces);
+		addProvince("Liverpool", regions.get("Liverpool"), null, null, myProvinces);
+		addProvince("Edinburgh", regions.get("Edinburgh"), null, null, myProvinces);
+		addProvince("Yorkshire", regions.get("Yorkshire"), null, null, myProvinces);
+		addProvince("Wales", regions.get("Wales"), null, null, myProvinces);
+		addProvince("London", regions.get("London"), null, null, myProvinces);
+		addProvince("Albania", regions.get("Albania"), null, null, myProvinces);
+		addProvince("Ankara", regions.get("Ankara"), null, null, myProvinces);
+		addProvince("Apulia", regions.get("Apulia"), null, null, myProvinces);
+		addProvince("Armenia", regions.get("Armenia"), null, null, myProvinces);
+		addProvince("Belguim", regions.get("Belguim"), null, null, myProvinces);
+		addProvince("Berlin", regions.get("Berlin"), null, null, myProvinces);
+		addProvince("Brest", regions.get("Brest"), null, null, myProvinces);
+		addProvince("Bulgaria", regions.get("Bulgaria_(ec)"), regions.get("Bulgaria_(sc)"), regions.get("Bulgaria"),myProvinces);
+		addProvince("Constantinople", regions.get("Constantinople"), null, null, myProvinces);
+		addProvince("Denmark", regions.get("Denmark"), null, null, myProvinces);
+		addProvince("Finland", regions.get("Finland"), null, null, myProvinces);
+		addProvince("Gascony", regions.get("Gascony"), null, null, myProvinces);
+		addProvince("Greece", regions.get("Greece"), null, null, myProvinces);
+		addProvince("Holland", regions.get("Holland"), null, null, myProvinces);
+		addProvince("Kiel", regions.get("Kiel"), null, null, myProvinces);
+		addProvince("Livonia", regions.get("Livonia"), null, null, myProvinces);
+		addProvince("Marseilles", regions.get("Marseilles"), null, null, myProvinces);
+		addProvince("Naples", regions.get("Naples"), null, null, myProvinces);
+		addProvince("North_Africa", regions.get("North_Africa"), null, null, myProvinces);
+		addProvince("Norway", regions.get("Norway"), null, null, myProvinces);
+		addProvince("Picardy", regions.get("Picardy"), null, null, myProvinces);
+		addProvince("Piedmont", regions.get("Piedmont"), null, null, myProvinces);
+		addProvince("Portugal", regions.get("Portugal"), null, null, myProvinces);
+		addProvince("Prussia", regions.get("Prussia"), null, null, myProvinces);
+		addProvince("Rome", regions.get("Rome"), null, null, myProvinces);
+		addProvince("Rumania", regions.get("Rumania"), null, null, myProvinces);
+		addProvince("Sevastopol", regions.get("Sevastopol"), null, null, myProvinces);
+		addProvince("Smyrna", regions.get("Smyrna"), null, null, myProvinces);
+		addProvince("Spain", regions.get("Spain_(nc)"), regions.get("Spain_(sc)"), regions.get("Spain"), myProvinces);
+		addProvince("St_Petersburg", regions.get("St_Petersburg_(nc)"), regions.get("St_Petersburg_(sc)"), regions.get("St_Petersburg"), myProvinces);
+		addProvince("Sweden", regions.get("Sweden"), null, null, myProvinces);
+		addProvince("Syria", regions.get("Syria"), null, null, myProvinces);
+		addProvince("Trieste", regions.get("Trieste"), null, null, myProvinces);
+		addProvince("Tunis", regions.get("Tunis"), null, null, myProvinces);
+		addProvince("Tuscany", regions.get("Tuscany"), null, null, myProvinces);
+		addProvince("Venice", regions.get("Venice"), null, null, myProvinces);
+		addProvince("Vienna", regions.get("Vienna"), null, null, myProvinces);
 
-		addProvince("Switzerland", regions.get("Switzerland"), null, myProvinces);
-		addProvince("Bohemia", regions.get("Bohemia"), null, myProvinces);
-		addProvince("Budapest", regions.get("Budapest"), null, myProvinces);
-		addProvince("Burgundy", regions.get("Burgundy"), null, myProvinces);
-		addProvince("Galicia", regions.get("Galicia"), null, myProvinces);
-		addProvince("Moscow", regions.get("Moscow"), null, myProvinces);
-		addProvince("Munich", regions.get("Munich"), null, myProvinces);
-		addProvince("Paris", regions.get("Paris"), null, myProvinces);
-		addProvince("Ruhr", regions.get("Ruhr"), null, myProvinces);
-		addProvince("Serbia", regions.get("Serbia"), null, myProvinces);
-		addProvince("Silesia", regions.get("Silesia"), null, myProvinces);
-		addProvince("Tyrolia", regions.get("Tyrolia"), null, myProvinces);
-		addProvince("Ukraine", regions.get("Ukraine"), null, myProvinces);
-		addProvince("Warsaw", regions.get("Warsaw"), null, myProvinces);
+		addProvince("Switzerland", regions.get("Switzerland"), null, null, myProvinces);
+		addProvince("Bohemia", regions.get("Bohemia"), null, null, myProvinces);
+		addProvince("Budapest", regions.get("Budapest"), null, null, myProvinces);
+		addProvince("Burgundy", regions.get("Burgundy"), null, null, myProvinces);
+		addProvince("Galicia", regions.get("Galicia"), null, null, myProvinces);
+		addProvince("Moscow", regions.get("Moscow"), null, null, myProvinces);
+		addProvince("Munich", regions.get("Munich"), null, null, myProvinces);
+		addProvince("Paris", regions.get("Paris"), null, null, myProvinces);
+		addProvince("Ruhr", regions.get("Ruhr"), null, null, myProvinces);
+		addProvince("Serbia", regions.get("Serbia"), null, null, myProvinces);
+		addProvince("Silesia", regions.get("Silesia"), null, null, myProvinces);
+		addProvince("Tyrolia", regions.get("Tyrolia"), null, null, myProvinces);
+		addProvince("Ukraine", regions.get("Ukraine"), null, null, myProvinces);
+		addProvince("Warsaw", regions.get("Warsaw"), null, null, myProvinces);
 
 		return myProvinces;
 	}
 
-	protected void addProvince(String provinceName, Region region1, Region region2, Map<String, Province> provinceMap) {
+	protected void addProvince(String provinceName, Region region1, Region region2, Region region3, Map<String, Province> provinceMap) {
 
 		if (provinceName != null && region1 != null && provinceMap != null) {
-			provinceMap.put(provinceName, new Province(provinceName, region1, region2));
+			provinceMap.put(provinceName, new Province(provinceName, region1, region2, region3));
 		}
 	}
 

@@ -7,9 +7,10 @@ import java.util.Map;
 
 import com.sdk.diplomacy.turnadmin.domain.Order;
 import com.sdk.diplomacy.turnadmin.domain.Order.Action;
-import com.sdk.diplomacy.turnadmin.domain.Piece.PieceType;
 import com.sdk.diplomacy.turnadmin.domain.Piece;
+import com.sdk.diplomacy.turnadmin.domain.Piece.PieceType;
 import com.sdk.diplomacy.turnadmin.map.GameMap;
+import com.sdk.diplomacy.turnadmin.map.Province;
 import com.sdk.diplomacy.turnadmin.map.Region;
 import com.sdk.diplomacy.turnadmin.map.Region.RegionType;
 
@@ -69,48 +70,77 @@ public class OrderResolver {
 			pieces = existingPieces;
 			validateOrders();
 			List<Action> desiredActions = new ArrayList<Action>();
-			
+
+			desiredActions.clear();
+			desiredActions.add(Action.SUPPORTS);
+			Map<String, Order> supportOrders = selectOrdersByAction(validOrders, desiredActions);
+			supportOrders.forEach((startingLocation, anOrder) -> {
+				resolveOrder(startingLocation);
+			});
+
 			desiredActions.add(Action.CONVOYS);
 			Map<String, Order> convoyOrders = selectOrdersByAction(validOrders, desiredActions);
 			convoyOrders.forEach((startingLocation, anOrder) -> {
 				resolveOrder(startingLocation);
 			});
-			
+
 			desiredActions.clear();
 			desiredActions.add(Action.MOVESTO);
 			Map<String, Order> moveOrders = selectOrdersByAction(validOrders, desiredActions);
 			moveOrders.forEach((startingLocation, anOrder) -> {
 				resolveOrder(startingLocation);
-				
 			});
-			
+
 			desiredActions.clear();
 			desiredActions.add(Action.HOLDS);
-			desiredActions.add(Action.SUPPORTS);
-			Map<String, Order> holdAndSupportOrders = selectOrdersByAction(validOrders, desiredActions);
-			holdAndSupportOrders.forEach((startingLocation, anOrder) -> {
+			Map<String, Order> holdOrders = selectOrdersByAction(validOrders, desiredActions);
+			holdOrders.forEach((startingLocation, anOrder) -> {
 				resolveOrder(startingLocation);
-				
 			});
 		}
-		
+
 		return orderResults;
 	}
-	
+
+	/*
+	 * Key to the map being returned is the starting location of the order
+	 */
 	public Map<String, Order> selectOrdersByAction(Map<String, Order> allOrders, List<Action> desiredActions) {
-		
+
 		Map<String, Order> selectedOrders = new HashMap<String, Order>();
-		
-		if (allOrders != null && desiredActions != null ) {
+
+		if (allOrders != null && desiredActions != null) {
 			allOrders.forEach((orderStartingLocation, anOrder) -> {
 				if (desiredActions.contains(anOrder.getAction())) {
 					selectedOrders.put(orderStartingLocation, anOrder);
 				}
 			});
-		};
-		
+		}
+		;
+
 		return selectedOrders;
-		
+
+	}
+
+	/*
+	 * Key to the map being returned is the starting location of the order
+	 */
+	protected Map<String, Order> selectOrdersByEffectiveEndingLocationProvince(Map<String, Order> allOrders,
+			Province desiredProvince) {
+
+		Map<String, Order> selectedOrders = new HashMap<String, Order>();
+
+		if (allOrders != null && desiredProvince != null) {
+			allOrders.forEach((orderStartingLocation, anOrder) -> {
+				if (desiredProvince.getRegions().containsKey(anOrder.getEffectiveEndingLocationName())) {
+					selectedOrders.put(orderStartingLocation, anOrder);
+				}
+			});
+		}
+		;
+
+		return selectedOrders;
+
 	}
 
 	protected void resolveOrder(String currentLocationOfOrderToResolve) {
@@ -231,6 +261,114 @@ public class OrderResolver {
 			Map<String, Order> ordersToExamine, Map<String, OrderResolutionResults> ordersToExamineResults,
 			GameMap aGameMap) {
 
+		Province provinceForOrderToResolve = aGameMap
+				.getProvinceContainingRegionByName(orderToResolve.getEffectiveEndingLocationName());
+		if (provinceForOrderToResolve.getRegions().size() == 1) {
+			resolveConvoyHoldMovesToActionsByRegion(orderToResolve, orderToResolveResults, ordersToExamine,
+					ordersToExamineResults, aGameMap);
+		} else {
+			Map<String, Order> allOrdersForProvince = selectOrdersByEffectiveEndingLocationProvince(ordersToExamine,
+					provinceForOrderToResolve);
+			// key is starting location of the order, value is the strength that order has.
+			// The value is 0 if the order failed.
+			Map<String, Integer> strengthsOfAllOrdersForProvince = new HashMap<String, Integer>();
+
+			allOrdersForProvince.forEach((startingLocation, anOrderForProvince) -> {
+				if (Action.SUPPORTS != anOrderForProvince.getAction()) {
+					Integer orderStrength = resolveConvoyHoldMovesToActionsByRegion(anOrderForProvince,
+							ordersToExamineResults.get(anOrderForProvince.getId()), ordersToExamine,
+							ordersToExamineResults, aGameMap);
+					strengthsOfAllOrdersForProvince.put(startingLocation, orderStrength);
+				}
+			});
+
+			// key is starting location. Value is true if it's a hold order
+			Map<String, Boolean> strongestStartingLocations = new HashMap<String, Boolean>();
+			Map<String, Integer> strongestStartingLocationStrengths = new HashMap<String, Integer>();
+			int[] maxStrength = { 0 };
+
+			strengthsOfAllOrdersForProvince.forEach((startingLocation, strengthOfOrderAtStartingLocation) -> {
+				if (strengthOfOrderAtStartingLocation > maxStrength[0]) {
+					Order startingLocationOrder = ordersToExamine.get(startingLocation);
+					strongestStartingLocations.clear();
+					strongestStartingLocationStrengths.clear();
+					maxStrength[0] = strengthOfOrderAtStartingLocation;
+					if (Action.HOLDS == startingLocationOrder.getAction()) {
+						strongestStartingLocations.put(startingLocation, true);
+					} else {
+						strongestStartingLocations.put(startingLocation, false);
+					}
+				} else {
+					if (strengthOfOrderAtStartingLocation > 0 && strengthOfOrderAtStartingLocation == maxStrength[0]) {
+						Order startingLocationOrder = ordersToExamine.get(startingLocation);
+						if (Action.HOLDS == startingLocationOrder.getAction()) {
+							strongestStartingLocations.put(startingLocation, true);
+						} else {
+							strongestStartingLocations.put(startingLocation, false);
+						}
+					}
+				}
+			});
+
+			/*
+			 * Find the single strongest order for the province. All the rest of the orders
+			 * fail. If more than one have the same strength and one is a hold, it wins. If
+			 * there are multiple ties and no holds, then all fail - it's a standoff.
+			 */
+			String[] winningStartingLocation = {"NONE"};
+
+			if (strongestStartingLocations.size() == 1) {
+				winningStartingLocation[0] = (String) strongestStartingLocations.keySet().toArray()[0];
+			} else {
+				boolean winningStartingLocationIsHold = strongestStartingLocations.containsValue(true);
+				strongestStartingLocations.forEach((startingLocation, isHoldAction) -> {
+					if (!isHoldAction) {
+						Order startingLocationOrder = ordersToExamine.get(startingLocation);
+						OrderResolutionResults startingLocationOrderResults = ordersToExamineResults
+								.get(startingLocationOrder.getId());
+						startingLocationOrderResults.setOrderExecutedSuccessfully(false);
+						if (winningStartingLocationIsHold) {
+							startingLocationOrderResults.setExecutionDescription(
+									"Failed. A hold in one of the regions in the province won");
+						} else {
+							orderToResolveResults.setExecutionFailedDueToStandoff(true);
+							startingLocationOrderResults.setExecutionDescription(
+									"Failed. Standoff with moves to multiple regions in the province");
+						}
+					} else {
+						winningStartingLocation[0] = startingLocation;
+					}
+				});
+			}
+			/*
+			 * loop through all the orders for the province. If there were successful moves
+			 * or holds that aren't from the winningStartingLocation, mark them failed
+			 */
+			allOrdersForProvince.forEach((startingLocation, anOrder) -> {
+				if (anOrder.getAction() == Action.MOVESTO || anOrder.getAction() == Action.HOLDS) {
+					if (winningStartingLocation[0] == "NONE"
+							|| winningStartingLocation[0] != anOrder.getCurrentLocationName()) {
+						OrderResolutionResults anOrderResults = ordersToExamineResults.get(anOrder.getId());
+						if (anOrderResults.wasOrderExecutedSuccessfully()) {
+							anOrderResults.setOrderExecutedSuccessfully(false);
+							anOrderResults.setExecutionDescription(
+									"Failed.  There was a stronger move or hold in one of the other regions in the province");
+
+						}
+					}
+				}
+
+			});
+		}
+
+	}
+
+	protected int resolveConvoyHoldMovesToActionsByRegion(Order orderToResolve,
+			OrderResolutionResults orderToResolveResults, Map<String, Order> ordersToExamine,
+			Map<String, OrderResolutionResults> ordersToExamineResults, GameMap aGameMap) {
+
+		int strengthOfOrderIfSuccessful = 0; // return zero if the order was not successful
+
 		Map<String, Order> startingLocationNames = new HashMap<String, Order>();
 		Map<String, Integer> strengths = new HashMap<String, Integer>();
 		String endingLocationName = orderToResolve.getEffectiveEndingLocationName();
@@ -264,6 +402,7 @@ public class OrderResolver {
 			int[] maxStrength = { 0 };
 			// key is starting location. Value is whether it's a hold or convoy order
 			Map<String, Boolean> strongestStartingLocations = new HashMap<String, Boolean>();
+			Map<String, Integer> strongestStartingLocationStrengths = new HashMap<String, Integer>();
 			StringBuilder description = new StringBuilder();
 
 			strengths.forEach((startingLocationName, strength) -> {
@@ -271,6 +410,8 @@ public class OrderResolver {
 				if (strength > maxStrength[0]) {
 					maxStrength[0] = strength;
 					strongestStartingLocations.clear();
+					strongestStartingLocationStrengths.clear();
+					strongestStartingLocationStrengths.put(startingLocationName, strength);
 					if (Action.HOLDS == startingLocationNames.get(startingLocationName).getAction()
 							|| Action.CONVOYS == startingLocationNames.get(startingLocationName).getAction()) {
 						strongestStartingLocations.put(startingLocationName, true);
@@ -282,10 +423,13 @@ public class OrderResolver {
 						if (Action.HOLDS == startingLocationNames.get(startingLocationName).getAction()
 								|| Action.CONVOYS == startingLocationNames.get(startingLocationName).getAction()) {
 							strongestStartingLocations.clear();
+							strongestStartingLocationStrengths.clear();
+							strongestStartingLocationStrengths.put(startingLocationName, strength);
 							strongestStartingLocations.put(startingLocationName, true);
 						} else {
 							// this is for standoffs
 							strongestStartingLocations.put(startingLocationName, false);
+							strongestStartingLocationStrengths.put(startingLocationName, strength);
 						}
 					}
 				}
@@ -293,6 +437,8 @@ public class OrderResolver {
 
 			if (strongestStartingLocations.size() == 1) {
 				if (strongestStartingLocations.containsKey(orderToResolve.getCurrentLocationName())) {
+					strengthOfOrderIfSuccessful = strongestStartingLocationStrengths
+							.get(orderToResolve.getCurrentLocationName());
 					orderToResolveResults.setOrderExecutedSuccessfully(true);
 					orderToResolveResults.setExecutionDescription(
 							orderDescription + "Successful. All competitors are: " + description);
@@ -305,6 +451,8 @@ public class OrderResolver {
 			} else {
 				if (strongestStartingLocations.containsKey(orderToResolve.getCurrentLocationName())
 						&& strongestStartingLocations.get(orderToResolve.getCurrentLocationName())) {
+					strengthOfOrderIfSuccessful = strongestStartingLocationStrengths
+							.get(orderToResolve.getCurrentLocationName());
 					orderToResolveResults.setOrderExecutedSuccessfully(true);
 					orderToResolveResults.setExecutionDescription(
 							orderDescription + "Successful. All competitors are: " + description);
@@ -324,6 +472,7 @@ public class OrderResolver {
 				}
 			}
 		}
+		return strengthOfOrderIfSuccessful;
 	}
 
 	protected int determineStrengthForHoldOrMoveAction(Order orderToDetermineStrengthFor,

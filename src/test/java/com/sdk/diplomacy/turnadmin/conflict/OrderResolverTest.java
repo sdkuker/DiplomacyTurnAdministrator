@@ -516,10 +516,11 @@ public class OrderResolverTest {
 		Map<String, OrderResolutionResults> ordersToExamineResults = new HashMap<String, OrderResolutionResults>();
 		ordersToExamineResults.put("1", holdResult);
 		
-		myResolver.resolveConvoyHoldMovesToActions(holdOrder, holdResult, ordersToExamine, ordersToExamineResults, myGameMap);
+		int orderStrength = myResolver.resolveConvoyHoldMovesToActionsByRegion(holdOrder, holdResult, ordersToExamine, ordersToExamineResults, myGameMap);
 		
 		assertTrue("order successful", holdResult.wasOrderExecutedSuccessfully());
 		assertTrue("order completed", holdResult.isOrderResolutionCompleted());
+		assertEquals("order strength", 1, orderStrength);
 		assertEquals("description", "Hold Successful. All competitors are: Burgundy : 1, ", holdResult.getExecutionDescription());
 
 	}
@@ -546,10 +547,11 @@ public class OrderResolverTest {
 		ordersToExamineResults.put("1", holdResult);
 		ordersToExamineResults.put("2", support1Result);
 		
-		myResolver.resolveConvoyHoldMovesToActions(holdOrder, holdResult, ordersToExamine, ordersToExamineResults, myGameMap);
+		int orderStrength = myResolver.resolveConvoyHoldMovesToActionsByRegion(holdOrder, holdResult, ordersToExamine, ordersToExamineResults, myGameMap);
 		
 		assertTrue("order successful", holdResult.wasOrderExecutedSuccessfully());
 		assertTrue("order completed", holdResult.isOrderResolutionCompleted());
+		assertEquals("order strength", 2, orderStrength);
 		assertEquals("description", "Hold Successful. All competitors are: Burgundy : 2, ", holdResult.getExecutionDescription());
 
 	}
@@ -575,10 +577,11 @@ public class OrderResolverTest {
 		ordersToExamineResults.put("1", holdResult);
 		ordersToExamineResults.put("11", moveResult);
 		
-		myResolver.resolveConvoyHoldMovesToActions(holdOrder, holdResult, ordersToExamine, ordersToExamineResults, myGameMap);
+		int orderStrength = myResolver.resolveConvoyHoldMovesToActionsByRegion(holdOrder, holdResult, ordersToExamine, ordersToExamineResults, myGameMap);
 		
 		assertTrue("order successful", holdResult.wasOrderExecutedSuccessfully());
 		assertTrue("order completed", holdResult.isOrderResolutionCompleted());
+		assertEquals("order strength", 1, orderStrength);
 		assertEquals("description", "Hold Successful. All competitors are: Burgundy : 1, Ruhr : 1, ", holdResult.getExecutionDescription());
 
 	}
@@ -609,10 +612,11 @@ public class OrderResolverTest {
 		ordersToExamineResults.put("11", moveResult);
 		ordersToExamineResults.put("12", ruhrSupportResult);
 		
-		myResolver.resolveConvoyHoldMovesToActions(holdOrder, holdResult, ordersToExamine, ordersToExamineResults, myGameMap);
+		int orderStrength = myResolver.resolveConvoyHoldMovesToActionsByRegion(holdOrder, holdResult, ordersToExamine, ordersToExamineResults, myGameMap);
 		
 		assertFalse("order not successful", holdResult.wasOrderExecutedSuccessfully());
 		assertTrue("order completed", holdResult.isOrderResolutionCompleted());
+		assertEquals("order strength", 0, orderStrength);
 		assertEquals("description", "Hold Failed. All competitors are: Burgundy : 1, Ruhr : 2, ", holdResult.getExecutionDescription());
 
 	}
@@ -655,10 +659,11 @@ public class OrderResolverTest {
 		ordersToExamineResults.put("11", moveResult);
 		ordersToExamineResults.put("12", ruhrSupportResult);
 		
-		myResolver.resolveConvoyHoldMovesToActions(holdOrder, holdResult, ordersToExamine, ordersToExamineResults, myGameMap);
+		int orderStrength = myResolver.resolveConvoyHoldMovesToActionsByRegion(holdOrder, holdResult, ordersToExamine, ordersToExamineResults, myGameMap);
 		
 		assertTrue("order successful", holdResult.wasOrderExecutedSuccessfully());
 		assertTrue("order completed", holdResult.isOrderResolutionCompleted());
+		assertEquals("order strength", 3, orderStrength);
 		assertEquals("description", "Hold Successful. All competitors are: Burgundy : 3, Ruhr : 2, ", holdResult.getExecutionDescription());
 
 	}
@@ -683,10 +688,11 @@ public class OrderResolverTest {
 		ordersToExamineResults.put("1", moveResult);
 		ordersToExamineResults.put("2", convoyResult);
 		
-		myResolver.resolveConvoyHoldMovesToActions(convoyOrder, convoyResult, ordersToExamine, ordersToExamineResults, myGameMap);
+		int orderStrength = myResolver.resolveConvoyHoldMovesToActionsByRegion(convoyOrder, convoyResult, ordersToExamine, ordersToExamineResults, myGameMap);
 		
 		assertTrue("order successful", convoyResult.wasOrderExecutedSuccessfully());
 		assertTrue("order completed", convoyResult.isOrderResolutionCompleted());
+		assertEquals("order strength", 1, orderStrength);
 		assertEquals("description", "Convoy Successful. All competitors are: English_Channel : 1, ", convoyResult.getExecutionDescription());
 
 	}
@@ -718,10 +724,11 @@ public class OrderResolverTest {
 		ordersToExamineResults.put("2", convoyResult);
 		ordersToExamineResults.put("3", convoySupportResult);
 		
-		myResolver.resolveConvoyHoldMovesToActions(convoyOrder, convoyResult, ordersToExamine, ordersToExamineResults, myGameMap);
+		int orderStrength = myResolver.resolveConvoyHoldMovesToActionsByRegion(convoyOrder, convoyResult, ordersToExamine, ordersToExamineResults, myGameMap);
 		
 		assertTrue("order successful", convoyResult.wasOrderExecutedSuccessfully());
 		assertTrue("order completed", convoyResult.isOrderResolutionCompleted());
+		assertEquals("order strength", 2, orderStrength);
 		assertEquals("description", "Convoy Successful. All competitors are: English_Channel : 2, ", convoyResult.getExecutionDescription());
 
 	}
@@ -753,10 +760,11 @@ public class OrderResolverTest {
 		ordersToExamineResults.put("2", convoyResult);
 		ordersToExamineResults.put("3", fleetMoveResult);
 		
-		myResolver.resolveConvoyHoldMovesToActions(convoyOrder, convoyResult, ordersToExamine, ordersToExamineResults, myGameMap);
+		int orderStrength = myResolver.resolveConvoyHoldMovesToActionsByRegion(convoyOrder, convoyResult, ordersToExamine, ordersToExamineResults, myGameMap);
 		
 		assertTrue("order successful", convoyResult.wasOrderExecutedSuccessfully());
 		assertTrue("order completed", convoyResult.isOrderResolutionCompleted());
+		assertEquals("order strength", 1, orderStrength);
 		assertEquals("description", "Convoy Successful. All competitors are: English_Channel : 1, Mid_Atlantic_Ocean : 1, ", convoyResult.getExecutionDescription());
 
 	}
@@ -793,10 +801,11 @@ public class OrderResolverTest {
 		ordersToExamineResults.put("3", fleetMoveResult);
 		ordersToExamineResults.put("4", fleetMoveSupportResult);
 		
-		myResolver.resolveConvoyHoldMovesToActions(convoyOrder, convoyResult, ordersToExamine, ordersToExamineResults, myGameMap);
+		int orderStrength = myResolver.resolveConvoyHoldMovesToActionsByRegion(convoyOrder, convoyResult, ordersToExamine, ordersToExamineResults, myGameMap);
 		
 		assertFalse("order not successful", convoyResult.wasOrderExecutedSuccessfully());
 		assertTrue("order completed", convoyResult.isOrderResolutionCompleted());
+		assertEquals("order strength", 0, orderStrength);
 		assertEquals("description", "Convoy Failed. All competitors are: English_Channel : 1, Mid_Atlantic_Ocean : 2, ", convoyResult.getExecutionDescription());
 
 	}
@@ -833,10 +842,11 @@ public class OrderResolverTest {
 		ordersToExamineResults.put("3", fleetMoveResult);
 		ordersToExamineResults.put("4", convoySupportOrderResult);
 		
-		myResolver.resolveConvoyHoldMovesToActions(convoyOrder, convoyResult, ordersToExamine, ordersToExamineResults, myGameMap);
+		int orderStrength = myResolver.resolveConvoyHoldMovesToActionsByRegion(convoyOrder, convoyResult, ordersToExamine, ordersToExamineResults, myGameMap);
 		
 		assertTrue("order successful", convoyResult.wasOrderExecutedSuccessfully());
 		assertTrue("order completed", convoyResult.isOrderResolutionCompleted());
+		assertEquals("order strength", 2, orderStrength);
 		assertEquals("description", "Convoy Successful. All competitors are: English_Channel : 2, Mid_Atlantic_Ocean : 1, ", convoyResult.getExecutionDescription());
 
 	}
@@ -862,11 +872,12 @@ public class OrderResolverTest {
 		ordersToExamineResults.put("1", moveOrder1Result);
 		ordersToExamineResults.put("2", moveOrder2Result);
 		
-		myResolver.resolveConvoyHoldMovesToActions(moveOrder1, moveOrder1Result, ordersToExamine, ordersToExamineResults, myGameMap);
+		int orderStrength = myResolver.resolveConvoyHoldMovesToActionsByRegion(moveOrder1, moveOrder1Result, ordersToExamine, ordersToExamineResults, myGameMap);
 		
 		assertFalse("order 1 not successful", moveOrder1Result.wasOrderExecutedSuccessfully());
 		assertTrue("order 1 completed", moveOrder1Result.isOrderResolutionCompleted());
 		assertTrue("order 1 standoff", moveOrder1Result.isExecutionFailedDueToStandoff());
+		assertEquals("order strength", 0, orderStrength);
 		assertEquals("description move order 1", "Move Failed - Standoff. All competitors are: Brest : 1, Burgundy : 1, ", moveOrder1Result.getExecutionDescription());
 
 		moveOrder1Result.setExecutionDescription(null);
@@ -878,11 +889,12 @@ public class OrderResolverTest {
 		moveOrder2Result.setOrderExecutedSuccessfully(true);
 		moveOrder2Result.setOrderResolutionCompleted(false);
 
-		myResolver.resolveConvoyHoldMovesToActions(moveOrder2, moveOrder2Result, ordersToExamine, ordersToExamineResults, myGameMap);
+		orderStrength = myResolver.resolveConvoyHoldMovesToActionsByRegion(moveOrder2, moveOrder2Result, ordersToExamine, ordersToExamineResults, myGameMap);
 		
 		assertFalse("order 2 not successful", moveOrder2Result.wasOrderExecutedSuccessfully());
 		assertTrue("order 2 completed", moveOrder2Result.isOrderResolutionCompleted());
 		assertTrue("order 2 standoff", moveOrder2Result.isExecutionFailedDueToStandoff());
+		assertEquals("order strength", 0, orderStrength);
 		assertEquals("description move order 2", "Move Failed - Standoff. All competitors are: Brest : 1, Burgundy : 1, ", moveOrder2Result.getExecutionDescription());
 
 	}
@@ -901,10 +913,11 @@ public class OrderResolverTest {
 		Map<String, OrderResolutionResults> ordersToExamineResults = new HashMap<String, OrderResolutionResults>();
 		ordersToExamineResults.put("1", moveResult);
 		
-		myResolver.resolveConvoyHoldMovesToActions(moveOrder, moveResult, ordersToExamine, ordersToExamineResults, myGameMap);
+		int orderStrength = myResolver.resolveConvoyHoldMovesToActionsByRegion(moveOrder, moveResult, ordersToExamine, ordersToExamineResults, myGameMap);
 		
 		assertTrue("order successful", moveResult.wasOrderExecutedSuccessfully());
 		assertTrue("order completed", moveResult.isOrderResolutionCompleted());
+		assertEquals("order strength", 1, orderStrength);
 		assertEquals("description", "Move Successful. All competitors are: Paris : 1, ", moveResult.getExecutionDescription());
 
 	}
@@ -918,7 +931,6 @@ public class OrderResolverTest {
 		Order supportOrder1 = new Order("2", PieceType.ARMY, "Picardy", Action.SUPPORTS,
 				null, PieceType.ARMY, "Paris", Action.HOLDS, "Burgundy", "France", "turnId", "gameId");
 
-				
 		Map<String, Order> ordersToExamine = new HashMap<String, Order>();
 		ordersToExamine.put("Paris", moveOrder);
 		ordersToExamine.put("Picardy", supportOrder1);
@@ -930,10 +942,11 @@ public class OrderResolverTest {
 		ordersToExamineResults.put("1", moveResult);
 		ordersToExamineResults.put("2", support1Result);
 		
-		myResolver.resolveConvoyHoldMovesToActions(moveOrder, moveResult, ordersToExamine, ordersToExamineResults, myGameMap);
+		int orderStrength = myResolver.resolveConvoyHoldMovesToActionsByRegion(moveOrder, moveResult, ordersToExamine, ordersToExamineResults, myGameMap);
 		
 		assertTrue("order successful", moveResult.wasOrderExecutedSuccessfully());
 		assertTrue("order completed", moveResult.isOrderResolutionCompleted());
+		assertEquals("order strength", 2, orderStrength);
 		assertEquals("description", "Move Successful. All competitors are: Paris : 2, ", moveResult.getExecutionDescription());
 
 	}
@@ -958,10 +971,11 @@ public class OrderResolverTest {
 		ordersToExamineResults.put("1", holdResult);
 		ordersToExamineResults.put("11", moveResult);
 		
-		myResolver.resolveConvoyHoldMovesToActions(moveOrder, moveResult, ordersToExamine, ordersToExamineResults, myGameMap);
+		int orderStrength = myResolver.resolveConvoyHoldMovesToActionsByRegion(moveOrder, moveResult, ordersToExamine, ordersToExamineResults, myGameMap);
 		
 		assertFalse("order not successful", moveResult.wasOrderExecutedSuccessfully());
 		assertTrue("order completed", moveResult.isOrderResolutionCompleted());
+		assertEquals("order strength", 0, orderStrength);
 		assertEquals("description", "Move Failed. All competitors are: Burgundy : 1, Ruhr : 1, ", moveResult.getExecutionDescription());
 
 	}
@@ -999,10 +1013,11 @@ public class OrderResolverTest {
 		ordersToExamineResults.put("3", attackingFleetMoveResult);
 		ordersToExamineResults.put("4", attackingFleetSupportResult);
 		
-		myResolver.resolveConvoyHoldMovesToActions(attackingFleetMoveOrder, attackingFleetMoveResult, ordersToExamine, ordersToExamineResults, myGameMap);
+		int orderStrength = myResolver.resolveConvoyHoldMovesToActionsByRegion(attackingFleetMoveOrder, attackingFleetMoveResult, ordersToExamine, ordersToExamineResults, myGameMap);
 		
 		assertTrue("order successful", attackingFleetMoveResult.wasOrderExecutedSuccessfully());
 		assertTrue("order completed", attackingFleetMoveResult.isOrderResolutionCompleted());
+		assertEquals("order strength", 2, orderStrength);
 		assertEquals("description", "Move Successful. All competitors are: English_Channel : 1, Irish_Sea : 2, ", attackingFleetMoveResult.getExecutionDescription());
 
 	}
@@ -1040,10 +1055,11 @@ public class OrderResolverTest {
 		ordersToExamineResults.put("3", attackingFleetMoveResult);
 		ordersToExamineResults.put("4", convoyingFleetSupportResult);
 		
-		myResolver.resolveConvoyHoldMovesToActions(attackingFleetMoveOrder, attackingFleetMoveResult, ordersToExamine, ordersToExamineResults, myGameMap);
+		int orderStrength = myResolver.resolveConvoyHoldMovesToActionsByRegion(attackingFleetMoveOrder, attackingFleetMoveResult, ordersToExamine, ordersToExamineResults, myGameMap);
 		
 		assertFalse("order not successful", attackingFleetMoveResult.wasOrderExecutedSuccessfully());
 		assertTrue("order completed", attackingFleetMoveResult.isOrderResolutionCompleted());
+		assertEquals("order strength", 0, orderStrength);
 		assertEquals("description", "Move Failed. All competitors are: English_Channel : 2, Irish_Sea : 1, ", attackingFleetMoveResult.getExecutionDescription());
 		
 	}
@@ -1074,10 +1090,11 @@ public class OrderResolverTest {
 		ordersToExamineResults.put("11", moveResult);
 		ordersToExamineResults.put("12", burgundySupportResult);
 		
-		myResolver.resolveConvoyHoldMovesToActions(moveOrder, moveResult, ordersToExamine, ordersToExamineResults, myGameMap);
+		int orderStrength = myResolver.resolveConvoyHoldMovesToActionsByRegion(moveOrder, moveResult, ordersToExamine, ordersToExamineResults, myGameMap);
 		
 		assertFalse("order not successful", moveResult.wasOrderExecutedSuccessfully());
 		assertTrue("order completed", moveResult.isOrderResolutionCompleted());
+		assertEquals("order strength", 0, orderStrength);
 		assertEquals("description", "Move Failed. All competitors are: Burgundy : 2, Ruhr : 1, ", moveResult.getExecutionDescription());
 
 	}
@@ -1122,10 +1139,11 @@ public class OrderResolverTest {
 		ordersToExamineResults.put("12", ruhrSupportResult);
 		ordersToExamineResults.put("13", ruhrSupportOrder2Result);
 		
-		myResolver.resolveConvoyHoldMovesToActions(moveOrder, moveResult, ordersToExamine, ordersToExamineResults, myGameMap);
+		int orderStrength = myResolver.resolveConvoyHoldMovesToActionsByRegion(moveOrder, moveResult, ordersToExamine, ordersToExamineResults, myGameMap);
 		
 		assertTrue("order successful", moveResult.wasOrderExecutedSuccessfully());
 		assertTrue("order completed", moveResult.isOrderResolutionCompleted());
+		assertEquals("order strength", 3, orderStrength);
 		assertEquals("description", "Move Successful. All competitors are: Burgundy : 2, Ruhr : 3, ", moveResult.getExecutionDescription());
 
 	}
@@ -1256,28 +1274,243 @@ public class OrderResolverTest {
 	}
 	
 	@Test
-	public void doSomeTestsWithMultipleRegionProvinces() {
-		/*
-		 * make sure something moving to one coast is accounted for when moving into the other
-		 * coast at the same time.  Also make sure that armies moving into the province (spain for example)
-		 * conflict properly with fleets moving into a coast (spain_sc for example)
-		 */
+	public void testSelectOrdersByEffectiveEndingLocation() {
 		
-		/*
-		 * Test scenarios
-		 * 1)	even forces moving into opposing regions - should standoff
-		 * 2)	one stronger force moving into opposing regions - one should win
-		 * 3)	something moving into a region while an army moves into the province - 
-		 * 		one case with a standoff and another with a win
-		 * 4)	Note that a win means they occupy the region and the province.
-		 */
+		Order holdInSpainOrder = new Order("1", PieceType.ARMY, "Spain", Action.HOLDS,
+				"Spain", null, null, null, null, "France", "turnId", "gameId");
+		Order moveToSpainOrder = new Order("2", PieceType.ARMY, "Gascony", Action.MOVESTO,
+				"Spain", null, null, null, null, "France", "turnId", "gameId");
+		Order moveToSpainNCOrder = new Order("3", PieceType.FLEET, "Mid_Atlantic_Ocean", Action.MOVESTO,
+				"Spain_(nc)", null, null, null, null, "France", "turnId", "gameId");
+		Order holdInSpainNCOrder = new Order("4", PieceType.FLEET, "Spain_(nc)", Action.HOLDS,
+				"Spain_(nc)", null, null, null, null, "France", "turnId", "gameId");
+		Order holdInBrestOrder = new Order("1", PieceType.ARMY, "Brest", Action.HOLDS,
+				"Brest", null, null, null, null, "France", "turnId", "gameId");
+
 		
-		assertFalse(true);
+		Map<String, Order> allOrders = new HashMap<String, Order>();
+		allOrders.put("Spain", holdInSpainOrder);
+		allOrders.put("Gascony", moveToSpainOrder);
+		allOrders.put("Mid_Atlantic_Ocean", moveToSpainNCOrder);
+		allOrders.put("Spain_(nc)", holdInSpainNCOrder);
+		allOrders.put("Brest", holdInBrestOrder);
+		
+		Map<String, Order> spainOrders = myResolver.selectOrdersByEffectiveEndingLocationProvince(allOrders, myGameMap.getProvince("Spain"));
+
+		assertEquals("orders for Spain", 4, spainOrders.size());
+		assertNotNull("spain hold order selected", spainOrders.get("Spain"));
+		assertNotNull("spain move order selected", spainOrders.get("Gascony"));
+		assertNotNull("spain nc move order selected", spainOrders.get("Mid_Atlantic_Ocean"));
+		assertNotNull("spain nc move order selected", spainOrders.get("Spain_(nc)"));
+		
+	}
+
+	@Test
+	public void testSingleRegionProvinceResolveHoldActionNoSupportOrCompetition() {
+		
+		Order holdOrder = new Order("1", PieceType.ARMY, "Burgundy", Action.HOLDS,
+				"Burgundy", null, null, null, null, "France", "turnId", "gameId");
+				
+		Map<String, Order> ordersToExamine = new HashMap<String, Order>();
+		ordersToExamine.put("Burgundy", holdOrder);
+		
+		OrderResolutionResults holdResult = new OrderResolutionResults("1", "turnId", "gameId");
+		
+		Map<String, OrderResolutionResults> ordersToExamineResults = new HashMap<String, OrderResolutionResults>();
+		ordersToExamineResults.put("1", holdResult);
+		
+		myResolver.resolveConvoyHoldMovesToActions(holdOrder, holdResult, ordersToExamine, ordersToExamineResults, myGameMap);
+		
+		assertTrue("order successful", holdResult.wasOrderExecutedSuccessfully());
+		assertTrue("order completed", holdResult.isOrderResolutionCompleted());
+		assertEquals("description", "Hold Successful. All competitors are: Burgundy : 1, ", holdResult.getExecutionDescription());
+
+	}
+
+	
+	@Test
+	public void testMultiRegionProvinceResolveHoldActionNoSupportOrCompetition() {
+		
+		Order spainHoldOrder = new Order("1", PieceType.ARMY, "Spain", Action.HOLDS,
+				"Spain", null, null, null, null, "France", "turnId", "gameId");
+				
+		Map<String, Order> ordersToExamine = new HashMap<String, Order>();
+		ordersToExamine.put("Spain", spainHoldOrder);
+		
+		OrderResolutionResults spainHoldResult = new OrderResolutionResults("1", "turnId", "gameId");
+		
+		Map<String, OrderResolutionResults> ordersToExamineResults = new HashMap<String, OrderResolutionResults>();
+		ordersToExamineResults.put("1", spainHoldResult);
+		
+		myResolver.resolveConvoyHoldMovesToActions(spainHoldOrder, spainHoldResult, ordersToExamine, ordersToExamineResults, myGameMap);
+		
+		assertTrue("order successful", spainHoldResult.wasOrderExecutedSuccessfully());
+		assertTrue("order completed", spainHoldResult.isOrderResolutionCompleted());
+		assertEquals("description", "Hold Successful. All competitors are: Spain : 1, ", spainHoldResult.getExecutionDescription());
+
 	}
 	
 	@Test
-	public void testIdentifyStandoffProvincesMultipleRegionProvinces() {
-		assertTrue(false);
+	public void testMultiRegionProvinceResolveHoldActionWithCompetingEqualStrengthMoveToRegion() {
+		
+		Order spainHoldOrder = new Order("1", PieceType.ARMY, "Spain", Action.HOLDS,
+				"Spain", null, null, null, null, "France", "turnId", "gameId");
+		Order spainNCMoveOrder = new Order("2", PieceType.FLEET, "Mid_Atlantic_Ocean", Action.MOVESTO,
+				"Spain_(nc)", null, null, null, null, "France", "turnId", "gameId");
+
+				
+		Map<String, Order> ordersToExamine = new HashMap<String, Order>();
+		ordersToExamine.put("Spain", spainHoldOrder);
+		ordersToExamine.put("Mid_Atlantic_Ocean", spainNCMoveOrder);
+		
+		OrderResolutionResults spainHoldResult = new OrderResolutionResults("1", "turnId", "gameId");
+		OrderResolutionResults spainNCMoveResult = new OrderResolutionResults("2", "turnId", "gameId");
+		
+		Map<String, OrderResolutionResults> ordersToExamineResults = new HashMap<String, OrderResolutionResults>();
+		ordersToExamineResults.put("1", spainHoldResult);
+		ordersToExamineResults.put("2", spainNCMoveResult);
+		
+		myResolver.resolveConvoyHoldMovesToActions(spainHoldOrder, spainHoldResult, ordersToExamine, ordersToExamineResults, myGameMap);
+		
+		assertTrue("hold order successful", spainHoldResult.wasOrderExecutedSuccessfully());
+		assertTrue("hold order completed", spainHoldResult.isOrderResolutionCompleted());
+		assertEquals("hold description", "Hold Successful. All competitors are: Spain : 1, ", spainHoldResult.getExecutionDescription());
+		
+		assertFalse("nc move order not successful", spainNCMoveResult.wasOrderExecutedSuccessfully());
+		assertTrue("nc move order completed", spainNCMoveResult.isOrderResolutionCompleted());
+		assertEquals("nc move description", "Failed. A hold in one of the regions in the province won", spainNCMoveResult.getExecutionDescription());
+		
+		// should work the same way when resolving the other order 
+		spainHoldResult = new OrderResolutionResults("1", "turnId", "gameId");
+		spainNCMoveResult = new OrderResolutionResults("2", "turnId", "gameId");
+		ordersToExamineResults.clear();
+		ordersToExamineResults.put("1", spainHoldResult);
+		ordersToExamineResults.put("2", spainNCMoveResult);
+		
+		myResolver.resolveConvoyHoldMovesToActions(spainNCMoveOrder, spainNCMoveResult, ordersToExamine, ordersToExamineResults, myGameMap);
+
+		assertTrue("hold order successful - 2", spainHoldResult.wasOrderExecutedSuccessfully());
+		assertTrue("hold order completed - 2", spainHoldResult.isOrderResolutionCompleted());
+		assertEquals("hold description - 2", "Hold Successful. All competitors are: Spain : 1, ", spainHoldResult.getExecutionDescription());
+		
+		assertFalse("nc move order not successful - 2", spainNCMoveResult.wasOrderExecutedSuccessfully());
+		assertTrue("nc move order completed - 2", spainNCMoveResult.isOrderResolutionCompleted());
+		assertEquals("nc move description - 2", "Failed. A hold in one of the regions in the province won", spainNCMoveResult.getExecutionDescription());
+
 	}
+
+	@Test
+	public void testMultiRegionProvinceResolveEqualStrengthMovesToMultipleRegionProducingStandoff() {
+		
+		Order spainNCMoveOrder = new Order("1", PieceType.FLEET, "Mid_Atlantic_Ocean", Action.MOVESTO,
+				"Spain_(nc)", null, null, null, null, "France", "turnId", "gameId");
+		Order spainSCMoveOrder = new Order("2", PieceType.FLEET, "Gulf_of_Lyon", Action.MOVESTO,
+				"Spain_(sc)", null, null, null, null, "France", "turnId", "gameId");
+
+				
+		Map<String, Order> ordersToExamine = new HashMap<String, Order>();
+		ordersToExamine.put("Mid_Atlantic_Ocean", spainNCMoveOrder);
+		ordersToExamine.put("Gulf_of_Lyon", spainSCMoveOrder);
+		
+		OrderResolutionResults spainNCMoveResult = new OrderResolutionResults("1", "turnId", "gameId");
+		OrderResolutionResults spainSCMoveResult = new OrderResolutionResults("2", "turnId", "gameId");
+		
+		Map<String, OrderResolutionResults> ordersToExamineResults = new HashMap<String, OrderResolutionResults>();
+		ordersToExamineResults.put("1", spainNCMoveResult);
+		ordersToExamineResults.put("2", spainSCMoveResult);
+		
+		myResolver.resolveConvoyHoldMovesToActions(spainNCMoveOrder, spainNCMoveResult, ordersToExamine, ordersToExamineResults, myGameMap);
+		
+		assertFalse("spain NC order not successful", spainNCMoveResult.wasOrderExecutedSuccessfully());
+		assertTrue("spain NC order completed", spainNCMoveResult.isOrderResolutionCompleted());
+		assertEquals("spain NC description", "Failed. Standoff with moves to multiple regions in the province", spainNCMoveResult.getExecutionDescription());
+		
+		assertFalse("sc move order not successful", spainSCMoveResult.wasOrderExecutedSuccessfully());
+		assertTrue("sc move order completed", spainSCMoveResult.isOrderResolutionCompleted());
+		assertEquals("sc move description", "Failed. Standoff with moves to multiple regions in the province", spainSCMoveResult.getExecutionDescription());
+		
+		// should work the same way when resolving the other order 
+		spainNCMoveResult = new OrderResolutionResults("1", "turnId", "gameId");
+		spainSCMoveResult = new OrderResolutionResults("2", "turnId", "gameId");
+		ordersToExamineResults.clear();
+		ordersToExamineResults.put("1", spainNCMoveResult);
+		ordersToExamineResults.put("2", spainSCMoveResult);
+		
+		myResolver.resolveConvoyHoldMovesToActions(spainSCMoveOrder, spainSCMoveResult, ordersToExamine, ordersToExamineResults, myGameMap);
+
+		assertFalse("spain SC order not successful", spainSCMoveResult.wasOrderExecutedSuccessfully());
+		assertTrue("spain SC order completed", spainSCMoveResult.isOrderResolutionCompleted());
+		assertEquals("spain SC description", "Failed. Standoff with moves to multiple regions in the province", spainSCMoveResult.getExecutionDescription());
+		
+		assertFalse("nc move order not successful", spainNCMoveResult.wasOrderExecutedSuccessfully());
+		assertTrue("nc move order completed", spainNCMoveResult.isOrderResolutionCompleted());
+		assertEquals("nc move description", "Failed. Standoff with moves to multiple regions in the province", spainNCMoveResult.getExecutionDescription());
+
+	}
+	
+	@Test
+	public void testMultiRegionProvinceResolveUnevenStrengthMovesToMultipleRegionProducingVictor() {
+
+		Order spainNCMoveOrder = new Order("1", PieceType.FLEET, "Mid_Atlantic_Ocean", Action.MOVESTO,
+				"Spain_(nc)", null, null, null, null, "France", "turnId", "gameId");
+		Order spainSCMoveOrder = new Order("2", PieceType.FLEET, "Gulf_of_Lyon", Action.MOVESTO,
+				"Spain_(sc)", null, null, null, null, "France", "turnId", "gameId");
+		Order spainSCSupportOrder = new Order("3", PieceType.FLEET, "Western_Mediterranean", Action.SUPPORTS,
+				null, PieceType.FLEET, "Gulf_of_Lyon", Action.MOVESTO, "Spain_(sc)", "France", "turnId", "gameId");
+				
+		Map<String, Order> ordersToExamine = new HashMap<String, Order>();
+		ordersToExamine.put("Mid_Atlantic_Ocean", spainNCMoveOrder);
+		ordersToExamine.put("Gulf_of_Lyon", spainSCMoveOrder);
+		ordersToExamine.put("Western_Mediterranean", spainSCSupportOrder);
+		
+		OrderResolutionResults spainNCMoveResult = new OrderResolutionResults("1", "turnId", "gameId");
+		OrderResolutionResults spainSCMoveResult = new OrderResolutionResults("2", "turnId", "gameId");
+		OrderResolutionResults spainSCSupportResult = new OrderResolutionResults("3", "turnId", "gameId");
+		spainSCSupportResult.setOrderExecutedSuccessfully(true);
+		
+		Map<String, OrderResolutionResults> ordersToExamineResults = new HashMap<String, OrderResolutionResults>();
+		ordersToExamineResults.put("1", spainNCMoveResult);
+		ordersToExamineResults.put("2", spainSCMoveResult);
+		ordersToExamineResults.put("3", spainSCSupportResult);
+		
+		myResolver.resolveConvoyHoldMovesToActions(spainNCMoveOrder, spainNCMoveResult, ordersToExamine, ordersToExamineResults, myGameMap);
+		
+		assertFalse("spain NC order not successful", spainNCMoveResult.wasOrderExecutedSuccessfully());
+		assertTrue("spain NC order completed", spainNCMoveResult.isOrderResolutionCompleted());
+		assertEquals("spain NC description", "Failed.  There was a stronger move or hold in one of the other regions in the province", spainNCMoveResult.getExecutionDescription());
+		
+		assertTrue("sc move order successful", spainSCMoveResult.wasOrderExecutedSuccessfully());
+		assertTrue("sc move order completed", spainSCMoveResult.isOrderResolutionCompleted());
+		assertEquals("sc move description", "Move Successful. All competitors are: Gulf_of_Lyon : 2, ", spainSCMoveResult.getExecutionDescription());
+		
+		assertTrue("sc support order successful", spainSCSupportResult.wasOrderExecutedSuccessfully());
+		assertTrue("sc support order completed", spainSCSupportResult.isOrderResolutionCompleted());
+		assertEquals("sc support description", "Move Successful. All competitors are: Gulf_of_Lyon : 2, ", spainSCMoveResult.getExecutionDescription());
+
+		// should work the same way when resolving the other order 
+		spainNCMoveResult = new OrderResolutionResults("1", "turnId", "gameId");
+		spainSCMoveResult = new OrderResolutionResults("2", "turnId", "gameId");
+		spainSCSupportResult = new OrderResolutionResults("3", "turnId", "gameId");
+		ordersToExamineResults.clear();
+		ordersToExamineResults.put("1", spainNCMoveResult);
+		ordersToExamineResults.put("2", spainSCMoveResult);
+		ordersToExamineResults.put("3", spainSCSupportResult);
+		
+		myResolver.resolveConvoyHoldMovesToActions(spainSCMoveOrder, spainSCMoveResult, ordersToExamine, ordersToExamineResults, myGameMap);
+
+		assertFalse("spain NC order not successful", spainNCMoveResult.wasOrderExecutedSuccessfully());
+		assertTrue("spain NC order completed", spainNCMoveResult.isOrderResolutionCompleted());
+		assertEquals("spain NC description", "Failed.  There was a stronger move or hold in one of the other regions in the province", spainNCMoveResult.getExecutionDescription());
+		
+		assertTrue("sc move order successful", spainSCMoveResult.wasOrderExecutedSuccessfully());
+		assertTrue("sc move order completed", spainSCMoveResult.isOrderResolutionCompleted());
+		assertEquals("sc move description", "Move Successful. All competitors are: Gulf_of_Lyon : 2, ", spainSCMoveResult.getExecutionDescription());
+		
+		assertTrue("sc support order successful", spainSCSupportResult.wasOrderExecutedSuccessfully());
+		assertTrue("sc support order completed", spainSCSupportResult.isOrderResolutionCompleted());
+		assertEquals("sc support description", "Move Successful. All competitors are: Gulf_of_Lyon : 2, ", spainSCMoveResult.getExecutionDescription());
+
+	}
+		
 
 }

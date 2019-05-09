@@ -3,10 +3,11 @@ package com.sdk.diplomacy.turnadmin.conflict;
 import java.util.Map;
 
 import com.sdk.diplomacy.turnadmin.domain.Order;
-import com.sdk.diplomacy.turnadmin.domain.Piece;
 import com.sdk.diplomacy.turnadmin.domain.Order.Action;
+import com.sdk.diplomacy.turnadmin.domain.Piece;
 import com.sdk.diplomacy.turnadmin.domain.Piece.PieceType;
 import com.sdk.diplomacy.turnadmin.map.GameMap;
+import com.sdk.diplomacy.turnadmin.map.Province;
 import com.sdk.diplomacy.turnadmin.map.Region;
 import com.sdk.diplomacy.turnadmin.map.Region.RegionType;
 
@@ -179,6 +180,15 @@ public class OrderValidator {
 				anOrderResult.setIsValidOrder(false);
 				anOrderResult.setExecutionDescription(
 						"Invalid order - unknown ending location: " + anOrder.getCurrentLocationName());
+			} else {
+				if (PieceType.ARMY == anOrder.getPieceType() && Action.MOVESTO == anOrder.getAction()) {
+					String effectiveEndingLocationName = anOrder.getEffectiveEndingLocationName();
+					if (effectiveEndingLocationName.contains("_(")) {
+						anOrderResult.setIsValidOrder(false);
+						anOrderResult.setExecutionDescription(
+								"Invalid order - armies can not move to the coastal regions of Spain, Bulgaria, or St Petersburg");
+					}
+				}
 			}
 		}
 	}
@@ -218,6 +228,15 @@ public class OrderValidator {
 	protected void validateMovesToAction(Order anOrder, OrderResolutionResults anOrderResult, GameMap aGameMap) {
 
 		validateEndingLocationName(anOrder, anOrderResult, aGameMap);
+		
+		if (anOrderResult.isValidOrder()) {
+			Province currentLocationProvince = aGameMap.getProvinceContainingRegionByName(anOrder.getCurrentLocationName());
+			if (currentLocationProvince.getRegions().containsKey(anOrder.getEndingLocationName())) {
+				anOrderResult.setIsValidOrder(false);
+				anOrderResult
+						.setExecutionDescription("Invalid order - can not move from one region in a province to a different region in the province");
+			}
+		}
 
 		if (anOrderResult.isValidOrder()) {
 			// if current and ending are coastal and it's an army it might be convoyed.

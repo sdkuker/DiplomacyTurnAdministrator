@@ -26,21 +26,16 @@ public class OrderValidatorTest {
 	public static void beforeTest() {
 		myGameMap.initialize();
 	}
-	
-	@Test
-	public void testOrdersForActionsInAProvinceNotARegion() {
-		assertFalse(true);
-	}
 
 	@Test
 	public void testValidateOrderSuccess() {
 
-		Order holdOrder = new Order("1", PieceType.ARMY, "Brest", Action.HOLDS,
-				"Brest", null, null, null, null, "France", "turnId", "gameId");
-		
+		Order holdOrder = new Order("1", PieceType.ARMY, "Brest", Action.HOLDS, "Brest", null, null, null, null,
+				"France", "turnId", "gameId");
+
 		Map<String, Order> allOrders = new HashMap<String, Order>();
 		allOrders.put("Brest", holdOrder);
-		
+
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		existingPieces.put("Brest", new Piece(null, "France", "Brest", "turnId", "gameId", PieceType.ARMY));
 
@@ -52,16 +47,16 @@ public class OrderValidatorTest {
 		assertTrue("order executed successfully", result.wasOrderExecutedSuccessfully());
 		assertNull("order has no execution description", result.getExecutionDescription());
 	}
-	
+
 	@Test
 	public void testValidateOrderFailureUnknownCurrentRegion() {
 
-		Order holdOrder = new Order("1", PieceType.ARMY, "Georgia", Action.HOLDS,
-				"Georgia", null, null, null, null, "France", "turnId", "gameId");
-		
+		Order holdOrder = new Order("1", PieceType.ARMY, "Georgia", Action.HOLDS, "Georgia", null, null, null, null,
+				"France", "turnId", "gameId");
+
 		Map<String, Order> allOrders = new HashMap<String, Order>();
 		allOrders.put("Georgia", holdOrder);
-		
+
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		existingPieces.put("Georgia", new Piece(null, "France", "Georgia", "turnId", "gameId", PieceType.ARMY));
 
@@ -71,10 +66,10 @@ public class OrderValidatorTest {
 
 		assertFalse("order is not valid", result.isValidOrder());
 		assertFalse("order did not execute successfully", result.wasOrderExecutedSuccessfully());
-		assertEquals("description is correct", "Invalid order - unknown current location: Georgia", result.getExecutionDescription());
+		assertEquals("description is correct", "Invalid order - unknown current location: Georgia",
+				result.getExecutionDescription());
 	}
 
-	
 	@Test
 	public void testValidIdValidation() {
 
@@ -490,12 +485,30 @@ public class OrderValidatorTest {
 	}
 
 	@Test
+	public void validateMovesToActionFailMovingToDifferentRegionInSameProvince() {
+
+		Order order = new Order(null, PieceType.FLEET, "Spain_(nc)", Action.MOVESTO, "Spain_(sc)", null, null, null, null,
+				"France", "turnId", "gameId");
+
+		OrderResolutionResults result1 = new OrderResolutionResults(null, "turnId", null);
+
+		myOrderValidator.validateMovesToAction(order, result1, myGameMap);
+
+		assertFalse("action is not valid", result1.isValidOrder());
+		assertFalse("action not executed successfully", result1.wasOrderExecutedSuccessfully());
+		assertEquals("description is correct",
+				"Invalid order - can not move from one region in a province to a different region in the province",
+				result1.getExecutionDescription());
+	}
+
+	@Test
 	public void validateMovesToActionFailLocation() {
 
 		Order badOrderNonAdjacentEndingLocation = new Order(null, PieceType.ARMY, "Paris", Action.MOVESTO, "Berlin",
 				null, null, null, null, "France", "turnId", "gameId");
 
-		OrderResolutionResults badOrderNonAdjacentEndingLocationResult = new OrderResolutionResults(null, "turnId", null);
+		OrderResolutionResults badOrderNonAdjacentEndingLocationResult = new OrderResolutionResults(null, "turnId",
+				null);
 
 		myOrderValidator.validateMovesToAction(badOrderNonAdjacentEndingLocation,
 				badOrderNonAdjacentEndingLocationResult, myGameMap);
@@ -586,7 +599,8 @@ public class OrderValidatorTest {
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		existingPieces.put("George", new Piece(null, "France", "George", "turnId", "gameId", PieceType.FLEET));
 
-		OrderResolutionResults badOrderNoPieceInCurrentLocationResult = new OrderResolutionResults(null, "turnId", null);
+		OrderResolutionResults badOrderNoPieceInCurrentLocationResult = new OrderResolutionResults(null, "turnId",
+				null);
 
 		myOrderValidator.validatePieceAndTypeInInitialLocation(badOrderNoPieceInCurrentLocation,
 				badOrderNoPieceInCurrentLocationResult, existingPieces);
@@ -694,20 +708,21 @@ public class OrderValidatorTest {
 		assertTrue("support order executed successfully", result.wasOrderExecutedSuccessfully());
 		assertNull("description is correct", result.getExecutionDescription());
 	}
-	
+
 	@Test
 	public void testSupportActionForConvoy() {
 
 		Order moveOrder = new Order("1", PieceType.ARMY, "Brest", Action.MOVESTO, "London", null, null, null, null,
 				"France", "turnId", "gameId");
-		Order convoyOrder = new Order("2", PieceType.FLEET, "English_Channel", Action.CONVOYS, null, PieceType.ARMY, "Brest",
-				Action.MOVESTO, "English_Channel", "France", "turnId", "gameId");
-		Order supportOrder = new Order("3", PieceType.FLEET, "North_Sea", Action.SUPPORTS, null, PieceType.FLEET, "English_Channel",
-				Action.HOLDS, "English_Channel", "France", "turnId", "gameId");
+		Order convoyOrder = new Order("2", PieceType.FLEET, "English_Channel", Action.CONVOYS, null, PieceType.ARMY,
+				"Brest", Action.MOVESTO, "English_Channel", "France", "turnId", "gameId");
+		Order supportOrder = new Order("3", PieceType.FLEET, "North_Sea", Action.SUPPORTS, null, PieceType.FLEET,
+				"English_Channel", Action.HOLDS, "English_Channel", "France", "turnId", "gameId");
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		existingPieces.put("Brest", new Piece(null, "France", "Brest", "turnId", "gameId", PieceType.ARMY));
-		existingPieces.put("English_Channel", new Piece(null, "France", "English_Channel", "turnId", "gameId", PieceType.FLEET));
+		existingPieces.put("English_Channel",
+				new Piece(null, "France", "English_Channel", "turnId", "gameId", PieceType.FLEET));
 		existingPieces.put("North_Sea", new Piece(null, "France", "North_Sea", "turnId", "gameId", PieceType.FLEET));
 
 		Map<String, Order> allOrders = new HashMap<String, Order>();
@@ -723,7 +738,6 @@ public class OrderValidatorTest {
 		assertTrue("support order executed successfully", result.wasOrderExecutedSuccessfully());
 		assertNull("description is correct", result.getExecutionDescription());
 	}
-
 
 	@Test
 	public void testSupportActionNoCorrespondingMoveOrder() {
@@ -1076,6 +1090,51 @@ public class OrderValidatorTest {
 		assertEquals("description is correct",
 				"Invalid order - the piece being convoyed is not moving to the same ending location",
 				result.getExecutionDescription());
+	}
+
+	@Test
+	public void testSuccessfullyMovingToInlandRegionOfMultipleRegionProvinces() {
+
+		Order armyMoveToSpainOrder = new Order("1", PieceType.ARMY, "Gascony", Action.MOVESTO, "Spain", null, null,
+				null, null, "France", "turnId", "gameId");
+
+		Map<String, Order> allOrders = new HashMap<String, Order>();
+		allOrders.put("Gascony", armyMoveToSpainOrder);
+
+		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
+		existingPieces.put("Gascony", new Piece(null, "France", "Gascony", "turnId", "gameId", PieceType.ARMY));
+
+		OrderResolutionResults result = new OrderResolutionResults("1", "turnId", "gameId");
+
+		myOrderValidator.validateOrder(armyMoveToSpainOrder, result, myGameMap, existingPieces, allOrders);
+
+		assertTrue("order is valid", result.isValidOrder());
+		assertTrue("order executed successfully", result.wasOrderExecutedSuccessfully());
+		assertNull("order has no execution description", result.getExecutionDescription());
+	}
+
+	@Test
+	public void testArmyMovingToCoastalRegionOfMultipleRegionProvinces() {
+
+		Order armyMoveToSpainOrder = new Order("1", PieceType.ARMY, "Gascony", Action.MOVESTO, "Spain_(sc)", null, null,
+				null, null, "France", "turnId", "gameId");
+
+		Map<String, Order> allOrders = new HashMap<String, Order>();
+		allOrders.put("Gascony", armyMoveToSpainOrder);
+
+		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
+		existingPieces.put("Gascony", new Piece(null, "France", "Gascony", "turnId", "gameId", PieceType.ARMY));
+
+		OrderResolutionResults result = new OrderResolutionResults("1", "turnId", "gameId");
+
+		myOrderValidator.validateOrder(armyMoveToSpainOrder, result, myGameMap, existingPieces, allOrders);
+
+		assertFalse("order is not valid", result.isValidOrder());
+		assertFalse("order did not executed successfully", result.wasOrderExecutedSuccessfully());
+		assertEquals("description is correct",
+				"Invalid order - armies can not move to the coastal regions of Spain, Bulgaria, or St Petersburg",
+				result.getExecutionDescription());
+
 	}
 
 }
