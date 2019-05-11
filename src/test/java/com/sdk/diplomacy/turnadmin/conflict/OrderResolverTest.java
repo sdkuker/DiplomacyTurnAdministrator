@@ -1467,6 +1467,7 @@ public class OrderResolverTest {
 		OrderResolutionResults spainSCMoveResult = new OrderResolutionResults("2", "turnId", "gameId");
 		OrderResolutionResults spainSCSupportResult = new OrderResolutionResults("3", "turnId", "gameId");
 		spainSCSupportResult.setOrderExecutedSuccessfully(true);
+		spainSCSupportResult.setExecutionDescription("It worked baby");
 		
 		Map<String, OrderResolutionResults> ordersToExamineResults = new HashMap<String, OrderResolutionResults>();
 		ordersToExamineResults.put("1", spainNCMoveResult);
@@ -1485,12 +1486,15 @@ public class OrderResolverTest {
 		
 		assertTrue("sc support order successful", spainSCSupportResult.wasOrderExecutedSuccessfully());
 		assertTrue("sc support order completed", spainSCSupportResult.isOrderResolutionCompleted());
-		assertEquals("sc support description", "Move Successful. All competitors are: Gulf_of_Lyon : 2, ", spainSCMoveResult.getExecutionDescription());
+		assertEquals("sc support description", "It worked baby", spainSCSupportResult.getExecutionDescription());
 
 		// should work the same way when resolving the other order 
 		spainNCMoveResult = new OrderResolutionResults("1", "turnId", "gameId");
 		spainSCMoveResult = new OrderResolutionResults("2", "turnId", "gameId");
 		spainSCSupportResult = new OrderResolutionResults("3", "turnId", "gameId");
+		spainSCSupportResult.setOrderExecutedSuccessfully(true);
+		spainSCSupportResult.setExecutionDescription("It worked baby");
+
 		ordersToExamineResults.clear();
 		ordersToExamineResults.put("1", spainNCMoveResult);
 		ordersToExamineResults.put("2", spainSCMoveResult);
@@ -1508,7 +1512,7 @@ public class OrderResolverTest {
 		
 		assertTrue("sc support order successful", spainSCSupportResult.wasOrderExecutedSuccessfully());
 		assertTrue("sc support order completed", spainSCSupportResult.isOrderResolutionCompleted());
-		assertEquals("sc support description", "Move Successful. All competitors are: Gulf_of_Lyon : 2, ", spainSCMoveResult.getExecutionDescription());
+		assertEquals("sc support description", "It worked baby", spainSCSupportResult.getExecutionDescription());
 
 	}
 		
