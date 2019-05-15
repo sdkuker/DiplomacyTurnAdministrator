@@ -16,13 +16,16 @@ import com.sdk.diplomacy.turnadmin.map.Province;
 public class TurnResolver {
 
 	protected GameMap myGameMap = new GameMap();
-	
+
 	public TurnResolver() {
 		super();
 		myGameMap.initialize();
 	}
-	
-	public void resolveTurn(List<Order> ordersForTurn, List<Piece> piecesForTurn) {
+
+	/*
+	 * Return the set of provinces that had a standoff
+	 */
+	public Set<Province> resolveConflict(List<Order> ordersForTurn, List<Piece> piecesForTurn) {
 
 		Map<String, Order> ordersByCurrentLocationMap = createMapByCurrentLocationForOrders(ordersForTurn);
 		Map<String, Order> ordersByIdMap = createMapByIdForOrders(ordersForTurn);
@@ -35,45 +38,59 @@ public class TurnResolver {
 				piecesByCurrentLocationMap);
 
 		updatePieceEndingLocations(results, ordersByIdMap, piecesByCurrentLocationMap);
-		//TODO identifyStandoffProvinces
+		Set<Province> standoffProvices = identifyStandoffProvinces(ordersByIdMap, results);
+
+		return standoffProvices;
 	}
-	
-	protected Set<Province> identifyStandoffProvinces(Map<String, Order> ordersByIdMap, Map<String, OrderResolutionResults> results) {
-		
+
+	protected Set<Province> identifyStandoffProvinces(Map<String, Order> ordersByIdMap,
+			Map<String, OrderResolutionResults> results) {
+
 		Set<Province> standoffProvinces = new HashSet<Province>();
-		
+
 		results.forEach((orderId, anOrderResolutionResult) -> {
 			if (anOrderResolutionResult.isExecutionFailedDueToStandoff()) {
 				String standoffRegionName = ordersByIdMap.get(orderId).getEffectiveEndingLocationName();
 				standoffProvinces.add(myGameMap.getProvinceContainingRegionByName(standoffRegionName));
 			}
 		});
-		
+
 		return standoffProvinces;
-		
+
 	}
 
 	protected void updatePieceEndingLocations(Map<String, OrderResolutionResults> results,
 			Map<String, Order> ordersByIdMap, Map<String, Piece> piecesByCurrentLocationMap) {
 
-		List<String> locationsOccupiedBySuccessfulMoves = new ArrayList<String>();
-		
+		List<Province> provincesOccupiedBySuccessfulMoves = new ArrayList<Province>();
+
 		results.forEach((orderId, anOrderResolutionResult) -> {
 			Order myOrder = ordersByIdMap.get(orderId);
 			if (Action.MOVESTO == myOrder.getAction()) {
 				if (anOrderResolutionResult.wasOrderExecutedSuccessfully()) {
 					piecesByCurrentLocationMap.get(myOrder.getCurrentLocationName())
 							.setNameOfLocationAtEndOfTurn(myOrder.getEndingLocationName());
-					locationsOccupiedBySuccessfulMoves.add(myOrder.getEndingLocationName());
+					provincesOccupiedBySuccessfulMoves
+							.add(myGameMap.getProvinceContainingRegionByName(myOrder.getEndingLocationName()));
 				}
 			}
 		});
-		
+
 		piecesByCurrentLocationMap.forEach((currentLocation, aPiece) -> {
-		
-			if ( (! locationsOccupiedBySuccessfulMoves.contains(aPiece.getNameOfLocationAtBeginningOfTurn())) &&
-					aPiece.getNameOfLocationAtEndOfTurn() == null) {
-				aPiece.setNameOfLocationAtEndOfTurn(aPiece.getNameOfLocationAtBeginningOfTurn());
+
+			/*
+			 * if the pieces locationAtEndOfTurn is filled in, it means that the piece is
+			 * done. If it's not filled in, it should stay where it started unless something
+			 * else took it's place - in which case it's been displaced. You must see if
+			 * something is in the province, not just the region.
+			 */
+			if (aPiece.getNameOfLocationAtEndOfTurn() == null) {
+				if (provincesOccupiedBySuccessfulMoves.contains(
+						myGameMap.getProvinceContainingRegionByName(aPiece.getNameOfLocationAtBeginningOfTurn()))) {
+					aPiece.setMustRetreatAtEndOfTurn(true);
+				} else {
+					aPiece.setNameOfLocationAtEndOfTurn(aPiece.getNameOfLocationAtBeginningOfTurn());
+				}
 			}
 		});
 	}
