@@ -13,10 +13,10 @@ public class Turn {
 	private String id;
 	private String gameId;
 	private Seasons season;
-	private int year;
+	private long year;
 	private Statuss status;
 	
-	public Turn(String id, String gameId, Seasons season, int year, Statuss status) {
+	public Turn(String id, String gameId, Seasons season, long year, Statuss status) {
 		super();
 		this.id = id;
 		this.gameId = gameId;
@@ -49,11 +49,11 @@ public class Turn {
 		this.season = season;
 	}
 
-	public int getYear() {
+	public long getYear() {
 		return year;
 	}
 
-	public void setYear(int year) {
+	public void setYear(long year) {
 		this.year = year;
 	}
 

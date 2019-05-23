@@ -1,5 +1,6 @@
 package com.sdk.diplomacy.turnadmin.domain.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -10,51 +11,52 @@ import com.google.cloud.firestore.Query;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.sdk.diplomacy.dao.DAOUtilities;
-import com.sdk.diplomacy.turnadmin.domain.Turn;
+import com.sdk.diplomacy.turnadmin.domain.Piece;
 
-public class TurnDAO {
-
+public class PieceDAO {
+	
 	private Firestore db = null;
 	private LambdaLogger logger;
 	private String topLevelCollectionName;
 
-	public TurnDAO(Firestore db, LambdaLogger logger, String aTopLevelCollectionName) {
+	public PieceDAO(Firestore db, LambdaLogger logger, String aTopLevelCollectionName) {
 		super();
 		this.logger = logger;
 		this.db = db;
 		topLevelCollectionName = aTopLevelCollectionName;
 	}
 
-	public Turn getOpenTurnForGame(String aGameId) throws InterruptedException, ExecutionException {
-
-		logger.log("Started getting the open turn for game id: " + aGameId);
-
-		Turn theReturn = null;
+	public List<Piece> getPiecesForTurn(String aTurnID) throws InterruptedException, ExecutionException {
+		
+		logger.log("Started getting the pieces for turn id: " + aTurnID);
+		
+		List<Piece> listOfPieces = new ArrayList<Piece>();
 
 		// asynchronously retrieve all games
-		Query query = db.collection(topLevelCollectionName).document("turns").collection("allTurns").whereEqualTo("gameId", aGameId)
-				.whereEqualTo("status", "OPEN");
+		Query query = db.collection(topLevelCollectionName).document("pieces").collection("allPieces").whereEqualTo("turnId", aTurnID);
 		ApiFuture<QuerySnapshot> querySnapshotFuture = query.get();
 		try {
 			logger.log("About to launch the query");
 			// querySnapshot.get() blocks on response
 			QuerySnapshot querySnapshot = querySnapshotFuture.get();
 			List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
-			logger.log("Number of documents in the get open turn for turn query snapshot:" + documents.size());
+			logger.log("Number of documents in the get pieces for turn query snapshot:" + documents.size());
 			for (QueryDocumentSnapshot document : documents) {
-				logger.log("Turn ID: " + document.getId());
-				theReturn = new Turn(document.getId(), document.getString("gameId"),
-						Turn.Seasons.valueOf(document.getString("season")), (Long) document.get("year"),
-						Turn.Statuss.valueOf(document.getString("status")));
+				logger.log("Piece ID: " + document.getId());
+				Piece aPiece = new Piece(document.getId(), document.getString("owningCountryName"),
+						document.getString("nameOfLocationAtBeginningOfTurn"), document.getString("turnId"),
+						document.getString("gameId"), Piece.PieceType.valueOf(document.getString("type"))
+						);
+				listOfPieces.add(aPiece);
 			}
 
 		} catch (Exception e) {
-			logger.log("error getting the open turn for game: " + aGameId + " stacktrace: "
+			logger.log("error getting the pieces for turn: " + aTurnID + " stacktrace: "
 					+ DAOUtilities.printStackTrace(e));
 			throw e;
 		}
 
-		return theReturn;
+		return listOfPieces;
 	}
 
 }
