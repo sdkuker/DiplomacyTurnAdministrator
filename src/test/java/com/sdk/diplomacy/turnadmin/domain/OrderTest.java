@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import com.sdk.diplomacy.turnadmin.domain.Order;
 import com.sdk.diplomacy.turnadmin.domain.Order.Action;
 import com.sdk.diplomacy.turnadmin.domain.Piece.PieceType;
 

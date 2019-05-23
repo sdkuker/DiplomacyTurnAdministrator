@@ -1,7 +1,5 @@
-package com.sdk.diplomacy.turnadmin.dao;
+package com.sdk.diplomacy.turnadmin.domain.dao;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -11,32 +9,30 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
+import com.sdk.diplomacy.dao.DAOUtilities;
 import com.sdk.diplomacy.turnadmin.domain.Game;
 
 public class GameDAO {
 
 	private Firestore db = null;
 	private LambdaLogger logger;
+	private String topLevelCollectionName;
 	
-
-	public GameDAO(Firestore db, LambdaLogger logger) {
+	public GameDAO(Firestore db, LambdaLogger logger, String aTopLevelCollectionName) {
 		super();
 		this.logger = logger;
 		this.db = db;
+		topLevelCollectionName = aTopLevelCollectionName;
 	}
 
-
 	public List<Game> getAllGames() throws InterruptedException, ExecutionException {
-
-		logger.log("Started getting all games");
 	
 		List<Game> theReturn = new ArrayList<Game>();
 
 		logger.log("About to get games from Firebase");
 		
 		// asynchronously retrieve all games
-		ApiFuture<QuerySnapshot> query = db.collection("TEST").document("games").collection("allGames").get();
-		// ...
+		ApiFuture<QuerySnapshot> query = db.collection(topLevelCollectionName).document("games").collection("allGames").get();
 		// query.get() blocks on response
 		try {
 			logger.log("About to get the all games query");
@@ -50,19 +46,11 @@ public class GameDAO {
 			}
 
 		} catch (Exception e) {
-			logger.log("error getting games" + printStackTrace(e));
+			logger.log("error getting games" + DAOUtilities.printStackTrace(e));
 			throw e;
 		}
 
 		return theReturn;
 	}
 	
-	private String printStackTrace(Exception exception) {
-		
-		StringWriter errors = new StringWriter();
-		exception.printStackTrace(new PrintWriter(errors));
-		return errors.toString();
-		
-		
-	}
 }

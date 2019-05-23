@@ -1,7 +1,7 @@
 package com.sdk.diplomacy.turnadmin;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
 import org.json.simple.JSONObject;
@@ -9,9 +9,9 @@ import org.json.simple.JSONObject;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
-import com.sdk.diplomacy.turnadmin.dao.DAOWarehouse;
-import com.sdk.diplomacy.turnadmin.dao.GameDAO;
+import com.sdk.diplomacy.dao.DAOWarehouse;
 import com.sdk.diplomacy.turnadmin.domain.Game;
+import com.sdk.diplomacy.turnadmin.domain.dao.GameDAO;
 import com.sdk.diplomacy.turnadmin.model.ServerlessInput;
 import com.sdk.diplomacy.turnadmin.model.ServerlessOutput;
 
@@ -43,13 +43,22 @@ public class AdministerTurn implements RequestHandler<ServerlessInput, Serverles
 		return myOutput;
 	}
 	
-	protected DAOWarehouse initializeFirebase(LambdaLogger logger) throws ClassNotFoundException, IOException {
+	protected DAOWarehouse initializeFirebase(LambdaLogger logger) throws Exception {
 		
-		DAOWarehouse myWarehouse = new DAOWarehouse(logger);
+		DAOWarehouse myWarehouse = new DAOWarehouse(logger, (String) getProperties(logger).get("topLevelFirestoreCollectionName"));
 		myWarehouse.initializeFirebase();
 		
 		return myWarehouse;
 		
+	}
+	
+	protected Properties getProperties(LambdaLogger logger) throws Exception{
+		
+		PropertyManager myManager = new PropertyManager(logger);
+		myManager.initializeProperties();
+		
+		return myManager.getProperties();
+
 	}
 
 	protected JSONObject getGameNames(GameDAO myDAO, LambdaLogger logger) throws ExecutionException, InterruptedException {
