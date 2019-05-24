@@ -3,11 +3,18 @@ package com.sdk.diplomacy.turnadmin.domain;
 public class Piece {
 
 	public enum PieceType {
-		FLEET, ARMY
+		FLEET, ARMY;
+		public static PieceType from(String text) {
+			if (text == null) {
+				return null;
+			} else {
+				return valueOf(text.toUpperCase());
+			}
+		}
 	}
 
 	private String id;
-	private String owningCountryName;  // this is which country owns the piece
+	private String owningCountryName; // this is which country owns the piece
 	private String nameOfLocationAtBeginningOfTurn;
 	private String nameOfLocationAtEndOfTurn;
 	private boolean mustRetreatAtEndOfTurn;

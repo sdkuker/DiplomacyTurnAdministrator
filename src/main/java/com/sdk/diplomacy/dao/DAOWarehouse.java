@@ -8,6 +8,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
 import com.sdk.diplomacy.turnadmin.domain.dao.GameDAO;
+import com.sdk.diplomacy.turnadmin.domain.dao.OrderDAO;
 import com.sdk.diplomacy.turnadmin.domain.dao.PieceDAO;
 import com.sdk.diplomacy.turnadmin.domain.dao.TurnDAO;
 
@@ -20,6 +21,7 @@ public class DAOWarehouse {
 	private GameDAO gameDAO;
 	private TurnDAO turnDAO;
 	private PieceDAO pieceDAO;
+	private OrderDAO orderDAO;
 
 	public DAOWarehouse(LambdaLogger logger, String aTopLevelCollectionName) {
 		super();
@@ -63,6 +65,19 @@ public class DAOWarehouse {
 			};
 			pieceDAO = new PieceDAO(db, logger, topLevelCollectionName);
 			return pieceDAO;
+		}
+	}
+	
+	public OrderDAO getOrderDAO() throws ClassNotFoundException, IOException {
+
+		if (orderDAO != null) {
+			return orderDAO;
+		} else {
+			if (db == null) {
+				initializeFirebase();
+			};
+			orderDAO = new OrderDAO(db, logger, topLevelCollectionName);
+			return orderDAO;
 		}
 	}
 

@@ -47,6 +47,9 @@ public class PieceDAO {
 						document.getString("nameOfLocationAtBeginningOfTurn"), document.getString("turnId"),
 						document.getString("gameId"), Piece.PieceType.valueOf(document.getString("type"))
 						);
+				aPiece.setMustRetreatAtEndOfTurn(document.getBoolean("mustRetreatAtEndOfTurn"));
+				aPiece.setNameOfLocationAtEndOfTurn(document.getString("nameOfLocationAtEndOfTurn"));
+				
 				listOfPieces.add(aPiece);
 			}
 

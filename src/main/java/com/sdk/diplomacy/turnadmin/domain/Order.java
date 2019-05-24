@@ -5,7 +5,14 @@ import com.sdk.diplomacy.turnadmin.domain.Piece.PieceType;
 public class Order {
 
 	public enum Action {
-		HOLDS, MOVESTO, CONVOYS, SUPPORTS
+		HOLDS, MOVESTO, CONVOYS, SUPPORTS;
+		public static Action from(String text) {
+			if (text == null) {
+				return null;
+			} else {
+				return valueOf(text.toUpperCase());
+			}
+		}
 	}
 	
 	private String id;
