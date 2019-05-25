@@ -50,7 +50,7 @@ public class TurnResolverIntegrationTest {
 		listOfPieces.add(armyStartingInRuhr);
 		listOfPieces.add(armyStartingInBurgundy);
 
-		Set<Province> standoffProvices = myResolver.resolveConflict(listOfOrders, listOfPieces);
+		Set<StandoffProvince> standoffProvices = myResolver.resolveConflict(listOfOrders, listOfPieces);
 		
 		assertNotNull("standoff provice list returned", standoffProvices);
 		assertEquals("no standoff provices were returned", 0, standoffProvices.size());
@@ -92,9 +92,9 @@ public class TurnResolverIntegrationTest {
 		listOfPieces.add(fleetStartingInWesternMed);
 		listOfPieces.add(armyHoldingInSpain);
 
-		Set<Province> standoffProvices = myResolver.resolveConflict(listOfOrders, listOfPieces);
+		Set<StandoffProvince> standoffProvices = myResolver.resolveConflict(listOfOrders, listOfPieces);
 		
-		assertNotNull("standoff provice list returned", standoffProvices);
+		assertNotNull("standoff province list returned", standoffProvices);
 		assertEquals("no provices were returned", 0, standoffProvices.size());
 		assertEquals("move from MAO fails", "Mid_Atlantic_Ocean", fleetStartingInMAO.getNameOfLocationAtEndOfTurn());
 		assertEquals("move from Gulf succeeds", "Spain_(sc)", fleetStartingInGulf.getNameOfLocationAtEndOfTurn());
@@ -126,11 +126,11 @@ public class TurnResolverIntegrationTest {
 		listOfPieces.add(armyStartingInParis);
 		listOfPieces.add(armyStartingInRuhr);
 
-		Set<Province> standoffProvices = myResolver.resolveConflict(listOfOrders, listOfPieces);
+		Set<StandoffProvince> standoffProvices = myResolver.resolveConflict(listOfOrders, listOfPieces);
 		
 		assertNotNull("standoff provice list returned", standoffProvices);
 		assertEquals("provices were returned", 1, standoffProvices.size());
-		assertEquals("correct provice was returned", "Burgundy", ((Province)standoffProvices.toArray()[0]).getName());
+		assertEquals("correct province was returned", "Burgundy", ((StandoffProvince) standoffProvices.toArray()[0]).getProvinceName());
 		assertEquals("move from paris fails", "Paris", armyStartingInParis.getNameOfLocationAtEndOfTurn());
 		assertEquals("move from Ruhr fails", "Ruhr", armyStartingInRuhr.getNameOfLocationAtEndOfTurn());
 	}
@@ -156,11 +156,11 @@ public class TurnResolverIntegrationTest {
 		listOfPieces.add(fleetStartingInMAO);
 		listOfPieces.add(fleetStartingInGulf);
 
-		Set<Province> standoffProvices = myResolver.resolveConflict(listOfOrders, listOfPieces);
+		Set<StandoffProvince> standoffProvices = myResolver.resolveConflict(listOfOrders, listOfPieces);
 		
 		assertNotNull("standoff provice list returned", standoffProvices);
 		assertEquals("provices were returned", 1, standoffProvices.size());
-		assertEquals("correct provice was returned", "Spain", ((Province)standoffProvices.toArray()[0]).getName());
+		assertEquals("correct provice was returned", "Spain", ((StandoffProvince) standoffProvices.toArray()[0]).getProvinceName());
 		assertEquals("move from MAO fails", "Mid_Atlantic_Ocean", fleetStartingInMAO.getNameOfLocationAtEndOfTurn());
 		assertEquals("move from Gulf fails", "Gulf_of_Lyon", fleetStartingInGulf.getNameOfLocationAtEndOfTurn());
 	}

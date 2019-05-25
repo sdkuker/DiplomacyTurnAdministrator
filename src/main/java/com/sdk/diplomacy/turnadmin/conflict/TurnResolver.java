@@ -25,7 +25,7 @@ public class TurnResolver {
 	/*
 	 * Return the set of provinces that had a standoff
 	 */
-	public Set<Province> resolveConflict(List<Order> ordersForTurn, List<Piece> piecesForTurn) {
+	public Set<StandoffProvince> resolveConflict(List<Order> ordersForTurn, List<Piece> piecesForTurn) {
 
 		Map<String, Order> ordersByCurrentLocationMap = createMapByCurrentLocationForOrders(ordersForTurn);
 		Map<String, Order> ordersByIdMap = createMapByIdForOrders(ordersForTurn);
@@ -38,20 +38,23 @@ public class TurnResolver {
 				piecesByCurrentLocationMap);
 
 		updatePieceEndingLocations(results, ordersByIdMap, piecesByCurrentLocationMap);
-		Set<Province> standoffProvices = identifyStandoffProvinces(ordersByIdMap, results);
+		Set<StandoffProvince> standoffProvices = identifyStandoffProvinces(ordersByIdMap, results);
 
 		return standoffProvices;
 	}
 
-	protected Set<Province> identifyStandoffProvinces(Map<String, Order> ordersByIdMap,
+	protected Set<StandoffProvince> identifyStandoffProvinces(Map<String, Order> ordersByIdMap,
 			Map<String, OrderResolutionResults> results) {
 
-		Set<Province> standoffProvinces = new HashSet<Province>();
+		Set<StandoffProvince> standoffProvinces = new HashSet<StandoffProvince>();
 
 		results.forEach((orderId, anOrderResolutionResult) -> {
 			if (anOrderResolutionResult.isExecutionFailedDueToStandoff()) {
 				String standoffRegionName = ordersByIdMap.get(orderId).getEffectiveEndingLocationName();
-				standoffProvinces.add(myGameMap.getProvinceContainingRegionByName(standoffRegionName));
+				String standoffProvinceName = myGameMap.getProvinceContainingRegionByName(standoffRegionName).getName();
+				StandoffProvince aStandOffProvince = new StandoffProvince(null, standoffProvinceName,
+						anOrderResolutionResult.getTurnId(), anOrderResolutionResult.getGameId());
+				standoffProvinces.add(aStandOffProvince);
 			}
 		});
 

@@ -198,13 +198,13 @@ public class TurnResolverTest {
 		orderResults.put("2", moveToBurgundyFromRuhrOrderResults);
 		orderResults.put("3", moveToLondonFromWalesOrderResults);
 				
-		Set<Province> standoffProvinces = myResolver.identifyStandoffProvinces(ordersById, orderResults);
-		Province standoffProvincesAsArray[] = new Province[standoffProvinces.size()];
+		Set<StandoffProvince> standoffProvinces = myResolver.identifyStandoffProvinces(ordersById, orderResults);
+		StandoffProvince standoffProvincesAsArray[] = new StandoffProvince[standoffProvinces.size()];
 		standoffProvinces.toArray(standoffProvincesAsArray);
 		
 		assertNotNull("something should be returned", standoffProvinces);
 		assertEquals("should be only 1 province returned", 1, standoffProvinces.size());
-		assertEquals("province name should be correct", "Burgundy", standoffProvincesAsArray[0].getName());
+		assertEquals("province name should be correct", "Burgundy", standoffProvincesAsArray[0].getProvinceName());
 	}
 
 	@Test
@@ -236,13 +236,13 @@ public class TurnResolverTest {
 		orderResults.put("2", moveToSpainFromGasconyResults);
 		orderResults.put("3", moveToLondonFromWalesOrderResults);
 				
-		Set<Province> standoffProvinces = myResolver.identifyStandoffProvinces(ordersById, orderResults);
-		Province standoffProvincesAsArray[] = new Province[standoffProvinces.size()];
+		Set<StandoffProvince> standoffProvinces = myResolver.identifyStandoffProvinces(ordersById, orderResults);
+		StandoffProvince standoffProvincesAsArray[] = new StandoffProvince[standoffProvinces.size()];
 		standoffProvinces.toArray(standoffProvincesAsArray);
 		
 		assertNotNull("something should be returned", standoffProvinces);
 		assertEquals("should be only 1 province returned", 1, standoffProvinces.size());
-		assertEquals("province name should be correct", "Spain", standoffProvincesAsArray[0].getName());
+		assertEquals("province name should be correct", "Spain", standoffProvincesAsArray[0].getProvinceName());
 
 	}
 
