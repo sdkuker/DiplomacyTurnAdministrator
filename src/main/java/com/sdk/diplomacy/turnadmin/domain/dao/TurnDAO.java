@@ -45,7 +45,7 @@ public class TurnDAO {
 				logger.log("Turn ID: " + document.getId());
 				theReturn = new Turn(document.getId(), document.getString("gameId"),
 						Turn.Seasons.valueOf(document.getString("season")), (Long) document.get("year"),
-						Turn.Statuss.valueOf(document.getString("status")));
+						Turn.Statuss.valueOf(document.getString("status")), Turn.Phases.valueOf(document.getString("phase")));
 			}
 
 		} catch (Exception e) {

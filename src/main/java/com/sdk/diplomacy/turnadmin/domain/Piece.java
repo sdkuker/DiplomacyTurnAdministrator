@@ -14,7 +14,7 @@ public class Piece {
 	}
 
 	private String id;
-	private String owningCountryName; // this is which country owns the piece
+	private String owningCountryName;
 	private String nameOfLocationAtBeginningOfTurn;
 	private String nameOfLocationAtEndOfTurn;
 	private boolean mustRetreatAtEndOfTurn;
@@ -35,6 +35,10 @@ public class Piece {
 
 	public String getId() {
 		return id;
+	}
+	
+	public void setId(String anId) {
+		id = anId;
 	}
 
 	public String getOwningCountryName() {

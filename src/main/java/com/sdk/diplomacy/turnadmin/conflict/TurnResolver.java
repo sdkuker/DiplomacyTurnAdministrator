@@ -22,11 +22,10 @@ public class TurnResolver {
 		myGameMap.initialize();
 	}
 
-	/*
-	 * Return the set of provinces that had a standoff
-	 */
-	public Set<StandoffProvince> resolveConflict(List<Order> ordersForTurn, List<Piece> piecesForTurn) {
+	public ConflictResolutionResults resolveConflict(List<Order> ordersForTurn, List<Piece> piecesForTurn) {
 
+		ConflictResolutionResults myResults = new ConflictResolutionResults();
+		
 		Map<String, Order> ordersByCurrentLocationMap = createMapByCurrentLocationForOrders(ordersForTurn);
 		Map<String, Order> ordersByIdMap = createMapByIdForOrders(ordersForTurn);
 		Map<String, Piece> piecesByCurrentLocationMap = createMapByCurrentLocationForPieces(piecesForTurn);
@@ -39,8 +38,11 @@ public class TurnResolver {
 
 		updatePieceEndingLocations(results, ordersByIdMap, piecesByCurrentLocationMap);
 		Set<StandoffProvince> standoffProvices = identifyStandoffProvinces(ordersByIdMap, results);
+		
+		myResults.setOrderResolutionResults(results);
+		myResults.setStandoffProvinces(standoffProvices);
 
-		return standoffProvices;
+		return myResults;
 	}
 
 	protected Set<StandoffProvince> identifyStandoffProvinces(Map<String, Order> ordersByIdMap,
