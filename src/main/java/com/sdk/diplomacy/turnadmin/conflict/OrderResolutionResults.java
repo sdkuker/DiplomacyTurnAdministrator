@@ -5,6 +5,7 @@ package com.sdk.diplomacy.turnadmin.conflict;
  */
 public class OrderResolutionResults {
 
+	private String id;
 	private String orderId;
 	private String turnId;
 	private String gameId;
@@ -80,6 +81,14 @@ public class OrderResolutionResults {
 
 	public void setExecutionFailedDueToStandoff(boolean executionFailedDueToStandoff) {
 		this.executionFailedDueToStandoff = executionFailedDueToStandoff;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 	
 	

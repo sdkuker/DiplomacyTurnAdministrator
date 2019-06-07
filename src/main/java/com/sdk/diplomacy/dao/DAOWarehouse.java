@@ -9,7 +9,9 @@ import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
 import com.sdk.diplomacy.turnadmin.domain.dao.GameDAO;
 import com.sdk.diplomacy.turnadmin.domain.dao.OrderDAO;
+import com.sdk.diplomacy.turnadmin.domain.dao.OrderResolutionResultsDAO;
 import com.sdk.diplomacy.turnadmin.domain.dao.PieceDAO;
+import com.sdk.diplomacy.turnadmin.domain.dao.StandoffProvinceDAO;
 import com.sdk.diplomacy.turnadmin.domain.dao.TurnDAO;
 
 public class DAOWarehouse {
@@ -22,6 +24,8 @@ public class DAOWarehouse {
 	private TurnDAO turnDAO;
 	private PieceDAO pieceDAO;
 	private OrderDAO orderDAO;
+	private StandoffProvinceDAO standoffProvinceDAO;
+	private OrderResolutionResultsDAO orderResolutionResultsDAO;
 
 	public DAOWarehouse(LambdaLogger logger, String aTopLevelCollectionName) {
 		super();
@@ -67,6 +71,33 @@ public class DAOWarehouse {
 			return pieceDAO;
 		}
 	}
+	
+	public StandoffProvinceDAO getStandoffProvinceDAO() throws ClassNotFoundException, IOException {
+
+		if (standoffProvinceDAO != null) {
+			return standoffProvinceDAO;
+		} else {
+			if (db == null) {
+				initializeFirebase();
+			};
+			standoffProvinceDAO = new StandoffProvinceDAO(db, logger, topLevelCollectionName);
+			return standoffProvinceDAO;
+		}
+	}
+	
+	public OrderResolutionResultsDAO getOrderResolutionResultsDAO() throws ClassNotFoundException, IOException {
+
+		if (orderResolutionResultsDAO != null) {
+			return orderResolutionResultsDAO;
+		} else {
+			if (db == null) {
+				initializeFirebase();
+			};
+			orderResolutionResultsDAO = new OrderResolutionResultsDAO(db, logger, topLevelCollectionName);
+			return orderResolutionResultsDAO;
+		}
+	}
+
 	
 	public OrderDAO getOrderDAO() throws ClassNotFoundException, IOException {
 

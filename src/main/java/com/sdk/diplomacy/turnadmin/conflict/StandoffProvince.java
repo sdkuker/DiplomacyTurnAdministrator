@@ -18,6 +18,10 @@ public class StandoffProvince {
 	public String getId() {
 		return id;
 	}
+	
+	public void setId(String anId) {
+		id = anId;
+	}
 
 	public String getProvinceName() {
 		return provinceName;

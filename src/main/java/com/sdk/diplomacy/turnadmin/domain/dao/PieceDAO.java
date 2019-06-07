@@ -37,7 +37,7 @@ public class PieceDAO {
 
 		List<Piece> listOfPieces = new ArrayList<Piece>();
 
-		// asynchronously retrieve all games
+		// asynchronously retrieve all pieces
 		Query query = db.collection(topLevelCollectionName).document("pieces").collection("allPieces")
 				.whereEqualTo("turnId", aTurnID);
 		ApiFuture<QuerySnapshot> querySnapshotFuture = query.get();
