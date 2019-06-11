@@ -6,10 +6,12 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.sdk.diplomacy.dao.DAOUtilities;
 import com.sdk.diplomacy.dao.DAOWarehouse;
 import com.sdk.diplomacy.turnadmin.conflict.ConflictResolutionResults;
+import com.sdk.diplomacy.turnadmin.conflict.OrderResolutionResults;
 import com.sdk.diplomacy.turnadmin.conflict.StandoffProvince;
 import com.sdk.diplomacy.turnadmin.conflict.TurnResolver;
 import com.sdk.diplomacy.turnadmin.domain.Order;
 import com.sdk.diplomacy.turnadmin.domain.Piece;
+import com.sdk.diplomacy.turnadmin.domain.Turn;
 
 public class ExecuteTurn {
 
@@ -39,9 +41,14 @@ public class ExecuteTurn {
 			for (StandoffProvince aStandoffProvince : conflictResolutionResults.getStandoffProvinces()) {
 				myDAOWarehouse.getStandoffProvinceDAO().insertStandoffProvince(aStandoffProvince);
 			}
+			
+			for (OrderResolutionResults aResults : conflictResolutionResults.getOrderResolutionResults().values()) {
+				myDAOWarehouse.getOrderResolutionResultsDAO().insertOrderResolutionResults(aResults);
+			}
 	
-			//TODO persist the order execution results
-			//TODO persist the change in phase of the turn done if it's a spring turn or 'retreat and disbanding' if a fall turn
+			Turn myTurn = myDAOWarehouse.getTurnDAO().getTurn(aTurnID);
+			myDAOWarehouse.getTurnDAO().updatePhase(myTurn, Turn.Phases.RETREAT_AND_DISBANDING);
+			
 		} catch (Exception e) {
 			myLogger.log("Unable to execute turn: " + aTurnID + " stack trace is: " + DAOUtilities.printStackTrace(e));
 		}

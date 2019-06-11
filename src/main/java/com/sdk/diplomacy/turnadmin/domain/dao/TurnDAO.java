@@ -1,14 +1,20 @@
 package com.sdk.diplomacy.turnadmin.domain.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.google.api.core.ApiFuture;
+import com.google.cloud.Timestamp;
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.Query;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
+import com.google.cloud.firestore.WriteResult;
 import com.sdk.diplomacy.dao.DAOUtilities;
 import com.sdk.diplomacy.turnadmin.domain.Turn;
 
@@ -17,6 +23,8 @@ public class TurnDAO {
 	private Firestore db = null;
 	private LambdaLogger logger;
 	private String topLevelCollectionName;
+	private String documentName = "turns";
+	private String collectionName = "allTurns";
 
 	public TurnDAO(Firestore db, LambdaLogger logger, String aTopLevelCollectionName) {
 		super();
@@ -32,7 +40,7 @@ public class TurnDAO {
 		Turn theReturn = null;
 
 		// asynchronously retrieve all games
-		Query query = db.collection(topLevelCollectionName).document("turns").collection("allTurns").whereEqualTo("gameId", aGameId)
+		Query query = db.collection(topLevelCollectionName).document(documentName).collection(collectionName).whereEqualTo("gameId", aGameId)
 				.whereEqualTo("status", "OPEN");
 		ApiFuture<QuerySnapshot> querySnapshotFuture = query.get();
 		try {
@@ -55,6 +63,74 @@ public class TurnDAO {
 		}
 
 		return theReturn;
+	}
+	
+	public Turn getTurn(String aTurnId) throws InterruptedException, ExecutionException {
+
+		logger.log("Started getting the turn for ID: " + aTurnId);
+
+		Turn theReturn = null;
+
+		DocumentReference docRef = db.collection(topLevelCollectionName).document(documentName).collection(collectionName)
+				.document(aTurnId);
+		ApiFuture<DocumentSnapshot> future = docRef.get();
+		DocumentSnapshot aDocument = future.get();
+		
+		if (aDocument.exists()) {
+			theReturn = new Turn(aDocument.getId(), aDocument.getString("gameId"),
+					Turn.Seasons.valueOf(aDocument.getString("season")), (Long) aDocument.get("year"),
+					Turn.Statuss.valueOf(aDocument.getString("status")), Turn.Phases.valueOf(aDocument.getString("phase")));
+		}
+		
+		return theReturn;
+	}
+
+	
+	public Timestamp updatePhase(Turn aTurn, Turn.Phases aPhase) throws InterruptedException, ExecutionException {
+
+		logger.log("Started updating turn phase for turn with id: " + aTurn.getId());
+
+		DocumentReference docRef = db.collection(topLevelCollectionName).document(documentName).collection(collectionName)
+				.document(aTurn.getId());
+		ApiFuture<WriteResult> future = docRef.update("phase", aPhase.toString());
+		WriteResult aWriteResult = future.get();
+		
+		logger.log("Update time: " + aWriteResult.getUpdateTime());
+
+		return aWriteResult.getUpdateTime();
+	}
+
+	protected String insertTurn(Turn aTurn) throws InterruptedException, ExecutionException {
+
+		logger.log("Started inserting turn with id: " + aTurn.getId());
+
+		Map<String, Object> docData = new HashMap<String, Object>();
+		docData.put("gameId", aTurn.getGameId());
+		docData.put("season", aTurn.getSeason().toString());
+		docData.put("year", aTurn.getYear());
+		docData.put("status", aTurn.getStatus().toString());
+		docData.put("phase", aTurn.getPhase().toString());
+
+		ApiFuture<DocumentReference> addedDocRef = db.collection(topLevelCollectionName).document(documentName).collection(collectionName)
+				.add(docData);
+		
+		aTurn.setId(addedDocRef.get().getId());
+		
+		return aTurn.getId();
+	}
+	
+	protected Timestamp deleteTurn(Turn aTurn) throws InterruptedException, ExecutionException {
+
+		logger.log("Started deleting turn with id: " + aTurn.getId());
+		
+		ApiFuture<WriteResult> future = db.collection(topLevelCollectionName).document(documentName).collection(collectionName)
+				.document(aTurn.getId()).delete();
+		
+		WriteResult aWriteResult = future.get();
+		
+		logger.log("Delete time: " + aWriteResult.getUpdateTime());
+
+		return aWriteResult.getUpdateTime();
 	}
 
 }
