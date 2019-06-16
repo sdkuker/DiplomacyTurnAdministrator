@@ -156,7 +156,15 @@ public class Order {
 		if (requiresSecondaryOrder()) {
 			return getSecondaryEndingLocationName();
 		} else {
-			return getEndingLocationName();
+			if (getEndingLocationName() != null) {
+				return getEndingLocationName();
+			} else {
+				if (Action.HOLDS == getAction()) {
+					return getCurrentLocationName();
+				} else {
+					return "heaven knows..";
+				}
+			}
 		}
 	}
 	

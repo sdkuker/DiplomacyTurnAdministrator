@@ -23,7 +23,7 @@ public class AdministerTurn implements RequestHandler<ServerlessInput, Serverles
 
 		ServerlessOutput myOutput = new ServerlessOutput();
 
-		System.out.println("I got to the lambda function");
+		context.getLogger().log("I got to the lambda function");
 
 		try {
 			DAOWarehouse myDAOWarehouse = initializeFirebase(context.getLogger());
@@ -34,9 +34,9 @@ public class AdministerTurn implements RequestHandler<ServerlessInput, Serverles
 			}
 			myOutput.setBody(gameNames.toJSONString());
 			myOutput.setStatusCode(200);
-			System.out.println("didnt get an error in the handler");
+			context.getLogger().log("didnt get an error in the handler");
 		} catch (Exception e) {
-			System.out.println("got an error in the handler: " + e);
+			context.getLogger().log("got an error in the handler: " + e);
 			myOutput.setStatusCode(500);
 		}
 

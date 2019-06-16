@@ -89,5 +89,12 @@ public class OrderTest {
 
 	}
 
+	@Test
+	public void testGetEffectiveEndingLocationForHoldsWithNoEndingLocationSpecified() {
+		
+		Order anOrder = new Order("anOrderId", PieceType.ARMY, "Paris", Action.HOLDS, null, null, null, null, null, "France", "aTurnId", "aGameId");
+		assertEquals("Hold order", "Paris", anOrder.getEffectiveEndingLocationName());
+		
+	}
 
 }
