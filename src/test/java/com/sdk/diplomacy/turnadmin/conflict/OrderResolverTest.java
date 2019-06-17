@@ -24,7 +24,9 @@ import org.mockito.stubbing.Answer;
 import com.sdk.diplomacy.turnadmin.domain.Order;
 import com.sdk.diplomacy.turnadmin.domain.Order.Action;
 import com.sdk.diplomacy.turnadmin.domain.Piece;
+import com.sdk.diplomacy.turnadmin.domain.PieceLocation;
 import com.sdk.diplomacy.turnadmin.domain.Piece.PieceType;
+import com.sdk.diplomacy.turnadmin.domain.Turn.Phases;
 import com.sdk.diplomacy.turnadmin.map.GameMap;
 
 public class OrderResolverTest {
@@ -58,7 +60,10 @@ public class OrderResolverTest {
 		allOrders.put("Brest", holdOrder);
 		
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
-		existingPieces.put("Brest", new Piece(null, "France", "Brest", "turnId", "gameId", PieceType.ARMY));
+		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Brest", null, true);
+		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation);
+
+		existingPieces.put("Brest", myPiece);
 
 		Map<String, OrderResolutionResults> myResults = myResolver.resolve(allOrders, existingPieces);
 
@@ -87,7 +92,10 @@ public class OrderResolverTest {
 		allOrders.put("Brest", holdOrder);
 		
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
-		existingPieces.put("Brest", new Piece(null, "France", "Brest", "turnId", "gameId", PieceType.ARMY));
+		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Brest", null, true);
+		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation);
+
+		existingPieces.put("Brest", myPiece);
 
 		Map<String, OrderResolutionResults> myResults = myResolver.resolve(allOrders, existingPieces);
 

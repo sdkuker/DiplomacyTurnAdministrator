@@ -15,22 +15,20 @@ public class Piece {
 
 	private String id;
 	private String owningCountryName;
-	private String nameOfLocationAtBeginningOfTurn;
-	private String nameOfLocationAtEndOfTurn;
-	private boolean mustRetreatAtEndOfTurn;
 	private String turnId;
 	private String gameId;
 	private PieceType type;
+	private PieceLocation pieceLocation;
 
-	public Piece(String id, String owningCountryName, String nameOfLocationAtBeginningOfTurn, String turnId,
-			String gameId, PieceType type) {
+	public Piece(String id, String owningCountryName, String turnId,
+			String gameId, PieceType type, PieceLocation aPieceLocation) {
 		super();
 		this.id = id;
 		this.owningCountryName = owningCountryName;
-		this.nameOfLocationAtBeginningOfTurn = nameOfLocationAtBeginningOfTurn;
 		this.turnId = turnId;
 		this.gameId = gameId;
 		this.type = type;
+		this.pieceLocation = aPieceLocation;
 	}
 
 	public String getId() {
@@ -45,8 +43,12 @@ public class Piece {
 		return owningCountryName;
 	}
 
-	public String getNameOfLocationAtBeginningOfTurn() {
-		return nameOfLocationAtBeginningOfTurn;
+	public String getNameOfLocationAtBeginningOfPhase() {
+		return pieceLocation.getNameOfLocationAtBeginningOfPhase();
+	}
+	
+	public void setNameOfLocationAtBeginningOfPhase(String nameOfLocationAtBeginningOfPhase) {
+		pieceLocation.setNameOfLocationAtBeginningOfPhase(nameOfLocationAtBeginningOfPhase);
 	}
 
 	public String getTurnId() {
@@ -61,20 +63,28 @@ public class Piece {
 		return type;
 	}
 
-	public String getNameOfLocationAtEndOfTurn() {
-		return nameOfLocationAtEndOfTurn;
+	public String getNameOfLocationAtEndOfPhase() {
+		return pieceLocation.getNameOfLocationAtEndOfPhase();
 	}
 
-	public void setNameOfLocationAtEndOfTurn(String nameOfLocationAtEndOfTurn) {
-		this.nameOfLocationAtEndOfTurn = nameOfLocationAtEndOfTurn;
+	public void setNameOfLocationAtEndOfPhase(String nameOfLocationAtEndOfPhase) {
+		pieceLocation.setNameOfLocationAtEndOfPhase(nameOfLocationAtEndOfPhase);
 	}
 
 	public boolean getMustRetreatAtEndOfTurn() {
-		return mustRetreatAtEndOfTurn;
+		return pieceLocation.isMustRetreatAtEndOfTurn();
 	}
 
 	public void setMustRetreatAtEndOfTurn(boolean mustRetreatAtEndOfTurn) {
-		this.mustRetreatAtEndOfTurn = mustRetreatAtEndOfTurn;
+		pieceLocation.setMustRetreatAtEndOfTurn(getMustRetreatAtEndOfTurn());
+	}
+
+	public PieceLocation getPieceLocation() {
+		return pieceLocation;
+	}
+
+	public void setPieceLocation(PieceLocation pieceLocation) {
+		this.pieceLocation = pieceLocation;
 	}
 
 }

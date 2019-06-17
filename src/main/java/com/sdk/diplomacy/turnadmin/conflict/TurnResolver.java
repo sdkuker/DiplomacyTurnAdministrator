@@ -74,7 +74,7 @@ public class TurnResolver {
 			if (Action.MOVESTO == myOrder.getAction()) {
 				if (anOrderResolutionResult.wasOrderExecutedSuccessfully()) {
 					piecesByCurrentLocationMap.get(myOrder.getCurrentLocationName())
-							.setNameOfLocationAtEndOfTurn(myOrder.getEndingLocationName());
+							.setNameOfLocationAtEndOfPhase(myOrder.getEndingLocationName());
 					provincesOccupiedBySuccessfulMoves
 							.add(myGameMap.getProvinceContainingRegionByName(myOrder.getEndingLocationName()));
 				}
@@ -89,12 +89,12 @@ public class TurnResolver {
 			 * else took it's place - in which case it's been displaced. You must see if
 			 * something is in the province, not just the region.
 			 */
-			if (aPiece.getNameOfLocationAtEndOfTurn() == null) {
+			if (aPiece.getNameOfLocationAtEndOfPhase() == null) {
 				if (provincesOccupiedBySuccessfulMoves.contains(
-						myGameMap.getProvinceContainingRegionByName(aPiece.getNameOfLocationAtBeginningOfTurn()))) {
+						myGameMap.getProvinceContainingRegionByName(aPiece.getNameOfLocationAtBeginningOfPhase()))) {
 					aPiece.setMustRetreatAtEndOfTurn(true);
 				} else {
-					aPiece.setNameOfLocationAtEndOfTurn(aPiece.getNameOfLocationAtBeginningOfTurn());
+					aPiece.setNameOfLocationAtEndOfPhase(aPiece.getNameOfLocationAtBeginningOfPhase());
 				}
 			}
 		});
@@ -141,7 +141,7 @@ public class TurnResolver {
 
 		if (pieces != null) {
 			for (Piece aPiece : pieces) {
-				mapOfPieces.put(aPiece.getNameOfLocationAtBeginningOfTurn(), aPiece);
+				mapOfPieces.put(aPiece.getNameOfLocationAtBeginningOfPhase(), aPiece);
 			}
 		}
 

@@ -12,6 +12,7 @@ import com.sdk.diplomacy.turnadmin.conflict.TurnResolver;
 import com.sdk.diplomacy.turnadmin.domain.Order;
 import com.sdk.diplomacy.turnadmin.domain.Piece;
 import com.sdk.diplomacy.turnadmin.domain.Turn;
+import com.sdk.diplomacy.turnadmin.domain.Turn.Phases;
 
 public class ExecuteTurn {
 
@@ -28,7 +29,7 @@ public class ExecuteTurn {
 
 		try {
 			List<Order> ordersForTurn = myDAOWarehouse.getOrderDAO().getOrdersForTurn(aTurnID);
-			List<Piece> piecesForTurn = myDAOWarehouse.getPieceDAO().getPiecesForTurn(aTurnID);
+			List<Piece> piecesForTurn = myDAOWarehouse.getPieceDAO().getPiecesForTurn(aTurnID, Phases.ORDER_RESOLUTION);
 			TurnResolver myResolver = new TurnResolver();
 			
 			ConflictResolutionResults conflictResolutionResults = myResolver.resolveConflict(ordersForTurn,

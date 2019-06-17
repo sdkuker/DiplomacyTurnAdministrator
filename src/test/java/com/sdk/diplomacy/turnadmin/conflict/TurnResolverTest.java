@@ -16,7 +16,9 @@ import org.junit.Test;
 import com.sdk.diplomacy.turnadmin.domain.Order;
 import com.sdk.diplomacy.turnadmin.domain.Order.Action;
 import com.sdk.diplomacy.turnadmin.domain.Piece;
+import com.sdk.diplomacy.turnadmin.domain.PieceLocation;
 import com.sdk.diplomacy.turnadmin.domain.Piece.PieceType;
+import com.sdk.diplomacy.turnadmin.domain.Turn.Phases;
 import com.sdk.diplomacy.turnadmin.map.Province;
 
 public class TurnResolverTest {
@@ -78,8 +80,9 @@ public class TurnResolverTest {
 		assertNotNull("empty map exists", emptyMap);
 		assertEquals("empty map has no entries", 0, emptyMap.size());
 
-		Piece piece1 = new Piece("1", "France", "locationAtBeginningOfTurn", "Turn1", "Game1", PieceType.ARMY);
-		
+		PieceLocation myPieceLocation = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "locationAtBeginningOfTurn", null, true);
+		Piece piece1 = new Piece("1", "France", "Turn1", "Game1", PieceType.ARMY, myPieceLocation);
+
 		List<Piece> listOfPieces = new ArrayList<Piece>();
 		listOfPieces.add(piece1);
 		
@@ -112,8 +115,10 @@ public class TurnResolverTest {
 		orderResults.put("1", holdOrderResults);
 		orderResults.put("2", moveOrderResults);
 		
-		Piece holdPiece = new Piece("p1", "France", "Paris", "Turn1", "Game1", PieceType.ARMY);
-		Piece movePiece = new Piece("p2", "France", "Gascony", "Turn1", "Game1", PieceType.ARMY);
+		PieceLocation myPieceLocation = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Paris", null, true);
+		Piece holdPiece = new Piece("p1", "France", "Turn1", "Game1", PieceType.ARMY, myPieceLocation);
+		PieceLocation myPieceLocation2 = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Gascony", null, true);
+		Piece movePiece = new Piece("p2", "France", "Turn1", "Game1", PieceType.ARMY, myPieceLocation2);
 		
 		Map<String, Piece> piecesByCurrentLocation = new HashMap<String, Piece>();
 		piecesByCurrentLocation.put("Paris", holdPiece);
@@ -121,9 +126,9 @@ public class TurnResolverTest {
 		
 		myResolver.updatePieceEndingLocations(orderResults, ordersById, piecesByCurrentLocation);
 		
-		assertNull("hold piece should have no ending location", holdPiece.getNameOfLocationAtEndOfTurn());
+		assertNull("hold piece should have no ending location", holdPiece.getNameOfLocationAtEndOfPhase());
 		assertTrue("hold piece should be displaced", holdPiece.getMustRetreatAtEndOfTurn());
-		assertEquals("move piece should be have moved", "Paris", movePiece.getNameOfLocationAtEndOfTurn());
+		assertEquals("move piece should be have moved", "Paris", movePiece.getNameOfLocationAtEndOfPhase());
 
 	}
 		
@@ -153,10 +158,13 @@ public class TurnResolverTest {
 		orderResults.put("2", moveOrderResults);
 		orderResults.put("3", supportOrderResults);
 		
-		Piece holdPiece = new Piece("p1", "France", "Paris", "Turn1", "Game1", PieceType.ARMY);
-		Piece movePiece = new Piece("p2", "France", "Gascony", "Turn1", "Game1", PieceType.ARMY);
-		Piece supportPiece = new Piece("p3", "France", "Portugal", "Turn1", "Game1", PieceType.ARMY);
-		
+		PieceLocation myPieceLocation = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Paris", null, true);
+		Piece holdPiece = new Piece("p1", "France", "Turn1", "Game1", PieceType.ARMY, myPieceLocation);
+		PieceLocation myPieceLocation2 = new PieceLocation("2L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Gascony", null, true);
+		Piece movePiece = new Piece("p2", "France", "Turn1", "Game1", PieceType.ARMY, myPieceLocation2);
+		PieceLocation myPieceLocation3 = new PieceLocation("3L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Portugal", null, true);
+		Piece supportPiece = new Piece("p3", "France", "Turn1", "Game1", PieceType.ARMY, myPieceLocation3);
+
 		Map<String, Piece> piecesByCurrentLocation = new HashMap<String, Piece>();
 		piecesByCurrentLocation.put("Paris", holdPiece);
 		piecesByCurrentLocation.put("Gascony", movePiece);
@@ -164,9 +172,9 @@ public class TurnResolverTest {
 		
 		myResolver.updatePieceEndingLocations(orderResults, ordersById, piecesByCurrentLocation);
 		
-		assertEquals("hold piece should end where it started", "Paris", holdPiece.getNameOfLocationAtEndOfTurn());
-		assertEquals("move piece should be have moved", "Spain", movePiece.getNameOfLocationAtEndOfTurn());
-		assertEquals("support piece should be where it started", "Portugal", supportPiece.getNameOfLocationAtEndOfTurn());
+		assertEquals("hold piece should end where it started", "Paris", holdPiece.getNameOfLocationAtEndOfPhase());
+		assertEquals("move piece should be have moved", "Spain", movePiece.getNameOfLocationAtEndOfPhase());
+		assertEquals("support piece should be where it started", "Portugal", supportPiece.getNameOfLocationAtEndOfPhase());
 	}
 	
 	@Test

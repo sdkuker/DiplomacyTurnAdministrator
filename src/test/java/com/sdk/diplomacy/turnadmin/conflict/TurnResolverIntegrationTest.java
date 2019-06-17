@@ -13,7 +13,9 @@ import org.junit.Test;
 import com.sdk.diplomacy.turnadmin.domain.Order;
 import com.sdk.diplomacy.turnadmin.domain.Order.Action;
 import com.sdk.diplomacy.turnadmin.domain.Piece;
+import com.sdk.diplomacy.turnadmin.domain.PieceLocation;
 import com.sdk.diplomacy.turnadmin.domain.Piece.PieceType;
+import com.sdk.diplomacy.turnadmin.domain.Turn.Phases;
 
 public class TurnResolverIntegrationTest {
 
@@ -37,10 +39,14 @@ public class TurnResolverIntegrationTest {
 		listOfOrders.add(unSuccessfulMoveOrder);
 		listOfOrders.add(unSuccessfulHoldOrder);
 		
-		Piece armyStartingInParis = new Piece("1", "France", "Paris", "Turn1", "Game1", PieceType.ARMY);
-		Piece armyStartingInBelguim = new Piece("2", "France", "Belguim", "Turn1", "Game1", PieceType.ARMY);
-		Piece armyStartingInRuhr = new Piece("2", "France", "Ruhr", "Turn1", "Game1", PieceType.ARMY);
-		Piece armyStartingInBurgundy = new Piece("4", "France", "Burgundy", "Turn1", "Game1", PieceType.ARMY);
+		PieceLocation myPieceLocation = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Paris", null, true);
+		Piece armyStartingInParis = new Piece("1", "France", "Turn1", "Game1", PieceType.ARMY, myPieceLocation);
+		PieceLocation myPieceLocation2 = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Belguim", null, true);
+		Piece armyStartingInBelguim = new Piece("2", "France", "Turn1", "Game1", PieceType.ARMY, myPieceLocation2);
+		PieceLocation myPieceLocation3 = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Ruhr", null, true);
+		Piece armyStartingInRuhr = new Piece("3", "France", "Turn1", "Game1", PieceType.ARMY, myPieceLocation3);
+		PieceLocation myPieceLocation4 = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Burgundy", null, true);
+		Piece armyStartingInBurgundy = new Piece("4", "France", "Turn1", "Game1", PieceType.ARMY, myPieceLocation4);
 		
 		List<Piece> listOfPieces = new ArrayList<Piece>();
 		listOfPieces.add(armyStartingInParis);
@@ -54,10 +60,10 @@ public class TurnResolverIntegrationTest {
 		assertEquals("no standoff provices were returned", 0, myResults.getStandoffProvinces().size());
 		assertNotNull("turn results map returned", myResults.getOrderResolutionResults());
 		assertEquals("right number of order results were returned", 4, myResults.getOrderResolutionResults().size());
-		assertEquals("successful move order", "Burgundy", armyStartingInParis.getNameOfLocationAtEndOfTurn());
-		assertEquals("successful move support order", "Belguim", armyStartingInBelguim.getNameOfLocationAtEndOfTurn());
-		assertEquals("unsuccessful move order", "Ruhr", armyStartingInRuhr.getNameOfLocationAtEndOfTurn());
-		assertNull("unsuccessful hold order", armyStartingInBurgundy.getNameOfLocationAtEndOfTurn());
+		assertEquals("successful move order", "Burgundy", armyStartingInParis.getNameOfLocationAtEndOfPhase());
+		assertEquals("successful move support order", "Belguim", armyStartingInBelguim.getNameOfLocationAtEndOfPhase());
+		assertEquals("unsuccessful move order", "Ruhr", armyStartingInRuhr.getNameOfLocationAtEndOfPhase());
+		assertNull("unsuccessful hold order", armyStartingInBurgundy.getNameOfLocationAtEndOfPhase());
 		assertTrue("unsuccessful hold order must retreat", armyStartingInBurgundy.getMustRetreatAtEndOfTurn());
 	}
 	
@@ -81,10 +87,14 @@ public class TurnResolverIntegrationTest {
 		listOfOrders.add(supportForMoveFromGOL);
 		listOfOrders.add(holdInSpain);
 
-		Piece fleetStartingInMAO = new Piece("1", "France", "Mid_Atlantic_Ocean", "Turn1", "Game1", PieceType.FLEET);
-		Piece fleetStartingInGulf = new Piece("2", "France", "Gulf_of_Lyon", "Turn1", "Game1", PieceType.FLEET);
-		Piece fleetStartingInWesternMed = new Piece("3", "France", "Western_Mediterranean", "Turn1", "Game1", PieceType.FLEET);
-		Piece armyHoldingInSpain = new Piece("4", "France", "Spain", "Turn1", "Game1", PieceType.ARMY);
+		PieceLocation myPieceLocation = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Mid_Atlantic_Ocean", null, true);
+		Piece fleetStartingInMAO = new Piece("1", "France", "Turn1", "Game1", PieceType.FLEET, myPieceLocation);
+		PieceLocation myPieceLocation2 = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Gulf_of_Lyon", null, true);
+		Piece fleetStartingInGulf = new Piece("2", "France", "Turn1", "Game1", PieceType.FLEET, myPieceLocation2);
+		PieceLocation myPieceLocation3 = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Western_Mediterranean", null, true);
+		Piece fleetStartingInWesternMed = new Piece("3", "France", "Turn1", "Game1", PieceType.FLEET, myPieceLocation3);
+		PieceLocation myPieceLocation4 = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Spain", null, true);
+		Piece armyHoldingInSpain = new Piece("4", "France", "Turn1", "Game1", PieceType.ARMY, myPieceLocation4);
 		
 		List<Piece> listOfPieces = new ArrayList<Piece>();
 		listOfPieces.add(fleetStartingInMAO);
@@ -98,10 +108,10 @@ public class TurnResolverIntegrationTest {
 		assertEquals("no provices were returned", 0, myResults.getStandoffProvinces().size());
 		assertNotNull("turn results map returned", myResults.getOrderResolutionResults());
 		assertEquals("right number of order results were returned", 4, myResults.getOrderResolutionResults().size());
-		assertEquals("move from MAO fails", "Mid_Atlantic_Ocean", fleetStartingInMAO.getNameOfLocationAtEndOfTurn());
-		assertEquals("move from Gulf succeeds", "Spain_(sc)", fleetStartingInGulf.getNameOfLocationAtEndOfTurn());
-		assertEquals("support fleet ends where it started", "Western_Mediterranean", fleetStartingInWesternMed.getNameOfLocationAtEndOfTurn());
-		assertNull("unsuccessful hold order", armyHoldingInSpain.getNameOfLocationAtEndOfTurn());
+		assertEquals("move from MAO fails", "Mid_Atlantic_Ocean", fleetStartingInMAO.getNameOfLocationAtEndOfPhase());
+		assertEquals("move from Gulf succeeds", "Spain_(sc)", fleetStartingInGulf.getNameOfLocationAtEndOfPhase());
+		assertEquals("support fleet ends where it started", "Western_Mediterranean", fleetStartingInWesternMed.getNameOfLocationAtEndOfPhase());
+		assertNull("unsuccessful hold order", armyHoldingInSpain.getNameOfLocationAtEndOfPhase());
 		assertTrue("unsuccessful hold order must retreat", armyHoldingInSpain.getMustRetreatAtEndOfTurn());
 
 	}
@@ -121,8 +131,10 @@ public class TurnResolverIntegrationTest {
 		listOfOrders.add(moveFromParisOrder);
 		listOfOrders.add(moveFromRuhrOrder);
 
-		Piece armyStartingInParis = new Piece("1", "France", "Paris", "Turn1", "Game1", PieceType.ARMY);
-		Piece armyStartingInRuhr = new Piece("2", "France", "Ruhr", "Turn1", "Game1", PieceType.ARMY);
+		PieceLocation myPieceLocation = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Paris", null, true);
+		Piece armyStartingInParis = new Piece("1", "France", "Turn1", "Game1", PieceType.ARMY, myPieceLocation);
+		PieceLocation myPieceLocation2 = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Ruhr", null, true);
+		Piece armyStartingInRuhr = new Piece("2", "France", "Turn1", "Game1", PieceType.ARMY, myPieceLocation2);
 		
 		List<Piece> listOfPieces = new ArrayList<Piece>();
 		listOfPieces.add(armyStartingInParis);
@@ -135,8 +147,8 @@ public class TurnResolverIntegrationTest {
 		assertNotNull("turn results map returned", myResults.getOrderResolutionResults());
 		assertEquals("right number of order results were returned", 2, myResults.getOrderResolutionResults().size());
 		assertEquals("correct province was returned", "Burgundy", ((StandoffProvince) myResults.getStandoffProvinces().toArray()[0]).getProvinceName());
-		assertEquals("move from paris fails", "Paris", armyStartingInParis.getNameOfLocationAtEndOfTurn());
-		assertEquals("move from Ruhr fails", "Ruhr", armyStartingInRuhr.getNameOfLocationAtEndOfTurn());
+		assertEquals("move from paris fails", "Paris", armyStartingInParis.getNameOfLocationAtEndOfPhase());
+		assertEquals("move from Ruhr fails", "Ruhr", armyStartingInRuhr.getNameOfLocationAtEndOfPhase());
 	}
 	
 	@Test
@@ -153,9 +165,11 @@ public class TurnResolverIntegrationTest {
 		listOfOrders.add(moveFromMidAtlanticOceanOrder);
 		listOfOrders.add(moveFromGulfOfLyon);
 
-		Piece fleetStartingInMAO = new Piece("1", "France", "Mid_Atlantic_Ocean", "Turn1", "Game1", PieceType.FLEET);
-		Piece fleetStartingInGulf = new Piece("2", "France", "Gulf_of_Lyon", "Turn1", "Game1", PieceType.FLEET);
-		
+		PieceLocation myPieceLocation = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Mid_Atlantic_Ocean", null, true);
+		Piece fleetStartingInMAO = new Piece("1", "France", "Turn1", "Game1", PieceType.FLEET, myPieceLocation);
+		PieceLocation myPieceLocation2 = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Gulf_of_Lyon", null, true);
+		Piece fleetStartingInGulf = new Piece("2", "France", "Turn1", "Game1", PieceType.FLEET, myPieceLocation2);
+
 		List<Piece> listOfPieces = new ArrayList<Piece>();
 		listOfPieces.add(fleetStartingInMAO);
 		listOfPieces.add(fleetStartingInGulf);
@@ -167,8 +181,8 @@ public class TurnResolverIntegrationTest {
 		assertNotNull("turn results map returned", myResults.getOrderResolutionResults());
 		assertEquals("right number of order results were returned", 2, myResults.getOrderResolutionResults().size());
 		assertEquals("correct provice was returned", "Spain", ((StandoffProvince) myResults.getStandoffProvinces().toArray()[0]).getProvinceName());
-		assertEquals("move from MAO fails", "Mid_Atlantic_Ocean", fleetStartingInMAO.getNameOfLocationAtEndOfTurn());
-		assertEquals("move from Gulf fails", "Gulf_of_Lyon", fleetStartingInGulf.getNameOfLocationAtEndOfTurn());
+		assertEquals("move from MAO fails", "Mid_Atlantic_Ocean", fleetStartingInMAO.getNameOfLocationAtEndOfPhase());
+		assertEquals("move from Gulf fails", "Gulf_of_Lyon", fleetStartingInGulf.getNameOfLocationAtEndOfPhase());
 	}
 
 	

@@ -3,6 +3,7 @@ package com.sdk.diplomacy.turnadmin.domain.dao;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -15,6 +16,8 @@ import com.google.cloud.Timestamp;
 import com.sdk.diplomacy.turnadmin.PropertyManager;
 import com.sdk.diplomacy.turnadmin.domain.Piece;
 import com.sdk.diplomacy.turnadmin.domain.Piece.PieceType;
+import com.sdk.diplomacy.turnadmin.domain.PieceLocation;
+import com.sdk.diplomacy.turnadmin.domain.Turn.Phases;
 import com.sdk.diplomacy.turnadmin.testutilities.TestLambdaLogger;
 
 public class PieceDAOTest {
@@ -43,52 +46,72 @@ public class PieceDAOTest {
 	@Test
 	public void testGettingPiecesForATurn() throws Exception {
 
-		String myTurnID = "fNOhEKjDSVOeQcZM2rMg";
+		String turnId = "testGettingPiecesForATurnID";
+		String gameId = "testGettingPiecesForATrunGameID";
+		
+		PieceLocation myDiplomaticLocation = new PieceLocation("tempLocationId", "tempId", turnId, Phases.DIPLOMATIC, gameId, "Paris", null, true);
+		Piece myPiece = new Piece("tempId", "France", turnId, gameId, PieceType.ARMY, myDiplomaticLocation);
 
-		List<Piece> myPieces = myPieceDAO.getPiecesForTurn(myTurnID);
+		String pieceId = myPieceDAO.insertPiece(myPiece);
+		
+		String myDiplomaticLocationID = myPiece.getPieceLocation().getId();
+		
+		PieceLocation myGandLUnitsLocation = new PieceLocation("tempLocationId", "tempId", turnId, Phases.GAINING_AND_LOSING_UNITS, gameId, "Paris", null, false);
+		String myGandLUnitlsLocationID = myPieceDAO.insertLocation(myGandLUnitsLocation);
+
+		List<Piece> myPieces = myPieceDAO.getPiecesForTurn(turnId, Phases.DIPLOMATIC);
 
 		assertNotNull("a piece list came back", myPieces);
 		assertEquals("right number of pieces came back", 1, myPieces.size());
 		Piece returnedPiece = myPieces.get(0);
-		assertEquals("game id is right", "Woe9CDOyILIlCq53UHUJ", returnedPiece.getGameId());
-		assertEquals("turn id is right", myTurnID, returnedPiece.getTurnId());
+		assertEquals("game id is right", gameId, returnedPiece.getGameId());
+		assertEquals("turn id is right", turnId, returnedPiece.getTurnId());
+		assertEquals("location id is right", myDiplomaticLocationID, returnedPiece.getPieceLocation().getId());
 		assertTrue("must retreat is right", returnedPiece.getMustRetreatAtEndOfTurn());
-		assertEquals("location at beginning of turn", "Paris", returnedPiece.getNameOfLocationAtBeginningOfTurn());
-		assertEquals("location at end of turn", "Gascony", returnedPiece.getNameOfLocationAtEndOfTurn());
+		assertEquals("location at beginning of turn", "Paris", returnedPiece.getNameOfLocationAtBeginningOfPhase());
+		assertNull("location at end of turn", returnedPiece.getNameOfLocationAtEndOfPhase());
 		assertEquals("owning country name", "France", returnedPiece.getOwningCountryName());
 		assertEquals("type", Piece.PieceType.ARMY, returnedPiece.getType());
+		
+		myPieceDAO.deleteLocation(myGandLUnitsLocation);
+		myPieceDAO.deleteLocation(myDiplomaticLocation);
+		myPieceDAO.deletePiece(myPiece);
 	}
 
 	@Test
 	public void testInsertingUpdatingAndDeletingAPiece() throws Exception {
 
 		String turnId = "testInsertingAndDeletingAPieceTurn";
+		String gameId = "testInsertingAndDeletingAPieceGameÏd";
 		
-		Piece myPiece = new Piece("tempId", "France", "Paris", turnId,
-				"testInsertingAndDeletingAPieceGameÏ", PieceType.ARMY);
+		PieceLocation myLocation = new PieceLocation("tempLocationId", "tempId", turnId, Phases.DIPLOMATIC, gameId, "Paris", null, false);
+		Piece myPiece = new Piece("tempId", "France", turnId, gameId, PieceType.ARMY, myLocation);
 		
 		String pieceId = myPieceDAO.insertPiece(myPiece);
 		
 		assertNotNull("new Id was returned", pieceId);
 		assertFalse("new id is different from original one", pieceId.contentEquals("tempId"));
 		
-		List<Piece> myPieces = myPieceDAO.getPiecesForTurn(turnId);
+		assertNotNull("new Id was returned for location", myPiece.getPieceLocation().getId());
+		assertFalse("new location id is different from original one", pieceId.contentEquals("tempLocationId"));
+
+		List<Piece> myPieces = myPieceDAO.getPiecesForTurn(turnId, Phases.DIPLOMATIC);
 		assertEquals("right number of pieces came back", 1, myPieces.size());
 		assertEquals("piece id is right", pieceId, myPieces.get(0).getId());
 		
-		myPieces.get(0).setNameOfLocationAtEndOfTurn("Brest");
+		myPieces.get(0).setNameOfLocationAtEndOfPhase("Brest");
 		
 		Timestamp udpateTimestamp = myPieceDAO.update(myPieces.get(0));
 		assertNotNull("update timestamp", udpateTimestamp);
 		
-		List<Piece> myUpdatedPieces = myPieceDAO.getPiecesForTurn(turnId);
+		List<Piece> myUpdatedPieces = myPieceDAO.getPiecesForTurn(turnId, Phases.DIPLOMATIC);
 		assertEquals("right number of pieces came back on update", 1, myUpdatedPieces.size());
-		assertEquals("piece was updated", "Brest", myUpdatedPieces.get(0).getNameOfLocationAtEndOfTurn());
+		assertEquals("piece was updated", "Brest", myUpdatedPieces.get(0).getNameOfLocationAtEndOfPhase());
 
 		Timestamp deleteTimestamp = myPieceDAO.deletePiece(myPiece);
 		
 		assertNotNull("delete timestamp", deleteTimestamp);
-		List<Piece> myPiecesAfterDelete = myPieceDAO.getPiecesForTurn(turnId);
+		List<Piece> myPiecesAfterDelete = myPieceDAO.getPiecesForTurn(turnId, Phases.DIPLOMATIC);
 		assertEquals("right number of pieces came back", 0, myPiecesAfterDelete.size());
 
 	}
