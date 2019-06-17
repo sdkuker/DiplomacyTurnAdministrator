@@ -40,13 +40,13 @@ public class TurnResolverIntegrationTest {
 		listOfOrders.add(unSuccessfulHoldOrder);
 		
 		PieceLocation myPieceLocation = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Paris", null, true);
-		Piece armyStartingInParis = new Piece("1", "France", "Turn1", "Game1", PieceType.ARMY, myPieceLocation);
+		Piece armyStartingInParis = new Piece("1", "France", "Game1", PieceType.ARMY, myPieceLocation);
 		PieceLocation myPieceLocation2 = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Belguim", null, true);
-		Piece armyStartingInBelguim = new Piece("2", "France", "Turn1", "Game1", PieceType.ARMY, myPieceLocation2);
+		Piece armyStartingInBelguim = new Piece("2", "France", "Game1", PieceType.ARMY, myPieceLocation2);
 		PieceLocation myPieceLocation3 = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Ruhr", null, true);
-		Piece armyStartingInRuhr = new Piece("3", "France", "Turn1", "Game1", PieceType.ARMY, myPieceLocation3);
+		Piece armyStartingInRuhr = new Piece("3", "France", "Game1", PieceType.ARMY, myPieceLocation3);
 		PieceLocation myPieceLocation4 = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Burgundy", null, true);
-		Piece armyStartingInBurgundy = new Piece("4", "France", "Turn1", "Game1", PieceType.ARMY, myPieceLocation4);
+		Piece armyStartingInBurgundy = new Piece("4", "France", "Game1", PieceType.ARMY, myPieceLocation4);
 		
 		List<Piece> listOfPieces = new ArrayList<Piece>();
 		listOfPieces.add(armyStartingInParis);
@@ -88,13 +88,13 @@ public class TurnResolverIntegrationTest {
 		listOfOrders.add(holdInSpain);
 
 		PieceLocation myPieceLocation = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Mid_Atlantic_Ocean", null, true);
-		Piece fleetStartingInMAO = new Piece("1", "France", "Turn1", "Game1", PieceType.FLEET, myPieceLocation);
+		Piece fleetStartingInMAO = new Piece("1", "France", "Game1", PieceType.FLEET, myPieceLocation);
 		PieceLocation myPieceLocation2 = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Gulf_of_Lyon", null, true);
-		Piece fleetStartingInGulf = new Piece("2", "France", "Turn1", "Game1", PieceType.FLEET, myPieceLocation2);
+		Piece fleetStartingInGulf = new Piece("2", "France", "Game1", PieceType.FLEET, myPieceLocation2);
 		PieceLocation myPieceLocation3 = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Western_Mediterranean", null, true);
-		Piece fleetStartingInWesternMed = new Piece("3", "France", "Turn1", "Game1", PieceType.FLEET, myPieceLocation3);
+		Piece fleetStartingInWesternMed = new Piece("3", "France", "Game1", PieceType.FLEET, myPieceLocation3);
 		PieceLocation myPieceLocation4 = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Spain", null, true);
-		Piece armyHoldingInSpain = new Piece("4", "France", "Turn1", "Game1", PieceType.ARMY, myPieceLocation4);
+		Piece armyHoldingInSpain = new Piece("4", "France",  "Game1", PieceType.ARMY, myPieceLocation4);
 		
 		List<Piece> listOfPieces = new ArrayList<Piece>();
 		listOfPieces.add(fleetStartingInMAO);
@@ -132,9 +132,9 @@ public class TurnResolverIntegrationTest {
 		listOfOrders.add(moveFromRuhrOrder);
 
 		PieceLocation myPieceLocation = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Paris", null, true);
-		Piece armyStartingInParis = new Piece("1", "France", "Turn1", "Game1", PieceType.ARMY, myPieceLocation);
+		Piece armyStartingInParis = new Piece("1", "France", "Game1", PieceType.ARMY, myPieceLocation);
 		PieceLocation myPieceLocation2 = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Ruhr", null, true);
-		Piece armyStartingInRuhr = new Piece("2", "France", "Turn1", "Game1", PieceType.ARMY, myPieceLocation2);
+		Piece armyStartingInRuhr = new Piece("2", "France", "Game1", PieceType.ARMY, myPieceLocation2);
 		
 		List<Piece> listOfPieces = new ArrayList<Piece>();
 		listOfPieces.add(armyStartingInParis);
@@ -166,9 +166,9 @@ public class TurnResolverIntegrationTest {
 		listOfOrders.add(moveFromGulfOfLyon);
 
 		PieceLocation myPieceLocation = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Mid_Atlantic_Ocean", null, true);
-		Piece fleetStartingInMAO = new Piece("1", "France", "Turn1", "Game1", PieceType.FLEET, myPieceLocation);
+		Piece fleetStartingInMAO = new Piece("1", "France", "Game1", PieceType.FLEET, myPieceLocation);
 		PieceLocation myPieceLocation2 = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Gulf_of_Lyon", null, true);
-		Piece fleetStartingInGulf = new Piece("2", "France", "Turn1", "Game1", PieceType.FLEET, myPieceLocation2);
+		Piece fleetStartingInGulf = new Piece("2", "France", "Game1", PieceType.FLEET, myPieceLocation2);
 
 		List<Piece> listOfPieces = new ArrayList<Piece>();
 		listOfPieces.add(fleetStartingInMAO);

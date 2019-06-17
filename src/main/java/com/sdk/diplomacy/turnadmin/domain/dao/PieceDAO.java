@@ -10,6 +10,7 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.Query;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
@@ -18,6 +19,7 @@ import com.google.cloud.firestore.WriteResult;
 import com.sdk.diplomacy.dao.DAOUtilities;
 import com.sdk.diplomacy.turnadmin.domain.Piece;
 import com.sdk.diplomacy.turnadmin.domain.PieceLocation;
+import com.sdk.diplomacy.turnadmin.domain.Turn;
 import com.sdk.diplomacy.turnadmin.domain.Turn.Phases;
 
 public class PieceDAO {
@@ -37,39 +39,33 @@ public class PieceDAO {
 		topLevelCollectionName = aTopLevelCollectionName;
 	}
 
-	public List<Piece> getPiecesForTurn(String aTurnID, Phases aTurnPhase)
+	public List<Piece> getPiecesForTurn(String aGameId, String aTurnId, Phases aTurnPhase)
 			throws InterruptedException, ExecutionException {
 
-		logger.log("Started getting the pieces for turn id: " + aTurnID);
+		logger.log("Started getting the pieces for game id: " + aGameId + " turn id: " + aTurnId + " and phase: " + aTurnPhase);
+		
+		//TODO first have to get the locations, then get the pieces for the locations.
 
 		List<Piece> listOfPieces = new ArrayList<Piece>();
 
-		// asynchronously retrieve all pieces
-		Query query = db.collection(topLevelCollectionName).document(documentName).collection(collectionName)
-				.whereEqualTo("turnId", aTurnID);
-		ApiFuture<QuerySnapshot> querySnapshotFuture = query.get();
-		try {
-			logger.log("About to launch the query");
-			// querySnapshot.get() blocks on response
-			QuerySnapshot querySnapshot = querySnapshotFuture.get();
-			List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
-			logger.log("Number of documents in the get pieces for turn query snapshot:" + documents.size());
-			for (QueryDocumentSnapshot document : documents) {
-				logger.log("Piece ID: " + document.getId());
-				Piece aPiece = new Piece(document.getId(), document.getString("owningCountryName"),
-						document.getString("turnId"),
-						document.getString("gameId"), Piece.PieceType.valueOf(document.getString("type")), null);
-				aPiece.setPieceLocation(getLocationForPiece(aPiece.getId(), aTurnPhase));
+		List<PieceLocation> myLocations = getAllLocations(aGameId, aTurnId, aTurnPhase);
+		
+		for (PieceLocation aLocation : myLocations) {
+			
+			DocumentReference docRef = db.collection(topLevelCollectionName).document(documentName)
+					.collection(collectionName).document(aLocation.getPieceId());
+			ApiFuture<DocumentSnapshot> future = docRef.get();
+			DocumentSnapshot aDocument = future.get();
 
-				listOfPieces.add(aPiece);
+			if (aDocument.exists()) {
+				Piece myPiece = new Piece(aDocument.getId(), aDocument.getString("owningCountryName"),
+						aDocument.getString("gameId"), Piece.PieceType.valueOf(aDocument.getString("type")), null);
+				myPiece.setPieceLocation(aLocation);
+				listOfPieces.add(myPiece);
 			}
 
-		} catch (Exception e) {
-			logger.log("error getting the pieces for turn: " + aTurnID + " stacktrace: "
-					+ DAOUtilities.printStackTrace(e));
-			throw e;
 		}
-
+		
 		return listOfPieces;
 	}
 
@@ -92,7 +88,6 @@ public class PieceDAO {
 
 		Map<String, Object> docData = new HashMap<String, Object>();
 		docData.put("owningCountryName", aPiece.getOwningCountryName());
-		docData.put("turnId", aPiece.getTurnId());
 		docData.put("gameId", aPiece.getGameId());
 		docData.put("type", aPiece.getType().toString());
 
@@ -137,6 +132,45 @@ public class PieceDAO {
 		}
 	}
 
+	protected List<PieceLocation> getAllLocations(String aGameId, String aTurnId, Phases aTurnPhase)
+			throws InterruptedException, ExecutionException {
+
+		logger.log("Started getting the locations for game id: " + aGameId + " and turn id: " + aTurnId + " for phase: " + aTurnPhase);
+
+		List<PieceLocation> desiredLocations = new ArrayList<PieceLocation>();
+
+		// asynchronously retrieve all locations
+		Query query = db.collection(topLevelCollectionName).document(locationDocumentName)
+				.collection(locationCollectionName).whereEqualTo("gameId", aGameId).whereEqualTo("turnId", aTurnId)
+				.whereEqualTo("turnPhase", determinePersistentPhase(aTurnPhase).toString());
+		ApiFuture<QuerySnapshot> querySnapshotFuture = query.get();
+		try {
+			logger.log("About to launch the query");
+			// querySnapshot.get() blocks on response
+			QuerySnapshot querySnapshot = querySnapshotFuture.get();
+			List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
+			logger.log(
+					"Number of documents in the get locations for game, turn & phase query snapshot:" + documents.size());
+			// should be zero or 1
+			if (documents.size() > 0) {
+				QueryDocumentSnapshot document = documents.get(0);
+				PieceLocation aDesiredLocation = new PieceLocation(document.getId(), document.getString("pieceId"), document.getString("turnId"),
+						Phases.valueOf(document.getString("turnPhase")), document.getString("gameId"),
+						document.getString("nameOfLocationAtBeginningOfPhase"),
+						document.getString("nameOfLocationAtEndOfPhase"),
+						document.getBoolean("mustRetreatAtEndOfTurn"));
+				desiredLocations.add(aDesiredLocation);
+			}
+
+		} catch (Exception e) {
+			logger.log("error getting the locations for game id: " + aGameId + " for turn id: " + aTurnId + " for phase: " + aTurnPhase + " stacktrace: "
+					+ DAOUtilities.printStackTrace(e));
+			throw e;
+		}
+
+		return desiredLocations;
+	}
+	
 	public PieceLocation getLocationForPiece(String aPieceId, Phases aTurnPhase)
 			throws InterruptedException, ExecutionException {
 
@@ -174,6 +208,7 @@ public class PieceDAO {
 
 		return desiredLocation;
 	}
+
 	
 	public List<PieceLocation> getAllLocationsForPiece(String aPieceId)
 			throws InterruptedException, ExecutionException {

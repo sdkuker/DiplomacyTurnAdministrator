@@ -81,7 +81,7 @@ public class TurnResolverTest {
 		assertEquals("empty map has no entries", 0, emptyMap.size());
 
 		PieceLocation myPieceLocation = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "locationAtBeginningOfTurn", null, true);
-		Piece piece1 = new Piece("1", "France", "Turn1", "Game1", PieceType.ARMY, myPieceLocation);
+		Piece piece1 = new Piece("1", "France", "Game1", PieceType.ARMY, myPieceLocation);
 
 		List<Piece> listOfPieces = new ArrayList<Piece>();
 		listOfPieces.add(piece1);
@@ -116,9 +116,9 @@ public class TurnResolverTest {
 		orderResults.put("2", moveOrderResults);
 		
 		PieceLocation myPieceLocation = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Paris", null, true);
-		Piece holdPiece = new Piece("p1", "France", "Turn1", "Game1", PieceType.ARMY, myPieceLocation);
+		Piece holdPiece = new Piece("p1", "France", "Game1", PieceType.ARMY, myPieceLocation);
 		PieceLocation myPieceLocation2 = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Gascony", null, true);
-		Piece movePiece = new Piece("p2", "France", "Turn1", "Game1", PieceType.ARMY, myPieceLocation2);
+		Piece movePiece = new Piece("p2", "France", "Game1", PieceType.ARMY, myPieceLocation2);
 		
 		Map<String, Piece> piecesByCurrentLocation = new HashMap<String, Piece>();
 		piecesByCurrentLocation.put("Paris", holdPiece);
@@ -159,11 +159,11 @@ public class TurnResolverTest {
 		orderResults.put("3", supportOrderResults);
 		
 		PieceLocation myPieceLocation = new PieceLocation("1L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Paris", null, true);
-		Piece holdPiece = new Piece("p1", "France", "Turn1", "Game1", PieceType.ARMY, myPieceLocation);
+		Piece holdPiece = new Piece("p1", "France", "Game1", PieceType.ARMY, myPieceLocation);
 		PieceLocation myPieceLocation2 = new PieceLocation("2L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Gascony", null, true);
-		Piece movePiece = new Piece("p2", "France", "Turn1", "Game1", PieceType.ARMY, myPieceLocation2);
+		Piece movePiece = new Piece("p2", "France", "Game1", PieceType.ARMY, myPieceLocation2);
 		PieceLocation myPieceLocation3 = new PieceLocation("3L", "tempId", "Turn1", Phases.DIPLOMATIC, "Game1", "Portugal", null, true);
-		Piece supportPiece = new Piece("p3", "France", "Turn1", "Game1", PieceType.ARMY, myPieceLocation3);
+		Piece supportPiece = new Piece("p3", "France", "Game1", PieceType.ARMY, myPieceLocation3);
 
 		Map<String, Piece> piecesByCurrentLocation = new HashMap<String, Piece>();
 		piecesByCurrentLocation.put("Paris", holdPiece);

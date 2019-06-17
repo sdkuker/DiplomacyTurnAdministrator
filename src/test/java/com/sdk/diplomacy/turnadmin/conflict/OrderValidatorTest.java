@@ -40,7 +40,7 @@ public class OrderValidatorTest {
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Brest", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation);
 
 		existingPieces.put("Brest", myPiece);
 
@@ -64,7 +64,7 @@ public class OrderValidatorTest {
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Georgia", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation);
 
 		existingPieces.put("Georgia", myPiece);
 
@@ -208,7 +208,7 @@ public class OrderValidatorTest {
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Paris", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation);
 
 		existingPieces.put("Paris", myPiece);
 
@@ -246,7 +246,7 @@ public class OrderValidatorTest {
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Georgia", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation);
 
 		existingPieces.put("Georgia", myPiece);
 
@@ -361,9 +361,9 @@ public class OrderValidatorTest {
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Paris", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation);
 		PieceLocation myPieceLocation2 = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Burgundy", null, true);
-		Piece myPiece2 = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation2);
+		Piece myPiece2 = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation2);
 
 		existingPieces.put("Paris", myPiece);
 		existingPieces.put("Burgundy", myPiece2);
@@ -403,9 +403,9 @@ public class OrderValidatorTest {
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Paris", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation);
 		PieceLocation myPieceLocation2 = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Georgia", null, true);
-		Piece myPiece2 = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation2);
+		Piece myPiece2 = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation2);
 
 		existingPieces.put("Paris", myPiece);
 		existingPieces.put("Georgia", myPiece2);
@@ -426,7 +426,7 @@ public class OrderValidatorTest {
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "currentLocationName", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation);
 
 		existingPieces.put("currentLocationName", myPiece);
 
@@ -606,7 +606,7 @@ public class OrderValidatorTest {
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Brest", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.FLEET, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France", "gameId", PieceType.FLEET, myPieceLocation);
 
 		existingPieces.put("Brest", myPiece);
 
@@ -627,7 +627,7 @@ public class OrderValidatorTest {
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "George", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.FLEET, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France","gameId", PieceType.FLEET, myPieceLocation);
 		existingPieces.put("George", myPiece);
 
 		OrderResolutionResults badOrderNoPieceInCurrentLocationResult = new OrderResolutionResults(null, "turnId",
@@ -652,7 +652,7 @@ public class OrderValidatorTest {
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Brest", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation);
 		existingPieces.put("Brest", myPiece);
 
 		OrderResolutionResults badOrderInvalidPieceTypeResult = new OrderResolutionResults(null, "turnId", null);
@@ -727,9 +727,9 @@ public class OrderValidatorTest {
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Brest", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation);
 		PieceLocation myPieceLocation2 = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Picardy", null, true);
-		Piece myPiece2 = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation2);
+		Piece myPiece2 = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation2);
 
 		existingPieces.put("Brest", myPiece);
 		existingPieces.put("Picardy", myPiece2);
@@ -759,11 +759,11 @@ public class OrderValidatorTest {
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Brest", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation);
 		PieceLocation myPieceLocation2 = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "English_Channel", null, true);
-		Piece myPiece2 = new Piece("tempId", "France", "turnId", "gameId", PieceType.FLEET, myPieceLocation2);
+		Piece myPiece2 = new Piece("tempId", "France", "gameId", PieceType.FLEET, myPieceLocation2);
 		PieceLocation myPieceLocation3 = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "North_Sea", null, true);
-		Piece myPiece3 = new Piece("tempId", "France", "turnId", "gameId", PieceType.FLEET, myPieceLocation3);
+		Piece myPiece3 = new Piece("tempId", "France", "gameId", PieceType.FLEET, myPieceLocation3);
 
 		existingPieces.put("Brest", myPiece);
 		existingPieces.put("English_Channel", myPiece2);
@@ -791,9 +791,9 @@ public class OrderValidatorTest {
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Brest", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation);
 		PieceLocation myPieceLocation2 = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Picardy", null, true);
-		Piece myPiece2 = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation2);
+		Piece myPiece2 = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation2);
 
 		existingPieces.put("Brest", myPiece);
 		existingPieces.put("Picardy", myPiece2);
@@ -823,9 +823,9 @@ public class OrderValidatorTest {
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Brest", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.FLEET, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France", "gameId", PieceType.FLEET, myPieceLocation);
 		PieceLocation myPieceLocation2 = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Picardy", null, true);
-		Piece myPiece2 = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation2);
+		Piece myPiece2 = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation2);
 
 		existingPieces.put("Brest", myPiece);
 		existingPieces.put("Picardy", myPiece2);
@@ -856,9 +856,9 @@ public class OrderValidatorTest {
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Brest", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.FLEET, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France", "gameId", PieceType.FLEET, myPieceLocation);
 		PieceLocation myPieceLocation2 = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Picardy", null, true);
-		Piece myPiece2 = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation2);
+		Piece myPiece2 = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation2);
 
 		existingPieces.put("Brest", myPiece);
 		existingPieces.put("Picardy", myPiece2);
@@ -889,9 +889,9 @@ public class OrderValidatorTest {
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Brest", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.FLEET, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France", "gameId", PieceType.FLEET, myPieceLocation);
 		PieceLocation myPieceLocation2 = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Picardy", null, true);
-		Piece myPiece2 = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation2);
+		Piece myPiece2 = new Piece("tempId", "France","gameId", PieceType.ARMY, myPieceLocation2);
 
 		existingPieces.put("Brest", myPiece);
 		existingPieces.put("Picardy", myPiece2);
@@ -922,9 +922,9 @@ public class OrderValidatorTest {
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Brest", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation);
 		PieceLocation myPieceLocation2 = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "English_Channel", null, true);
-		Piece myPiece2 = new Piece("tempId", "France", "turnId", "gameId", PieceType.FLEET, myPieceLocation2);
+		Piece myPiece2 = new Piece("tempId", "France",  "gameId", PieceType.FLEET, myPieceLocation2);
 
 		existingPieces.put("Brest", myPiece);
 		existingPieces.put("English_Channel", myPiece2);
@@ -952,9 +952,9 @@ public class OrderValidatorTest {
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Brest", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France","gameId", PieceType.ARMY, myPieceLocation);
 		PieceLocation myPieceLocation2 = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "English_Channel", null, true);
-		Piece myPiece2 = new Piece("tempId", "France", "turnId", "gameId", PieceType.FLEET, myPieceLocation2);
+		Piece myPiece2 = new Piece("tempId", "France", "gameId", PieceType.FLEET, myPieceLocation2);
 
 		existingPieces.put("Brest", myPiece);
 		existingPieces.put("English_Channel", myPiece2);
@@ -983,9 +983,9 @@ public class OrderValidatorTest {
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Brest", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation);
 		PieceLocation myPieceLocation2 = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Picardy", null, true);
-		Piece myPiece2 = new Piece("tempId", "France", "turnId", "gameId", PieceType.FLEET, myPieceLocation2);
+		Piece myPiece2 = new Piece("tempId", "France", "gameId", PieceType.FLEET, myPieceLocation2);
 
 		existingPieces.put("Brest", myPiece);
 		existingPieces.put("Picardy", myPiece2);
@@ -1014,9 +1014,9 @@ public class OrderValidatorTest {
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Brest", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation);
 		PieceLocation myPieceLocation2 = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "English_Channel", null, true);
-		Piece myPiece2 = new Piece("tempId", "France", "turnId", "gameId", PieceType.FLEET, myPieceLocation2);
+		Piece myPiece2 = new Piece("tempId", "France", "gameId", PieceType.FLEET, myPieceLocation2);
 
 		existingPieces.put("Brest", myPiece);
 		existingPieces.put("English_Channel", myPiece2);
@@ -1045,9 +1045,9 @@ public class OrderValidatorTest {
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Brest", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation);
 		PieceLocation myPieceLocation2 = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "English_Channel", null, true);
-		Piece myPiece2 = new Piece("tempId", "France", "turnId", "gameId", PieceType.FLEET, myPieceLocation2);
+		Piece myPiece2 = new Piece("tempId", "France", "gameId", PieceType.FLEET, myPieceLocation2);
 
 		existingPieces.put("Brest", myPiece);
 		existingPieces.put("English_Channel", myPiece2);
@@ -1077,9 +1077,9 @@ public class OrderValidatorTest {
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Brest", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation);
 		PieceLocation myPieceLocation2 = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "English_Channel", null, true);
-		Piece myPiece2 = new Piece("tempId", "France", "turnId", "gameId", PieceType.FLEET, myPieceLocation2);
+		Piece myPiece2 = new Piece("tempId", "France", "gameId", PieceType.FLEET, myPieceLocation2);
 
 		existingPieces.put("Brest", myPiece);
 		existingPieces.put("English_Channel", myPiece2);
@@ -1109,9 +1109,9 @@ public class OrderValidatorTest {
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Brest", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation);
 		PieceLocation myPieceLocation2 = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "English_Channel", null, true);
-		Piece myPiece2 = new Piece("tempId", "France", "turnId", "gameId", PieceType.FLEET, myPieceLocation2);
+		Piece myPiece2 = new Piece("tempId", "France", "gameId", PieceType.FLEET, myPieceLocation2);
 
 		existingPieces.put("Brest", myPiece);
 		existingPieces.put("English_Channel", myPiece2);
@@ -1140,9 +1140,9 @@ public class OrderValidatorTest {
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Brest", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation);
 		PieceLocation myPieceLocation2 = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "English_Channel", null, true);
-		Piece myPiece2 = new Piece("tempId", "France", "turnId", "gameId", PieceType.FLEET, myPieceLocation2);
+		Piece myPiece2 = new Piece("tempId", "France", "gameId", PieceType.FLEET, myPieceLocation2);
 
 		existingPieces.put("Brest", myPiece);
 		existingPieces.put("English_Channel", myPiece2);
@@ -1171,9 +1171,9 @@ public class OrderValidatorTest {
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Brest", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation);
 		PieceLocation myPieceLocation2 = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "English_Channel", null, true);
-		Piece myPiece2 = new Piece("tempId", "France", "turnId", "gameId", PieceType.FLEET, myPieceLocation2);
+		Piece myPiece2 = new Piece("tempId", "France", "gameId", PieceType.FLEET, myPieceLocation2);
 
 		existingPieces.put("Brest", myPiece);
 		existingPieces.put("English_Channel", myPiece2);
@@ -1204,7 +1204,7 @@ public class OrderValidatorTest {
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Gascony", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation);
 
 		existingPieces.put("Gascony", myPiece);
 
@@ -1228,7 +1228,7 @@ public class OrderValidatorTest {
 
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Gascony", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation);
 
 		existingPieces.put("Gascony", myPiece);
 

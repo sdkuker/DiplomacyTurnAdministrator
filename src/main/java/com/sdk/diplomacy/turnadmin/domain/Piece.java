@@ -15,17 +15,15 @@ public class Piece {
 
 	private String id;
 	private String owningCountryName;
-	private String turnId;
 	private String gameId;
 	private PieceType type;
 	private PieceLocation pieceLocation;
 
-	public Piece(String id, String owningCountryName, String turnId,
+	public Piece(String id, String owningCountryName,
 			String gameId, PieceType type, PieceLocation aPieceLocation) {
 		super();
 		this.id = id;
 		this.owningCountryName = owningCountryName;
-		this.turnId = turnId;
 		this.gameId = gameId;
 		this.type = type;
 		this.pieceLocation = aPieceLocation;
@@ -49,10 +47,6 @@ public class Piece {
 	
 	public void setNameOfLocationAtBeginningOfPhase(String nameOfLocationAtBeginningOfPhase) {
 		pieceLocation.setNameOfLocationAtBeginningOfPhase(nameOfLocationAtBeginningOfPhase);
-	}
-
-	public String getTurnId() {
-		return turnId;
 	}
 
 	public String getGameId() {

@@ -29,7 +29,7 @@ public class ExecuteTurn {
 
 		try {
 			List<Order> ordersForTurn = myDAOWarehouse.getOrderDAO().getOrdersForTurn(aTurnID);
-			List<Piece> piecesForTurn = myDAOWarehouse.getPieceDAO().getPiecesForTurn(aTurnID, Phases.ORDER_RESOLUTION);
+			List<Piece> piecesForTurn = myDAOWarehouse.getPieceDAO().getPiecesForTurn(aGameId, aTurnID, Phases.ORDER_RESOLUTION);
 			TurnResolver myResolver = new TurnResolver();
 			
 			ConflictResolutionResults conflictResolutionResults = myResolver.resolveConflict(ordersForTurn,

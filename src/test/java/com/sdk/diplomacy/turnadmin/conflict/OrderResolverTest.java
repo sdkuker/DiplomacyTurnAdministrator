@@ -61,7 +61,7 @@ public class OrderResolverTest {
 		
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Brest", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation);
 
 		existingPieces.put("Brest", myPiece);
 
@@ -93,7 +93,7 @@ public class OrderResolverTest {
 		
 		Map<String, Piece> existingPieces = new HashMap<String, Piece>();
 		PieceLocation myPieceLocation = new PieceLocation("tempLocationId", "tempId", "turnId", Phases.DIPLOMATIC, "gameId", "Brest", null, true);
-		Piece myPiece = new Piece("tempId", "France", "turnId", "gameId", PieceType.ARMY, myPieceLocation);
+		Piece myPiece = new Piece("tempId", "France", "gameId", PieceType.ARMY, myPieceLocation);
 
 		existingPieces.put("Brest", myPiece);
 
