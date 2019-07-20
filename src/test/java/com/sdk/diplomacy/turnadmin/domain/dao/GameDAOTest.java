@@ -2,6 +2,7 @@ package com.sdk.diplomacy.turnadmin.domain.dao;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.List;
 
@@ -44,6 +45,20 @@ public class GameDAOTest {
 		assertNotNull("a list of games came back", allGames);
 		assertEquals("right number of games in the list", 1, allGames.size());
 		assertEquals("right game is in the list", "Game1", allGames.get(0).getName());
+
+	}
+	
+	@Test
+	public void testGetGame() throws Exception {
+		
+		String gameID = "Woe9CDOyILIlCq53UHUJ";
+		Game theGame = myGameDAO.getGame(gameID);
+		
+		assertNotNull("the game was found", theGame);
+		assertEquals("the id is right", gameID, theGame.getId());
+		
+		theGame = myGameDAO.getGame("George");
+		assertNull("the game should not be found", theGame);
 
 	}
 

@@ -1,8 +1,8 @@
 package com.sdk.diplomacy.turnadmin;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.ExecutionException;
 
 import org.json.simple.JSONObject;
 
@@ -11,30 +11,59 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.sdk.diplomacy.dao.DAOWarehouse;
 import com.sdk.diplomacy.turnadmin.domain.Game;
-import com.sdk.diplomacy.turnadmin.domain.dao.GameDAO;
+import com.sdk.diplomacy.turnadmin.domain.Turn;
 import com.sdk.diplomacy.turnadmin.model.ServerlessInput;
 import com.sdk.diplomacy.turnadmin.model.ServerlessOutput;
 
-public class AdministerTurn implements RequestHandler<ServerlessInput, ServerlessOutput> {
+public class AdministerTurn implements RequestHandler<ServerlessInput, ServerlessOutput> {	
 
 	@Override
 	public ServerlessOutput handleRequest(ServerlessInput serverlessInput, Context context) {
-		// implement your Serverless Lambda function here
+		
+		context.getLogger().log("Starting to process the request in the lambda function");
 
 		ServerlessOutput myOutput = new ServerlessOutput();
-
-		context.getLogger().log("I got to the lambda function");
+		JSONObject responseBody = new JSONObject();
+		
+		Map<String, String> myHeaders = new HashMap<String, String>();
+		myHeaders.put("Access-Control-Allow-Origin", "*");
+		myOutput.setHeaders(myHeaders);
 
 		try {
 			DAOWarehouse myDAOWarehouse = initializeFirebase(context.getLogger());
-			JSONObject gameNames = this.getGameNames(myDAOWarehouse.getGameDAO(), context.getLogger());
-			System.out.println("game names are: " + gameNames.toJSONString());
+			
 			if (serverlessInput != null && serverlessInput.getQueryStringParameters() != null && serverlessInput.getQueryStringParameters().size() > 0) {
-				gameNames.put("queryStringParms", serverlessInput.getQueryStringParameters().entrySet().toString());
+				String idOfGameToProcess = serverlessInput.getQueryStringParameters().get("generateNextPhaseForGame");
+				if (idOfGameToProcess != null) {
+					context.getLogger().log("Received request to process next phase for game: " + idOfGameToProcess);
+					Game gameToProcess = myDAOWarehouse.getGameDAO().getGame(idOfGameToProcess);
+					if (gameToProcess != null) {
+						context.getLogger().log("Found game with ID: " + idOfGameToProcess + " and starting to process it");
+						boolean openTurnFound = processNextPhaseForGameId(idOfGameToProcess, myDAOWarehouse, context.getLogger());
+						if (openTurnFound) {
+							responseBody.put("status", "complete");
+							myOutput.setBody(responseBody.toJSONString());
+							myOutput.setStatusCode(200);
+						} else {
+							responseBody.put("status", "Not processed - no open turn found or it has an invalid phase");
+							myOutput.setBody(responseBody.toJSONString());
+							myOutput.setStatusCode(412);
+						}
+						context.getLogger().log("Finished processing game with ID: " + idOfGameToProcess);
+
+					} else {
+						context.getLogger().log("Could not find game with ID: " + idOfGameToProcess + " to process");
+						myOutput.setStatusCode(404);
+					}
+				} else {
+					context.getLogger().log("No generatedNextPhaseForGame query string parameter found");
+					myOutput.setStatusCode(400);
+				}
+			} else {
+				context.getLogger().log("No query string parms found");
+				myOutput.setStatusCode(400);
 			}
-			myOutput.setBody(gameNames.toJSONString());
-			myOutput.setStatusCode(200);
-			context.getLogger().log("didnt get an error in the handler");
+			
 		} catch (Exception e) {
 			context.getLogger().log("got an error in the handler: " + e);
 			myOutput.setStatusCode(500);
@@ -42,6 +71,7 @@ public class AdministerTurn implements RequestHandler<ServerlessInput, Serverles
 
 		return myOutput;
 	}
+
 	
 	protected DAOWarehouse initializeFirebase(LambdaLogger logger) throws Exception {
 		
@@ -60,22 +90,41 @@ public class AdministerTurn implements RequestHandler<ServerlessInput, Serverles
 		return myManager.getProperties();
 
 	}
-
-	protected JSONObject getGameNames(GameDAO myDAO, LambdaLogger logger) throws ExecutionException, InterruptedException {
-
-		logger.log("Getting game names");
-
-		JSONObject responseBody = new JSONObject();
-
-		List<Game> myGames = myDAO.getAllGames();
-		String firstGameName = "Unknown";
-		if (myGames.size() > 0) {
-			firstGameName = myGames.get(0).getName();
-		};
-
-		responseBody.put("firstGameName", firstGameName);
-
-		return responseBody;
-
+	
+	protected boolean processNextPhaseForGameId(String aGameId, DAOWarehouse myDAOWarehouse, LambdaLogger aLogger) throws Exception {
+		
+		boolean processedSuccessfully = false;
+		Turn openTurn = myDAOWarehouse.getTurnDAO().getOpenTurnForGame(aGameId);
+		
+		if (openTurn != null) {
+			if (openTurn.getPhase() != null) {
+				processedSuccessfully = true;
+				switch (openTurn.getPhase()) {
+				case DIPLOMATIC: 
+					aLogger.log("Processing Diplomatic Phase");
+					myDAOWarehouse.getTurnDAO().updatePhase(openTurn, Turn.Phases.ORDER_WRITING);
+					break;
+				case ORDER_WRITING:
+					aLogger.log("Processing Order Writing Phase");
+					myDAOWarehouse.getTurnDAO().updatePhase(openTurn, Turn.Phases.ORDER_RESOLUTION);
+					break;
+				case ORDER_RESOLUTION:
+					aLogger.log("Started processing Order Resolution Phase");
+					ExecuteTurn aTurnExecuter = new ExecuteTurn(myDAOWarehouse, aLogger);
+					aTurnExecuter.executeOrderResolutionPhase(aGameId, openTurn.getId());
+					break;
+				case RETREAT_AND_DISBANDING:
+					aLogger.log("Started processing Retreat and Disbanding Phase");
+					break;
+				case GAINING_AND_LOSING_UNITS:
+					aLogger.log("Started processing Gaining and Losing Units Phase");
+					break;
+				}
+			}
+		}
+		
+		return processedSuccessfully;
 	}
+
+
 }

@@ -44,8 +44,6 @@ public class PieceDAO {
 
 		logger.log("Started getting the pieces for game id: " + aGameId + " turn id: " + aTurnId + " and phase: " + aTurnPhase);
 		
-		//TODO first have to get the locations, then get the pieces for the locations.
-
 		List<Piece> listOfPieces = new ArrayList<Piece>();
 
 		List<PieceLocation> myLocations = getAllLocations(aGameId, aTurnId, aTurnPhase);

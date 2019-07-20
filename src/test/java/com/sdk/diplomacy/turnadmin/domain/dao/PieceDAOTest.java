@@ -111,7 +111,7 @@ public class PieceDAOTest {
 		
 		assertNotNull("delete timestamp", deleteTimestamp);
 		List<Piece> myPiecesAfterDelete = myPieceDAO.getPiecesForTurn(gameId, turnId, Phases.DIPLOMATIC);
-		assertEquals("right number of pieces came back", 0, myPiecesAfterDelete.size());
+		assertEquals("right number of pieces came back after delete", 0, myPiecesAfterDelete.size());
 
 	}
 	
