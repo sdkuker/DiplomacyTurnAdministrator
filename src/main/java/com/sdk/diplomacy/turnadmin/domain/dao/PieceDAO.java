@@ -19,14 +19,13 @@ import com.google.cloud.firestore.WriteResult;
 import com.sdk.diplomacy.dao.DAOUtilities;
 import com.sdk.diplomacy.turnadmin.domain.Piece;
 import com.sdk.diplomacy.turnadmin.domain.PieceLocation;
-import com.sdk.diplomacy.turnadmin.domain.Turn;
 import com.sdk.diplomacy.turnadmin.domain.Turn.Phases;
 
 public class PieceDAO {
 
 	private Firestore db = null;
 	private LambdaLogger logger;
-	private String topLevelCollectionName;
+	protected String topLevelCollectionName;
 	private String documentName = "pieces";
 	private String collectionName = "allPieces";
 	private String locationDocumentName = "pieceLocations";
@@ -46,7 +45,7 @@ public class PieceDAO {
 		
 		List<Piece> listOfPieces = new ArrayList<Piece>();
 
-		List<PieceLocation> myLocations = getAllLocations(aGameId, aTurnId, aTurnPhase);
+		List<PieceLocation> myLocations = getAllLocations(aGameId, aTurnId, determinePersistentPhase(aTurnPhase));
 		
 		for (PieceLocation aLocation : myLocations) {
 			
@@ -123,14 +122,23 @@ public class PieceDAO {
 		 * that's the inputPhase, return the locations from DIPLOMATIC instead.
 		 */
 
-		if (Phases.ORDER_WRITING == inputPhase) {
-			return Phases.DIPLOMATIC;
-		} else {
-			return inputPhase;
+		Phases persistentPhase = inputPhase;
+		
+		switch(inputPhase) {
+		case ORDER_WRITING:
+			persistentPhase = Phases.DIPLOMATIC;
+			break;
+		case ORDER_RESOLUTION:
+			persistentPhase = Phases.DIPLOMATIC;
+			break;
+		default:
+			break;
 		}
+
+		return persistentPhase;
 	}
 
-	protected List<PieceLocation> getAllLocations(String aGameId, String aTurnId, Phases aTurnPhase)
+	public List<PieceLocation> getAllLocations(String aGameId, String aTurnId, Phases aTurnPhase)
 			throws InterruptedException, ExecutionException {
 
 		logger.log("Started getting the locations for game id: " + aGameId + " and turn id: " + aTurnId + " for phase: " + aTurnPhase);
@@ -149,15 +157,15 @@ public class PieceDAO {
 			List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
 			logger.log(
 					"Number of documents in the get locations for game, turn & phase query snapshot:" + documents.size());
-			// should be zero or 1
 			if (documents.size() > 0) {
-				QueryDocumentSnapshot document = documents.get(0);
-				PieceLocation aDesiredLocation = new PieceLocation(document.getId(), document.getString("pieceId"), document.getString("turnId"),
-						Phases.valueOf(document.getString("turnPhase")), document.getString("gameId"),
-						document.getString("nameOfLocationAtBeginningOfPhase"),
-						document.getString("nameOfLocationAtEndOfPhase"),
-						document.getBoolean("mustRetreatAtEndOfTurn"));
-				desiredLocations.add(aDesiredLocation);
+				querySnapshot.forEach((document) -> {
+					PieceLocation aDesiredLocation = new PieceLocation(document.getId(), document.getString("pieceId"), document.getString("turnId"),
+							Phases.valueOf(document.getString("turnPhase")), document.getString("gameId"),
+							document.getString("nameOfLocationAtBeginningOfPhase"),
+							document.getString("nameOfLocationAtEndOfPhase"),
+							document.getBoolean("mustRetreatAtEndOfTurn"));
+					desiredLocations.add(aDesiredLocation);
+				});
 			}
 
 		} catch (Exception e) {
@@ -226,15 +234,14 @@ public class PieceDAO {
 			List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
 			logger.log(
 					"Number of documents in the get all locations for piece query snapshot:" + documents.size());
-			if (documents.size() == 1) {
-				QueryDocumentSnapshot document = documents.get(0);
+			querySnapshot.forEach((document) -> {
 				PieceLocation aDesiredLocation = new PieceLocation(document.getId(), document.getString("pieceId"), document.getString("turnId"),
 						Phases.valueOf(document.getString("turnPhase")), document.getString("gameId"),
 						document.getString("nameOfLocationAtBeginningOfPhase"),
 						document.getString("nameOfLocationAtEndOfPhase"),
 						document.getBoolean("mustRetreatAtEndOfTurn"));
 				desiredLocations.add(aDesiredLocation);
-			}
+			});
 
 		} catch (Exception e) {
 			logger.log("error getting all the locations for piece id: " + aPieceId + " stacktrace: "
@@ -269,7 +276,7 @@ public class PieceDAO {
 		return aWriteResult.getUpdateTime();
 	}
 
-	protected String insertLocation(PieceLocation aLocation) throws InterruptedException, ExecutionException {
+	public String insertLocation(PieceLocation aLocation) throws InterruptedException, ExecutionException {
 
 		logger.log("Started inserting piece location with id: " + aLocation.getId());
 
@@ -302,6 +309,12 @@ public class PieceDAO {
 		logger.log("Delete time: " + aWriteResult.getUpdateTime());
 
 		return aWriteResult.getUpdateTime();
+	}
+	
+	public void addLocation(Piece aPiece, PieceLocation aLocationToAdd) throws InterruptedException, ExecutionException {
+		insertLocation(aLocationToAdd);
+		aPiece.setPieceLocation(aLocationToAdd);
+		
 	}
 
 }

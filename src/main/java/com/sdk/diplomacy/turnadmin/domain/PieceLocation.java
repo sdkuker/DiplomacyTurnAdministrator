@@ -26,6 +26,10 @@ public class PieceLocation {
 		this.nameOfLocationAtEndOfPhase = nameOfLocationAtEndOfPhase;
 		this.mustRetreatAtEndOfTurn = mustRetreatAtEndOfTurn;
 	}
+	
+	public PieceLocation cloneForNextPhase() {
+		return new PieceLocation(null, pieceId, turnId, turnPhase.nextPhase(), gameId, nameOfLocationAtEndOfPhase, null, false);
+	}
 
 	public String getId() {
 		return id;

@@ -10,6 +10,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.sdk.diplomacy.dao.DAOWarehouse;
+import com.sdk.diplomacy.turnadmin.conflict.TurnResolver;
 import com.sdk.diplomacy.turnadmin.domain.Game;
 import com.sdk.diplomacy.turnadmin.domain.Turn;
 import com.sdk.diplomacy.turnadmin.model.ServerlessInput;
@@ -111,10 +112,12 @@ public class AdministerTurn implements RequestHandler<ServerlessInput, Serverles
 				case ORDER_RESOLUTION:
 					aLogger.log("Started processing Order Resolution Phase");
 					ExecuteTurn aTurnExecuter = new ExecuteTurn(myDAOWarehouse, aLogger);
-					aTurnExecuter.executeOrderResolutionPhase(aGameId, openTurn.getId());
+					aTurnExecuter.executeOrderResolutionPhase(aGameId, openTurn.getId(), new TurnResolver());
 					break;
 				case RETREAT_AND_DISBANDING:
 					aLogger.log("Started processing Retreat and Disbanding Phase");
+					ExecuteTurn anotherTurnExecuter = new ExecuteTurn(myDAOWarehouse, aLogger);
+					anotherTurnExecuter.executeRetreatAndDisbandingPhase(aGameId, openTurn.getId());
 					break;
 				case GAINING_AND_LOSING_UNITS:
 					aLogger.log("Started processing Gaining and Losing Units Phase");

@@ -11,7 +11,38 @@ public class Turn {
 	}
 
 	public enum Phases {
-		DIPLOMATIC, ORDER_WRITING, ORDER_RESOLUTION, RETREAT_AND_DISBANDING, GAINING_AND_LOSING_UNITS
+		DIPLOMATIC {
+			@Override
+			public Phases nextPhase() {
+				return ORDER_WRITING;
+			}
+		}, 
+		ORDER_WRITING {
+			@Override
+			public Phases nextPhase() {
+				return ORDER_RESOLUTION;
+			}
+		}, 
+		ORDER_RESOLUTION {
+			@Override
+			public Phases nextPhase() {
+				return RETREAT_AND_DISBANDING;
+			}
+		}, 
+		RETREAT_AND_DISBANDING {
+			@Override
+			public Phases nextPhase() {
+				return GAINING_AND_LOSING_UNITS;
+			}
+		}, 
+		GAINING_AND_LOSING_UNITS {
+			@Override
+			public Phases nextPhase() {
+				return DIPLOMATIC;
+			}
+		};
+		
+		public abstract Phases nextPhase();
 	}
 
 	private String id;
